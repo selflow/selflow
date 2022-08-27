@@ -1,0 +1,19 @@
+name: Commit Linter
+on: [pull_request]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "lts/*"
+      - name: Install dependencies
+        run: yarn
+      - name: Install gitmoji json
+        run: wget -O ./node_modules/commitlint-plugin-gitmoji/lib/gitmojis.json https://raw.githubusercontent.com/carloscuesta/gitmoji/master/src/data/gitmojis.json
+      - uses: wagoid/commitlint-github-action@v5

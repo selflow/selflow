@@ -1,0 +1,206 @@
+{{#if compareUrl}}
+# [v{{nextRelease.version}}]({{compareUrl}}) ({{datetime "UTC:yyyy-mm-dd"}})
+{{else}}
+# v{{nextRelease.version}} ({{datetime "UTC:yyyy-mm-dd"}})
+{{/if}}
+
+{{#with commits}}
+{{#if sparkles}}
+## ✨ New Features
+
+{{#each sparkles}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if bug}}
+## 🐛 Bug Fixes
+
+{{#each bug}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if lipstick}}
+## 💄 Style and UI updates
+{{#each lipstick}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if ambulance}}
+## 🚑 Critical Hotfixes
+
+{{#each ambulance}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if lock}}
+## 🔒 Security Issues
+
+{{#each lock}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if boom}}
+## 💥 Breaking Changes
+
+{{#each boom}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if zap}}
+## ⚡ Improved performance
+
+{{#each zap}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if apple}}
+## 🍎 Fixed something on macOS
+
+{{#each apple}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if penguin}}
+## 🐧 Fixed something on Linux
+
+{{#each penguin}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if checkered_flag}}
+## 🏁 Fixed something on Windows
+
+{{#each checkered_flag}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if robot}}
+## 🤖 Fixed something on Android
+
+{{#each robot}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if green_apple}}
+## 🍏 Fixed something on iOS
+
+{{#each green_apple}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if chart_with_upwards_trend}}
+## 📈 Added analytics or tracking
+
+{{#each chart_with_upwards_trend}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if globe_with_meridians}}
+## 🌐 Internationalization and localization work
+
+{{#each globe_with_meridians}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if alien}}
+## 👽 Update code due to external API changes
+
+{{#each alien}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if wheelchair}}
+## ♿ Improved accessibility.
+
+{{#each wheelchair}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if loud_sound}}
+## 🔊 Added logs
+
+{{#each loud_sound}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if mute}}
+## 🔇 Removed logs
+
+{{#each mute}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if mag}}
+## 🔍 Improved SEO
+
+{{#each mag}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if children_crossing}}
+## 🚸 Improved user experience / usability
+
+{{#each children_crossing}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if speech_balloon}}
+## 💬 Updated text and literals
+
+{{#each speech_balloon}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if iphone}}
+## 📱 Worked on responsive design
+
+{{#each iphone}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if pencil2}}
+## ✏️ Fixed typos
+
+{{#each pencil2}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if arrow_up}}
+## ⬆️ Upgraded dependencies
+
+{{#each arrow_up}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+
+{{#if bento}}
+## 🍱 Added or updated assets
+
+{{#each bento}}
+- {{> commitTemplate}}
+{{/each}}
+{{/if}}
+{{/with}}
