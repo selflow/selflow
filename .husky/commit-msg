@@ -2,5 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo "--- Check commit message ---"
-npx --no-install commitlint --edit
+# npx --no-install commitlint --edit
+echo "Commit message check skipped because of this issue https://github.com/arvinxx/gitmoji-commit-workflow/issues/657"
 echo "----------------------------"
