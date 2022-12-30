@@ -3,6 +3,9 @@ on:
   pull_request:
     types: ['opened', 'edited', 'reopened', 'synchronize']
 
+env:
+  GITMOJI_URL: https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -11,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
       - name: Install dependencies
         run: yarn
       - uses: JulienKode/pull-request-name-linter-action@v0.5.0

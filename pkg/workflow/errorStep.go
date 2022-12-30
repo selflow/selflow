@@ -10,7 +10,7 @@ type ErrorStep struct {
 	status Status
 }
 
-func (s ErrorStep) GetOutput() map[string]string {
+func (s *ErrorStep) GetOutput() map[string]string {
 	return map[string]string{}
 }
 
@@ -19,11 +19,11 @@ func (s *ErrorStep) Cancel() error {
 	return nil
 }
 
-func (s ErrorStep) GetStatus() Status {
+func (s *ErrorStep) GetStatus() Status {
 	return s.status
 }
 
-func (s ErrorStep) GetId() string {
+func (s *ErrorStep) GetId() string {
 	return s.id
 }
 

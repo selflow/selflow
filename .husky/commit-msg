@@ -2,5 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo "--- Check commit message ---"
+export GITMOJI_URL="https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json"
 npx --no-install commitlint --edit
 echo "----------------------------"
