@@ -18,5 +18,5 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Install gitmoji json
-        run: wget -O ./node_modules/commitlint-plugin-gitmoji/lib/gitmojis.json https://raw.githubusercontent.com/carloscuesta/gitmoji/master/src/data/gitmojis.json
+        run: wget -O ./node_modules/commitlint-plugin-gitmoji/lib/gitmojis.json "$GITMOJI_URL"
       - uses: wagoid/commitlint-github-action@v5
