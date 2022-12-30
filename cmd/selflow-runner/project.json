@@ -1,0 +1,33 @@
+{
+  "root": "cmd/selflow-runner",
+  "sourceRoot": "cmd/selflow-runner",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go build -o ./${projectRoot}"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go test ./${projectRoot}/..."]
+      }
+    },
+    "format-write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go fmt ./${projectRoot}/..."],
+        "cwd": "cmd/selflow-runner"
+      }
+    },
+    "format-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["test -z $(gofmt -l .)"],
+        "cwd": "cmd/selflow-runner"
+      }
+    }
+  }
+}

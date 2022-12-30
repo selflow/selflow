@@ -18,7 +18,7 @@ var stepOutputContextKey struct{}
 // hasCycle check if the workflow has cycle starting from currentStep.
 // visited contains the list of already visited steps.
 // secureCycles contains the list of all steps that have already been checked and can be skipped.
-func (s SimpleWorkflow) hasCycle(visited []Step, secureCycles []Step, currentStep Step) (bool, []Step) {
+func (s *SimpleWorkflow) hasCycle(visited []Step, secureCycles []Step, currentStep Step) (bool, []Step) {
 	if sliceContainsStep(secureCycles, currentStep) {
 		// The step has already been checked and has no cycle
 		return false, []Step{}
@@ -71,7 +71,7 @@ func MakeSimpleWorkflow(stepCount uint) *SimpleWorkflow {
 	}
 }
 
-func (s SimpleWorkflow) GetStatus() Status {
+func (s *SimpleWorkflow) GetStatus() Status {
 	return s.status
 }
 

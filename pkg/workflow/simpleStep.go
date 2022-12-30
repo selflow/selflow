@@ -10,7 +10,7 @@ type SimpleStep struct {
 	status Status
 }
 
-func (s SimpleStep) GetOutput() map[string]string {
+func (s *SimpleStep) GetOutput() map[string]string {
 	return map[string]string{}
 }
 
@@ -19,11 +19,11 @@ func (s *SimpleStep) Cancel() error {
 	return nil
 }
 
-func (s SimpleStep) GetStatus() Status {
+func (s *SimpleStep) GetStatus() Status {
 	return s.status
 }
 
-func (s SimpleStep) GetId() string {
+func (s *SimpleStep) GetId() string {
 	return s.id
 }
 

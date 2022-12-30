@@ -1,27 +1,27 @@
 {
-  "root": "libs/workflow",
-  "sourceRoot": "libs/workflow",
+  "root": "pkg/workflow",
+  "sourceRoot": "pkg/workflow",
   "projectType": "library",
   "targets": {
     "test": {
       "executor": "nx:run-commands",
       "options": {
         "commands": ["go test"],
-        "cwd": "libs/workflow"
+        "cwd": "pkg/workflow"
       }
     },
     "format:write": {
       "executor": "nx:run-commands",
       "options": {
         "commands": ["go fmt"],
-        "cwd": "libs/workflow"
+        "cwd": "pkg/workflow"
       }
     },
     "format:check": {
       "executor": "nx:run-commands",
       "options": {
         "commands": ["test -z $(gofmt -l .)"],
-        "cwd": "libs/workflow"
+        "cwd": "pkg/workflow"
       }
     }
   }
