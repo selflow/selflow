@@ -1,6 +1,9 @@
 name: Commit Linter
 on: [pull_request]
 
+env:
+  GITMOJI_URL: https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json
+
 jobs:
   commitlint:
     runs-on: ubuntu-latest

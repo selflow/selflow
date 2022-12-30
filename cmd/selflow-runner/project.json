@@ -6,7 +6,8 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["go build -o ./${projectRoot}"]
+        "commands": ["go build -o .}"],
+        "cwd": "cmd/selflow-runner"
       }
     },
     "test": {
