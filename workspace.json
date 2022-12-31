@@ -3,6 +3,7 @@
   "version": 2,
   "projects": {
     "go-workflow": "pkg/workflow",
+    "selflow-plugin": "pkg/selflow-plugin",
     "selflow-runner": "cmd/selflow-runner"
   }
 }
