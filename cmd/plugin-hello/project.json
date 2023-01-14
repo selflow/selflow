@@ -1,0 +1,34 @@
+{
+  "root": "cmd/plugin-hello",
+  "sourceRoot": "cmd/plugin-hello",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go build -o .}"],
+        "cwd": "cmd/plugin-hello"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go test ./${projectRoot}/..."]
+      }
+    },
+    "format-write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go fmt ./${projectRoot}/..."],
+        "cwd": "cmd/plugin-hello"
+      }
+    },
+    "format-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["test -z $(gofmt -l .)"],
+        "cwd": "cmd/plugin-hello"
+      }
+    }
+  }
+}

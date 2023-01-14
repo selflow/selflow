@@ -1,12 +1,9 @@
 syntax = "proto3";
 option go_package = "pkg/selflow-plugin";
 
-package proto;
+package selflow_plugin;
 
-enum PluginType {
-  INITIATOR = 0;
-  ARCHITECT = 1;
-}
+// ---------- GLOBAL UTILITIES ----------
 
 enum DiagnosticType {
   ERROR = 0;
@@ -34,6 +31,13 @@ message Schema {
   bool deprecated = 5;
 }
 
+// ---------- PLUGIN BASIS ----------
+
+enum PluginType {
+  INITIATOR = 0;
+  ARCHITECT = 1;
+}
+
 message GetPluginSchema {
   message Request {
   }
@@ -56,6 +60,13 @@ message ValidatePluginConfigSchema {
     repeated Diagnostic diagnotics = 2;
   }
 }
+
+service Plugin {
+  rpc GetPluginSchema(GetPluginSchema.Request) returns (GetPluginSchema.Response);
+  rpc ValidatePluginConfigSchema(ValidatePluginConfigSchema.Request) returns (ValidatePluginConfigSchema.Response);
+}
+
+// ---------- ARCHITECT PLUGIN ----------
 
 message ValidateStepConfigSchema {
   message Request {
@@ -80,4 +91,8 @@ message RunStep {
   }
 }
 
+service Architect {
+  rpc ValidateStepConfigSchema(ValidateStepConfigSchema.Request) returns (ValidateStepConfigSchema.Response);
+  rpc RunStep(RunStep.Request) returns (RunStep.Response);
+}
 
