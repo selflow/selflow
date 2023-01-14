@@ -32,12 +32,14 @@ type ServePluginConfig struct {
 func buildPluginMap(config ServePluginConfig) map[string]plugin.Plugin {
 	plugins := make(map[string]plugin.Plugin)
 
-	if config.ArchitectPlugin != nil {
-		plugins["architect"] = config.ArchitectPlugin
+	if config.BasicPlugin == nil {
+		panic("[ERR] BasicPlugin definition is required for every plugin")
 	}
 
-	if config.BasicPlugin != nil {
-		plugins["basicPlugin"] = config.BasicPlugin
+	plugins["basicPlugin"] = config.BasicPlugin
+
+	if config.ArchitectPlugin != nil {
+		plugins["architect"] = config.ArchitectPlugin
 	}
 
 	return plugins
