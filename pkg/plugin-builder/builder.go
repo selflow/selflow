@@ -56,8 +56,12 @@ func ServePlugin(config ServePluginConfig) {
 	}
 
 	plugins := buildPluginMap(config)
+	pluginNames := make([]string, 0, len(plugins))
+	for k := range plugins {
+		pluginNames = append(pluginNames, k)
+	}
 
-	log.Printf("Start serving plugin on port %s with options %v\n", port)
+	log.Printf("Start serving plugin on port %s with %v\n", port, pluginNames)
 
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: selflowPlugin.Handshake,
