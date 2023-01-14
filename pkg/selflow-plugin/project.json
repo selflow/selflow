@@ -1,0 +1,28 @@
+{
+  "root": "pkg/selflow-plugin",
+  "sourceRoot": "pkg/selflow-plugin",
+  "projectType": "library",
+  "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go test"],
+        "cwd": "pkg/selflow-plugin"
+      }
+    },
+    "format:write": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["go fmt"],
+        "cwd": "pkg/selflow-plugin"
+      }
+    },
+    "format:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["test -z $(gofmt -l .)"],
+        "cwd": "pkg/selflow-plugin"
+      }
+    }
+  }
+}
