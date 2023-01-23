@@ -1,0 +1,97 @@
+# Metadata of the flow, accessible with the "metadata" key
+name: My Workflow
+description: This does that
+author: Anthony-Jhoiro
+
+# inputs of the job, events will fill these inputs or the default values will be provided
+# default value are :
+# string = ""
+# number = 0
+# boolean = false
+# number can be integer are floats, positive or negative in base 10
+inputs:
+  my-input:
+    type: string # string,number, boolean
+    description: this does that
+    default:
+  DOCKER_USER: # required by default
+    type: string
+    description: this does that
+    required: true # default false
+    secret: true # default false, the value will not appear in the logs (no ide  how to do that yet but we'll find out)
+  DOCKER_PASSWORD:
+    type: string
+    description: this does that
+    required: true
+    secret: true
+
+outputs:
+  my-output: ${{ step-id.outputs.toto }}
+
+plugins:
+  # only version format
+  hosted: v0
+  # with details format
+  docker:
+    version: v0
+    config:
+      # Plugin configuration
+      username: ${{ inputs.DOCKER_USER }}
+      password: ${{ inputs.DOCKER_PASSWORD }}
+
+# default bloc contains the global configuration for each step type. For example, the docker plugin will stat every
+# container with the environment variable GLOBAL_DOCKER_ENVIRONMENT_VARIABLE set to 456 and the image "python:buster"
+# unless another image is specified
+default:
+  docker:
+    image: python:buster
+    environment:
+      GLOBAL_DOCKER_ENVIRONMENT_VARIABLE: 456
+  hosted:
+    environment:
+      GLOBAL_HOSTED_ENVIRONMENT_VARIABLE: 123
+
+workflow:
+  # max timeout of the workflow, each running step will be marked ad TIMEOUT after that time and the remaining steps
+  # will be marked as SKIPPED
+  timeout: 30m
+  steps:
+    step-a:
+      # Name of the plugin to use
+      kind: docker
+      # if true, if the step was marked as ERROR, it will be marked ass SUCCESS instead
+      on-error-ignore: true
+      # configuration for the docker plugin
+      with:
+        image: node/lts
+        commands: |
+          echo this
+          echo that
+          echo ::output::foo::bar
+          echo ::output multi=true::mi::multiline
+          echo input::
+
+    step-b:
+      # condition to run the step, if false this and the following steps will be marked as SKIPPED
+      if: ${{ step-a.outputs.foo == "bar" }}
+      # Use the hosted plugin to run the step
+      kind: hosted
+      # Max timeout of the step (here = 2minutes) after this time, the step will be stated as TIMEOUT and the
+      # following steps will be marked as CANCELLED
+      timeout: 2m
+      # matrix items are accessible in the step by using ${{ matrix.item }} it the matrix items
+      # are objects, specific fields can be accessed using ${{ matrix.item.myField }} otherwise
+      # the object is returned in a json format
+      matrix: [toto]
+      # Requirements to execute this step. The requirements will be available using `step-name`
+      needs:
+        - step-a
+      # configuration for the hosted plugin
+      with:
+        shell: /bin/sh
+        environment:
+          MY_ENV_VAR: 123
+        commands: |
+          echo wow
+          echo ${{ matrix.item }}
+          echo ${{ step-a.outputs.mi }}
