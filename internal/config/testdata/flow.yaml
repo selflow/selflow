@@ -3,7 +3,6 @@ name: My Workflow
 description: This does that
 author: Anthony-Jhoiro
 
-
 # inputs of the job, events will fill these inputs or the default values will be provided
 # default value are :
 # string = ""
@@ -39,7 +38,6 @@ plugins:
       # Plugin configuration
       username: ${{ inputs.DOCKER_USER }}
       password: ${{ inputs.DOCKER_PASSWORD }}
-
 
 # default bloc contains the global configuration for each step type. For example, the docker plugin will stat every
 # container with the environment variable GLOBAL_DOCKER_ENVIRONMENT_VARIABLE set to 456 and the image "python:buster"
@@ -97,6 +95,3 @@ workflow:
           echo wow
           echo ${{ matrix.item }}
           echo ${{ step-a.outputs.mi }}
-
-
-
