@@ -63,7 +63,7 @@ workflow:
       on-error-ignore: true
       # configuration for the docker plugin
       with:
-        image: node/lts
+        image: node:lts
         commands: |
           echo this
           echo that
