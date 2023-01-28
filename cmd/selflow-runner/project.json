@@ -1,34 +1,30 @@
 {
-  "root": "cmd/selflow-runner",
+  "name": "selflow-runner",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
   "sourceRoot": "cmd/selflow-runner",
-  "projectType": "library",
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx-go/nx-go:build",
       "options": {
-        "commands": ["go build -o .}"],
-        "cwd": "cmd/selflow-runner"
+        "outputPath": "cmd/selflow-runner",
+        "main": "cmd/selflow-runner/selflow_runner.go"
+      }
+    },
+    "serve": {
+      "executor": "@nx-go/nx-go:serve",
+      "options": {
+        "main": "apps/to-delete/main.go"
       }
     },
     "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["go test ./${projectRoot}/..."]
-      }
+      "executor": "@nx-go/nx-go:test"
     },
-    "format-write": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["go fmt ./${projectRoot}/..."],
-        "cwd": "cmd/selflow-runner"
-      }
-    },
-    "format-check": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["test -z $(gofmt -l .)"],
-        "cwd": "cmd/selflow-runner"
-      }
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
     }
-  }
+  },
+  "tags": [
+    "type:cmd"
+  ]
 }

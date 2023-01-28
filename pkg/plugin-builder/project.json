@@ -1,8 +1,8 @@
 {
-  "name": "selflow-plugin",
+  "name": "plugin-builder",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
-  "sourceRoot": "./pkg/selflow-plugin",
+  "sourceRoot": "./pkg/plugin-builder",
   "targets": {
     "test": {
       "executor": "@nx-go/nx-go:test"
