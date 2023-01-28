@@ -11,7 +11,7 @@ import (
 type DockerArchitect struct {
 }
 
-func (a *DockerArchitect) ValidateStepConfigSchema(request *sp.ValidateStepConfigSchema_Request) (*sp.ValidateStepConfigSchema_Response, error) {
+func (a *DockerArchitect) ValidateStepConfigSchema(_ context.Context, request *sp.ValidateStepConfigSchema_Request) (*sp.ValidateStepConfigSchema_Response, error) {
 	var v = validator.New()
 
 	configAsBytes := request.GetStepConfig()
@@ -46,14 +46,14 @@ func (a *DockerArchitect) ValidateStepConfigSchema(request *sp.ValidateStepConfi
 
 }
 
-func (a *DockerArchitect) RunStep(request *sp.RunStep_Request) (*sp.RunStep_Response, error) {
+func (a *DockerArchitect) RunStep(ctx context.Context, request *sp.RunStep_Request) (*sp.RunStep_Response, error) {
 	var config ContainerSpawnConfig
 
 	if err := json.Unmarshal(request.StepConfig, &config); err != nil {
 		return nil, err
 	}
 
-	if err := Spawn(context.Background(), &config); err != nil {
+	if err := Spawn(ctx, &config); err != nil {
 		return nil, err
 	}
 

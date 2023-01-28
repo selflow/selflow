@@ -7,8 +7,8 @@ import (
 )
 
 type Architect interface {
-	ValidateStepConfigSchema(*ValidateStepConfigSchema_Request) (*ValidateStepConfigSchema_Response, error)
-	RunStep(*RunStep_Request) (*RunStep_Response, error)
+	ValidateStepConfigSchema(context.Context, *ValidateStepConfigSchema_Request) (*ValidateStepConfigSchema_Response, error)
+	RunStep(context.Context, *RunStep_Request) (*RunStep_Response, error)
 }
 
 type ArchitectPlugin struct {
@@ -38,12 +38,12 @@ type GRPCArchitectClient struct {
 	architectClient ArchitectClient
 }
 
-func (g *GRPCArchitectClient) ValidateStepConfigSchema(request *ValidateStepConfigSchema_Request) (*ValidateStepConfigSchema_Response, error) {
-	return g.architectClient.ValidateStepConfigSchema(context.Background(), request)
+func (g *GRPCArchitectClient) ValidateStepConfigSchema(ctx context.Context, request *ValidateStepConfigSchema_Request) (*ValidateStepConfigSchema_Response, error) {
+	return g.architectClient.ValidateStepConfigSchema(ctx, request)
 }
 
-func (g *GRPCArchitectClient) RunStep(request *RunStep_Request) (*RunStep_Response, error) {
-	return g.architectClient.RunStep(context.Background(), request)
+func (g *GRPCArchitectClient) RunStep(ctx context.Context, request *RunStep_Request) (*RunStep_Response, error) {
+	return g.architectClient.RunStep(ctx, request)
 }
 
 // SERVER
@@ -54,12 +54,13 @@ type GRPCArchitectServer struct {
 	UnimplementedArchitectServer
 }
 
-func (g *GRPCArchitectServer) ValidateStepConfigSchema(context context.Context, request *ValidateStepConfigSchema_Request) (*ValidateStepConfigSchema_Response, error) {
-	return g.Impl.ValidateStepConfigSchema(request)
+func (g *GRPCArchitectServer) ValidateStepConfigSchema(ctx context.Context, request *ValidateStepConfigSchema_Request) (*ValidateStepConfigSchema_Response, error) {
+	return g.Impl.ValidateStepConfigSchema(ctx, request)
 }
 
-func (g *GRPCArchitectServer) RunStep(context context.Context, request *RunStep_Request) (*RunStep_Response, error) {
-	return g.Impl.RunStep(request)
+func (g *GRPCArchitectServer) RunStep(ctx context.Context, request *RunStep_Request) (*RunStep_Response, error) {
+	return g.Impl.RunStep(ctx, request)
 }
 
 var _ plugin.GRPCPlugin = &ArchitectPlugin{}
+var _ Architect = &GRPCArchitectClient{}

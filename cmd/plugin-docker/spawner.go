@@ -164,21 +164,12 @@ func Spawn(ctx context.Context, config *ContainerSpawnConfig) error {
 		Output: nil,
 	})
 
-	runCtx, cancel := context.WithCancel(ctx)
-	go func() {
+	err = transferContainerLogs(ctx, cli, ctn, pluginLogger.StandardWriter(&hclog.StandardLoggerOptions{}))
+	if err != nil {
+		pluginLogger.Warn("fail to register plugin logs", "err", err)
+	}
 
-		go func() {
-			err = transferContainerLogs(runCtx, cli, ctn, pluginLogger.StandardWriter(&hclog.StandardLoggerOptions{}))
-			if err != nil {
-				pluginLogger.Warn("fail to register plugin logs", "err", err)
-			}
-		}()
-		select {
-		case <-ctx.Done():
-			cancel()
-			return
-		}
-	}()
+	cli.ContainerWait(ctx, ctn.containerId, container.WaitConditionNotRunning)
 	return nil
 
 }

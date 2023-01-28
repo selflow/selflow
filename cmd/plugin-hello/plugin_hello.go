@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	pluginBuilder "github.com/selflow/selflow/pkg/plugin-builder"
@@ -44,7 +45,7 @@ type HelloRequest struct {
 type HelloArchitect struct {
 }
 
-func (h *HelloArchitect) ValidateStepConfigSchema(request *sp.ValidateStepConfigSchema_Request) (*sp.ValidateStepConfigSchema_Response, error) {
+func (h *HelloArchitect) ValidateStepConfigSchema(_ context.Context, request *sp.ValidateStepConfigSchema_Request) (*sp.ValidateStepConfigSchema_Response, error) {
 	helloRequest := HelloRequest{}
 
 	err := json.Unmarshal(request.GetStepConfig(), &helloRequest)
@@ -66,7 +67,7 @@ func (h *HelloArchitect) ValidateStepConfigSchema(request *sp.ValidateStepConfig
 	}, nil
 }
 
-func (h *HelloArchitect) RunStep(request *sp.RunStep_Request) (*sp.RunStep_Response, error) {
+func (h *HelloArchitect) RunStep(_ context.Context, request *sp.RunStep_Request) (*sp.RunStep_Response, error) {
 
 	helloRequest := HelloRequest{}
 
