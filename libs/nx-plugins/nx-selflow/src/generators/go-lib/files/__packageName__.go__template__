@@ -1,0 +1,6 @@
+package <%= packageName %>
+
+func <%= packageNameCamelCase %>(name string) string {
+	result := "<%= packageNameCamelCase %> " + name
+	return result
+}
