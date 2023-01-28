@@ -51,7 +51,7 @@
         "With": {
           "commands": "echo this\necho that\necho ::output::foo::bar\necho ::output multi=true::mi::multiline\necho input::\n",
           "environment": { "GLOBAL_DOCKER_ENVIRONMENT_VARIABLE": 456 },
-          "image": "node/lts"
+          "image": "node:lts"
         }
       },
       "step-b": {
