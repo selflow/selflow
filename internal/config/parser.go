@@ -4,7 +4,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func parse(config []byte) (*Flow, error) {
+func Parse(config []byte) (*Flow, error) {
 	validate := InitValidation()
 	dst := TemplateFlow{}
 

@@ -14,7 +14,7 @@ func TestParse(t *testing.T) {
 		panic(err)
 	}
 
-	strictFlow, err := parse(sourceFileContent)
+	strictFlow, err := Parse(sourceFileContent)
 	if err != nil {
 		panic(err)
 	}

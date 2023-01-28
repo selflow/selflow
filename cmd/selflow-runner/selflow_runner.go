@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/hashicorp/go-plugin"
 	selflowPlugin "github.com/selflow/selflow/pkg/selflow-plugin"
 	"log"
@@ -79,7 +80,9 @@ func main() {
 
 		stepConfig := []byte("{\"name\": \"Tonton Anthony\"}")
 
-		rep, err := architectPlugin.ValidateStepConfigSchema(&selflowPlugin.ValidateStepConfigSchema_Request{
+		ctx := context.TODO()
+
+		rep, err := architectPlugin.ValidateStepConfigSchema(ctx, &selflowPlugin.ValidateStepConfigSchema_Request{
 			StepConfig: stepConfig,
 		})
 
@@ -88,7 +91,7 @@ func main() {
 			return
 		}
 
-		architectPlugin.RunStep(&selflowPlugin.RunStep_Request{
+		architectPlugin.RunStep(ctx, &selflowPlugin.RunStep_Request{
 			StepConfig: stepConfig,
 		})
 	}
