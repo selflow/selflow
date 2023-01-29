@@ -1,5 +1,5 @@
 {
-  "name": "nx-plugins-nx-selflow",
+  "name": "nx-selflow",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/nx-plugins/nx-selflow/src",
   "projectType": "library",

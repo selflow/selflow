@@ -5,6 +5,7 @@ import {
   runNxCommandAsync,
   uniq,
 } from '@nrwl/nx-plugin/testing';
+import {snakeCase} from "change-case";
 
 describe('go-lib e2e', () => {
   // Setting up individual workspaces per
@@ -23,20 +24,31 @@ describe('go-lib e2e', () => {
     runNxCommandAsync('reset');
   });
 
-  it('should create go-lib', async () => {
+  it('should create go-lib in pkg directory', async () => {
     const project = uniq('go-lib');
     await runNxCommandAsync(
-      `generate @selflow/nx-selflow:nx-plugins-nx-selflow ${project}`
+      `generate @selflow/nx-selflow:go-lib ${project} --directory pkg`
     );
-    const result = await runNxCommandAsync(`build ${project}`);
-    expect(result.stdout).toContain('Executor ran');
+    expect(() =>
+      checkFilesExist(`pkg/${project}/${snakeCase(project)}.go`)
+    ).not.toThrow();
+  }, 120000);
+
+  it('should create go-lib in internal directory', async () => {
+    const project = uniq('go-lib');
+    await runNxCommandAsync(
+      `generate @selflow/nx-selflow:go-lib ${project} --directory internal`
+    );
+    expect(() =>
+      checkFilesExist(`internal/${project}/${snakeCase(project)}.go`)
+    ).not.toThrow();
   }, 120000);
 
   describe('--directory', () => {
     it('should create src in the specified directory', async () => {
       const project = uniq('go-lib');
       await runNxCommandAsync(
-        `generate @selflow/nx-selflow:nx-plugins-nx-selflow ${project} --directory subdir`
+        `generate @selflow/nx-selflow:go-lib ${project} --directory subdir`
       );
       expect(() =>
         checkFilesExist(`libs/subdir/${project}/src/index.ts`)
@@ -49,7 +61,7 @@ describe('go-lib e2e', () => {
       const projectName = uniq('go-lib');
       ensureNxProject('@selflow/nx-selflow', 'dist/libs/nx-plugins/nx-selflow');
       await runNxCommandAsync(
-        `generate @selflow/nx-selflow:nx-plugins-nx-selflow ${projectName} --tags e2etag,e2ePackage`
+        `generate @selflow/nx-selflow:go-lib ${projectName} --tags e2etag,e2ePackage`
       );
       const project = readJson(`libs/${projectName}/project.json`);
       expect(project.tags).toEqual(['e2etag', 'e2ePackage']);

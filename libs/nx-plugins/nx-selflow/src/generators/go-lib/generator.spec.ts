@@ -6,7 +6,10 @@ import { NxPluginsNxSelflowGeneratorSchema } from './schema';
 
 describe('go-lib generator', () => {
   let appTree: Tree;
-  const options: NxPluginsNxSelflowGeneratorSchema = { name: 'test' };
+  const options: NxPluginsNxSelflowGeneratorSchema = {
+    name: 'test',
+    directory: 'pkg'
+  };
 
   beforeEach(() => {
     appTree = createTreeWithEmptyWorkspace();
