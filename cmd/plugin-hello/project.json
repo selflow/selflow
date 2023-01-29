@@ -7,7 +7,7 @@
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
-        "outputPath": "cmd/plugin-hello",
+        "outputPath": "dist",
         "main": "cmd/plugin-hello/plugin_hello.go"
       }
     },

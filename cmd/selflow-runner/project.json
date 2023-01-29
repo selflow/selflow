@@ -7,7 +7,7 @@
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
-        "outputPath": "cmd/selflow-runner",
+        "outputPath": "dist",
         "main": "cmd/selflow-runner/selflow_runner.go"
       }
     },
