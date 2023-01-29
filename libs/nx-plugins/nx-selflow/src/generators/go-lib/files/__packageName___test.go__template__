@@ -1,0 +1,12 @@
+package <%= packageName %>
+
+import (
+	"testing"
+)
+
+func Test<%= packageNameUpperCamelCase %>(t *testing.T) {
+	result := <%= packageNameCamelCase %>("works")
+	if result != "<%= packageNameCamelCase %> works" {
+		t.Error("Expected <%= packageNameCamelCase %> to append 'works'")
+	}
+}

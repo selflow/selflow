@@ -95,10 +95,8 @@ func Test_appendErrorList(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := appendErrorList(tt.args.errorLst, tt.args.err); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("appendErrorList() = %v, want %v", got, tt.want)
-			}
-		})
+		if got := appendErrorList(tt.args.errorLst, tt.args.err); !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("appendErrorList() = %v, want %v", got, tt.want)
+		}
 	}
 }

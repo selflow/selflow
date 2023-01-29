@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "nx-plugins-nx-selflow",
+  "version": "0.0.1",
+  "generators": {
+    "go-lib": {
+      "factory": "./src/generators/go-lib/generator",
+      "schema": "./src/generators/go-lib/schema.json",
+      "description": "Selflow Go library generator"
+    }
+  }
+}

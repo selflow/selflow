@@ -1,28 +1,15 @@
 {
-  "root": "pkg/workflow",
-  "sourceRoot": "pkg/workflow",
+  "name": "workflow",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
+  "sourceRoot": "./pkg/workflow",
   "targets": {
     "test": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["go test"],
-        "cwd": "pkg/workflow"
-      }
+      "executor": "@nx-go/nx-go:test"
     },
-    "format:write": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["go fmt"],
-        "cwd": "pkg/workflow"
-      }
-    },
-    "format:check": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["test -z $(gofmt -l .)"],
-        "cwd": "pkg/workflow"
-      }
+    "lint": {
+      "executor": "@nx-go/nx-go:lint"
     }
-  }
+  },
+  "tags": ["scope:shared"]
 }

@@ -13,7 +13,10 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
