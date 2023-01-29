@@ -2,15 +2,13 @@ import {
   addProjectConfiguration,
   formatFiles,
   generateFiles,
-  getWorkspaceLayout,
   names,
   offsetFromRoot,
   Tree,
 } from '@nrwl/devkit';
 import * as path from 'path';
-import {NxPluginsNxSelflowGeneratorSchema} from './schema';
-import {createGoMod, updateGoWork} from "@nx-go/nx-go/src/utils";
-import {camelCase, snakeCase} from "change-case";
+import { NxPluginsNxSelflowGeneratorSchema } from './schema';
+import { camelCase, snakeCase } from 'change-case';
 
 interface NormalizedSchema extends NxPluginsNxSelflowGeneratorSchema {
   projectName: string;
@@ -26,7 +24,6 @@ function normalizeOptions(
   tree: Tree,
   options: NxPluginsNxSelflowGeneratorSchema
 ): NormalizedSchema {
-
   const name = names(options.name).fileName;
   const projectDirectory = `${names(options.directory).fileName}/${name}`;
   const projectName = name.replace(new RegExp('/', 'g'), '-');
@@ -35,20 +32,18 @@ function normalizeOptions(
     ? options.tags.split(',').map((s) => s.trim())
     : [];
 
-  const packageNameCamelCase = camelCase(projectName)
+  const packageNameCamelCase = camelCase(projectName);
 
   return {
     ...options,
     projectName,
     packageName: snakeCase(projectName),
     packageNameCamelCase,
-    packageNameUpperCamelCase: packageNameCamelCase[0].toUpperCase() + packageNameCamelCase.slice(1),
+    packageNameUpperCamelCase:
+      packageNameCamelCase[0].toUpperCase() + packageNameCamelCase.slice(1),
     projectRoot,
     projectDirectory,
-    parsedTags: [
-      ...parsedTags,
-      ""
-    ],
+    parsedTags: [...parsedTags, ''],
   };
 }
 
@@ -72,7 +67,7 @@ export default async function (
   tree: Tree,
   options: NxPluginsNxSelflowGeneratorSchema
 ) {
-  const normalizedOptions = normalizeOptions(tree, options)
+  const normalizedOptions = normalizeOptions(tree, options);
 
   addProjectConfiguration(tree, normalizedOptions.projectName, {
     root: normalizedOptions.projectRoot,
@@ -87,8 +82,8 @@ export default async function (
       },
     },
     tags: normalizedOptions.parsedTags,
-  })
-  addFiles(tree, normalizedOptions)
+  });
+  addFiles(tree, normalizedOptions);
 
-  await formatFiles(tree)
+  await formatFiles(tree);
 }

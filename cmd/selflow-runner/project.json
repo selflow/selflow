@@ -24,7 +24,5 @@
       "executor": "@nx-go/nx-go:lint"
     }
   },
-  "tags": [
-    "type:cmd"
-  ]
+  "tags": ["type:cmd"]
 }

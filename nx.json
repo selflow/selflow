@@ -32,7 +32,5 @@
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
     }
   },
-  "plugins": [
-    "@nx-go/nx-go"
-  ]
+  "plugins": ["@nx-go/nx-go"]
 }

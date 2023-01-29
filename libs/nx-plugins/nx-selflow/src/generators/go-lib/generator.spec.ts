@@ -8,7 +8,7 @@ describe('go-lib generator', () => {
   let appTree: Tree;
   const options: NxPluginsNxSelflowGeneratorSchema = {
     name: 'test',
-    directory: 'pkg'
+    directory: 'pkg',
   };
 
   beforeEach(() => {

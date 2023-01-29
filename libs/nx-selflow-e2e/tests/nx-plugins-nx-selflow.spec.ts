@@ -5,7 +5,7 @@ import {
   runNxCommandAsync,
   uniq,
 } from '@nrwl/nx-plugin/testing';
-import {snakeCase} from "change-case";
+import { snakeCase } from 'change-case';
 
 describe('go-lib e2e', () => {
   // Setting up individual workspaces per

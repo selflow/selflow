@@ -11,7 +11,5 @@
       "executor": "@nx-go/nx-go:lint"
     }
   },
-  "tags": [
-    "scope:shared"
-  ]
+  "tags": ["scope:shared"]
 }
