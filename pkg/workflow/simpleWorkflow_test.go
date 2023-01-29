@@ -171,6 +171,10 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 	stepB, _ := makeSimpleStep("step-b")
 	stepC, _ := makeSimpleStep("step-c")
 
+	stepD, _ := makeSimpleStep("step-d")
+	stepE, _ := makeSimpleStep("step-e")
+	stepF, _ := makeSimpleStep("step-f")
+
 	errorA, _ := makeSimpleStep("error-a")
 	errorB, _ := makeSimpleStep("error-b")
 	errorD, _ := makeErrorStep("error-d")
@@ -189,10 +193,10 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		{
 			name: "3 steps execution",
 			fields: fields{
-				steps:  []Step{stepA, stepB, stepC},
+				steps:  []Step{stepD, stepE, stepF},
 				status: CREATED,
 				dependencies: map[Step][]Step{
-					stepA: {stepB, stepC},
+					stepA: {stepF, stepE},
 					stepB: {},
 					stepC: {},
 				},
@@ -201,15 +205,15 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 				ctx: context.TODO(),
 			},
 			want: map[string]map[string]string{
-				"step-a": {},
-				"step-b": {},
-				"step-c": {},
+				"step-d": {},
+				"step-e": {},
+				"step-f": {},
 			},
 			wantErr: false,
 			wantStatus: map[Step]Status{
-				stepA: SUCCESS,
-				stepB: SUCCESS,
-				stepC: SUCCESS,
+				stepE: SUCCESS,
+				stepF: SUCCESS,
+				stepD: SUCCESS,
 			},
 		},
 		{
@@ -424,7 +428,7 @@ func TestSimpleWorkflow_debug(t *testing.T) {
 		{
 			name: "with 2 steps workflow",
 			fields: fields{
-				steps: []Step{&SimpleStep{"step-a", CREATED}, &SimpleStep{"step-b", PENDING}},
+				steps: []Step{newSimpleStep("step-a", CREATED), newSimpleStep("step-b", PENDING)},
 			},
 			expectedStdout: "[DEBUG]: step-a : CREATED\n[DEBUG]: step-b : PENDING\n",
 		},
