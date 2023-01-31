@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkselflow=self.webpackChunkselflow||[]).push([[535],{4768:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"The State of Selflow","permalink":"/blog/state-of-selflow"},{"title":"What is Selflow ?","permalink":"/blog/what-is-selflow"}]}')}}]);

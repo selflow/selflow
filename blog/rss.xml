@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Selflow - Documentation Blog</title>
-        <link>http://localhost:3000/blog</link>
+        <link>http://localhost:3000/selflow/blog</link>
         <description>Selflow - Documentation Blog</description>
         <lastBuildDate>Mon, 31 Jan 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,7 +10,7 @@
         <language>en</language>
         <item>
             <title><![CDATA[The State of Selflow]]></title>
-            <link>http://localhost:3000/blog/state-of-selflow</link>
+            <link>http://localhost:3000/selflow/blog/state-of-selflow</link>
             <guid>state-of-selflow</guid>
             <pubDate>Mon, 31 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Selflow was created as a school project should have a consistent development over the next months.]]></description>
@@ -18,11 +18,11 @@
         </item>
         <item>
             <title><![CDATA[What is Selflow ?]]></title>
-            <link>http://localhost:3000/blog/what-is-selflow</link>
+            <link>http://localhost:3000/selflow/blog/what-is-selflow</link>
             <guid>what-is-selflow</guid>
             <pubDate>Mon, 31 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Selflow is a simple workflow orchestrator.]]></description>
-            <content:encoded><![CDATA[<p>Selflow is a simple workflow orchestrator.</p><p>Workflows in Selflow are a set of tasks with requirements or none that will run asynchronously in a Docker container</p><p>It is currently a school project but I have the ambition to make it grow even after.</p><p>It was designed to be runnable on any linux machine in your servers, homelab or in the cloud.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="easy-to-use">Easy to use<a class="hash-link" href="#easy-to-use" title="Direct link to heading">​</a></h2><ul><li>Build workflows using Yaml</li><li>Write your own plugins with <a href="https://grpc.io/docs/languages/" target="_blank" rel="noopener noreferrer">the language you want</a></li><li>Supports Docker and SSH steps</li><li>See your workflow execution using a simple ui (<a href="/blog/state-of-selflow">wip</a>)</li></ul>]]></content:encoded>
+            <content:encoded><![CDATA[<p>Selflow is a simple workflow orchestrator.</p><p>Workflows in Selflow are a set of tasks with requirements or none that will run asynchronously in a Docker container</p><p>It is currently a school project but I have the ambition to make it grow even after.</p><p>It was designed to be runnable on any linux machine in your servers, homelab or in the cloud.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="easy-to-use">Easy to use<a class="hash-link" href="#easy-to-use" title="Direct link to heading">​</a></h2><ul><li>Build workflows using Yaml</li><li>Write your own plugins with <a href="https://grpc.io/docs/languages/" target="_blank" rel="noopener noreferrer">the language you want</a></li><li>Supports Docker and SSH steps</li><li>See your workflow execution using a simple ui (<a href="/selflow/blog/state-of-selflow">wip</a>)</li></ul>]]></content:encoded>
         </item>
     </channel>
 </rss>
