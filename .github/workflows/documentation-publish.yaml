@@ -1,0 +1,28 @@
+name: NX CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: nrwl/nx-set-shas@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+      - name: Install dependencies
+        run: yarn
+
+      - run: npx nx build selflow-documentation
+
+      - name: Publish to GitHub pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/apps/selflow-documentation
