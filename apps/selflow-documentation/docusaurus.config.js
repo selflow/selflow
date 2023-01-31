@@ -9,7 +9,7 @@ const config = {
   title: 'Selflow - Documentation',
   tagline: 'Orchestrate workflows anywhere you want',
   url: 'http://localhost:3000',
-  baseUrl: '/',
+  baseUrl: '/selflow/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
