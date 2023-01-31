@@ -18,4 +18,4 @@ It was designed to be runnable on any linux machine in your servers, homelab or 
 - Build workflows using Yaml
 - Write your own plugins with [the language you want](https://grpc.io/docs/languages/)
 - Supports Docker and SSH steps
-- See your workflow execution using a simple ui ([wip](./state-of-selflow))
+- See your workflow execution using a simple ui ([wip](2022-01-31-state-of-selflow.md))

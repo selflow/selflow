@@ -1,4 +1,4 @@
-name: NX CI
+name: Documentation publish
 on:
   push:
     branches:
