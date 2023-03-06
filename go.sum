@@ -1,6 +1,6 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
-github.com/Anthony-Jhoiro/go-plugin v0.0.0-20220924092418-dd6bedec3c5e h1:tV5Pjmzrvk1ZIEt2mwkKwX3y5UD5AjgIh6hdfWyvA3c=
-github.com/Anthony-Jhoiro/go-plugin v0.0.0-20220924092418-dd6bedec3c5e/go.mod h1:viDMjcLJuDui6pXb8U4HVfb8AamCWhHGUjr2IrTF67s=
+github.com/Anthony-Jhoiro/go-plugin v0.0.0-20230306145530-4a88e47836b2 h1:5dfFXS1DH+c/1uBo5aYfRgjuCrK3BlNsjwdqsE0cG+c=
+github.com/Anthony-Jhoiro/go-plugin v0.0.0-20230306145530-4a88e47836b2/go.mod h1:viDMjcLJuDui6pXb8U4HVfb8AamCWhHGUjr2IrTF67s=
 github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 h1:UQHMgLO+TxOElx5B5HZ4hJQsoJ/PvUvKRhJHDQXO8P8=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/Microsoft/go-winio v0.6.0 h1:slsWYD/zyx7lCXoZVlvQrj0hPTM1HI4+v1sIda2yDvg=

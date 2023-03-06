@@ -10,12 +10,13 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-plugin v1.4.5
+	github.com/opencontainers/image-spec v1.0.2
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
-replace github.com/hashicorp/go-plugin v1.4.5 => github.com/Anthony-Jhoiro/go-plugin custom_listener
+replace github.com/hashicorp/go-plugin v1.4.5 => github.com/Anthony-Jhoiro/go-plugin v0.0.0-20230306145530-4a88e47836b2
 
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
@@ -35,7 +36,6 @@ require (
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/oklog/run v1.0.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
-	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3 // indirect
