@@ -1,0 +1,20 @@
+FROM golang:1.19-bullseye AS build-env
+
+# Build Delve
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+
+
+# Final stage
+FROM debian:bullseye
+
+ENV GO111MODULE="on" \
+  CGO_ENABLED="0" \
+  GO_GC="off"
+
+
+EXPOSE 40000
+WORKDIR /
+COPY --from=build-env /go/bin/dlv /
+COPY dist/selflow-daemon /
+CMD ["/dlv", "--listen=:40000", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "/selflow-daemon"]

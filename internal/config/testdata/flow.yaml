@@ -75,7 +75,7 @@ workflow:
       # condition to run the step, if false this and the following steps will be marked as SKIPPED
       if: ${{ step-a.outputs.foo == "bar" }}
       # Use the hosted plugin to run the step
-      kind: hosted
+      kind: docker
       # Max timeout of the step (here = 2minutes) after this time, the step will be stated as TIMEOUT and the
       # following steps will be marked as CANCELLED
       timeout: 2m
@@ -88,6 +88,7 @@ workflow:
         - step-a
       # configuration for the hosted plugin
       with:
+        image: node:lts
         shell: /bin/sh
         environment:
           MY_ENV_VAR: 123

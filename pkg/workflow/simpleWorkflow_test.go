@@ -17,11 +17,11 @@ func Test_areRequirementsFullFilled(t *testing.T) {
 	}
 	stepA, _ := makeSimpleStep("step-a")
 	stepSuccessB, _ := makeSimpleStep("step-b")
-	stepSuccessB.status = SUCCESS
+	stepSuccessB.Status = SUCCESS
 	stepSuccessC, _ := makeSimpleStep("step-c")
-	stepSuccessC.status = SUCCESS
+	stepSuccessC.Status = SUCCESS
 	stepPendingD, _ := makeSimpleStep("step-c")
-	stepPendingD.status = PENDING
+	stepPendingD.Status = PENDING
 
 	tests := []struct {
 		name string

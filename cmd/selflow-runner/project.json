@@ -7,8 +7,8 @@
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
-        "outputPath": "dist",
-        "main": "cmd/selflow-runner/selflow_runner.go"
+        "outputPath": "dist/selflow-runner",
+        "main": "./cmd/selflow-runner"
       }
     },
     "serve": {

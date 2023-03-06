@@ -1,0 +1,34 @@
+syntax = "proto3";
+option go_package = "internal/selflow-runner-proto";
+
+package selflow_runner_proto;
+
+
+message InitRunner {
+  message Request {
+    uint32 containerSpawnServer = 1;
+  }
+
+  message Response {
+
+  }
+}
+
+message SpawnContainer {
+  message Request {
+    string containerId = 1;
+    map<string, string> environment = 2;
+    string cmd = 3;
+    string image = 4;
+  }
+  message Response {}
+}
+
+service ContainerSpawner {
+  rpc SpawnContainer(SpawnContainer.Request) returns (SpawnContainer.Response);
+}
+
+service SelflowRunner {
+  rpc InitRunner(InitRunner.Request) returns (InitRunner.Response);
+}
+
