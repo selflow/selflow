@@ -71,27 +71,28 @@ workflow:
           echo ::output multi=true::mi::multiline
           echo input::
 
-#    step-b:
-#      # condition to run the step, if false this and the following steps will be marked as SKIPPED
-#      if: ${{ step-a.outputs.foo == "bar" }}
-#      # Use the hosted plugin to run the step
-#      kind: hosted
-#      # Max timeout of the step (here = 2minutes) after this time, the step will be stated as TIMEOUT and the
-#      # following steps will be marked as CANCELLED
-#      timeout: 2m
-#      # matrix items are accessible in the step by using ${{ matrix.item }} it the matrix items
-#      # are objects, specific fields can be accessed using ${{ matrix.item.myField }} otherwise
-#      # the object is returned in a json format
-#      matrix: [toto]
-#      # Requirements to execute this step. The requirements will be available using `step-name`
-#      needs:
-#        - step-a
-#      # configuration for the hosted plugin
-#      with:
-#        shell: /bin/sh
-#        environment:
-#          MY_ENV_VAR: 123
-#        commands: |
-#          echo wow
-#          echo ${{ matrix.item }}
-#          echo ${{ step-a.outputs.mi }}
+    step-b:
+      # condition to run the step, if false this and the following steps will be marked as SKIPPED
+      if: ${{ step-a.outputs.foo == "bar" }}
+      # Use the hosted plugin to run the step
+      kind: docker
+      # Max timeout of the step (here = 2minutes) after this time, the step will be stated as TIMEOUT and the
+      # following steps will be marked as CANCELLED
+      timeout: 2m
+      # matrix items are accessible in the step by using ${{ matrix.item }} it the matrix items
+      # are objects, specific fields can be accessed using ${{ matrix.item.myField }} otherwise
+      # the object is returned in a json format
+      matrix: [toto]
+      # Requirements to execute this step. The requirements will be available using `step-name`
+      needs:
+        - step-a
+      # configuration for the hosted plugin
+      with:
+        image: node:lts
+        shell: /bin/sh
+        environment:
+          MY_ENV_VAR: 123
+        commands: |
+          echo wow
+          echo ${{ matrix.item }}
+          echo ${{ step-a.outputs.mi }}

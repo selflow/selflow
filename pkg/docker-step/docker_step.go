@@ -2,53 +2,51 @@ package docker_step
 
 import (
 	"context"
-	containerSpawner "github.com/selflow/selflow/pkg/container-spawner"
+	"github.com/mitchellh/mapstructure"
+	"github.com/selflow/selflow/internal/config"
+	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
 	"github.com/selflow/selflow/pkg/workflow"
-	"os"
-	"strconv"
 )
 
 type DockerStepConfig struct {
-	Image    string
-	Commands string
+	Image        string            `mapstructure:"image"`
+	Commands     string            `mapstructure:"commands"`
+	Environments map[string]string `mapstructure:"environments"`
 }
 
 type DockerStep struct {
 	workflow.SimpleStep
-	Image    string
-	Commands string
+	DockerStepConfig
+	ContainerSpawner selflowRunnerProto.ContainerSpawner
 }
 
 func (d *DockerStep) Execute(ctx context.Context) (map[string]string, error) {
-	config := containerSpawner.SpawnConfig{
-		Image:               d.Image,
-		ContainerName:       "cn",
-		ContainerLogsWriter: os.Stdout,
-		Environment:         nil,
-		Mounts: []containerSpawner.Mountable{
-			containerSpawner.BinaryMount{
-				FileContent: []byte(d.Commands),
-				Destination: "/etc/start",
-				ReadOnly:    true,
-			},
-		},
-		Entrypoint: []string{},
-	}
-
-	containerExit, err := containerSpawner.Spawn(ctx, &config)
-
+	err := d.ContainerSpawner.SpawnContainer(ctx, "", d.Environments, d.Commands, d.Image)
 	if err != nil {
-		d.SetStatus(workflow.ERROR)
 		return nil, err
 	}
 
-	exitCode := <-containerExit
-	if exitCode == 0 {
-		d.SetStatus(workflow.SUCCESS)
-	} else {
-		d.SetStatus(workflow.ERROR)
-	}
-	return map[string]string{"EXIT_CODE": strconv.FormatInt(exitCode, 10)}, nil
+	_, _ = d.SimpleStep.Execute(ctx)
+
+	return map[string]string{}, nil
 }
 
 var _ workflow.Step = &DockerStep{}
+
+func NewDockerStep(id string, definition config.StepDefinition, spawner selflowRunnerProto.ContainerSpawner) (*DockerStep, error) {
+	dockerStepConfig := DockerStepConfig{}
+
+	err := mapstructure.Decode(definition.With, &dockerStepConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	return &DockerStep{
+		SimpleStep: workflow.SimpleStep{
+			Id:     id,
+			Status: workflow.CREATED,
+		},
+		DockerStepConfig: dockerStepConfig,
+		ContainerSpawner: spawner,
+	}, nil
+}

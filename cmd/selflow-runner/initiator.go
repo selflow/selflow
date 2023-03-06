@@ -1,64 +1,60 @@
 package main
 
 import (
-  "context"
-  "github.com/selflow/selflow/internal/config"
-  selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
-  dockerStep "github.com/selflow/selflow/pkg/docker-step"
-  "github.com/selflow/selflow/pkg/workflow"
-  "log"
-  "os"
+	"context"
+	"github.com/selflow/selflow/internal/config"
+	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
+	dockerStep "github.com/selflow/selflow/pkg/docker-step"
+	"github.com/selflow/selflow/pkg/workflow"
+	"log"
+	"os"
 )
 
 type SelflowRunnerPlugin struct {
-  containerSpawner selflowRunnerProto.ContainerSpawner
+	containerSpawner selflowRunnerProto.ContainerSpawner
 }
 
 func (s *SelflowRunnerPlugin) InitRunner(ctx context.Context, spawner selflowRunnerProto.ContainerSpawner) error {
-  s.containerSpawner = spawner
+	s.containerSpawner = spawner
 
-  configContent, err := os.ReadFile("/etc/selflow/config.json")
-  if err != nil {
-    return err
-  }
+	configContent, err := os.ReadFile("/etc/selflow/config.json")
+	if err != nil {
+		return err
+	}
 
-  parsedConfig, err := config.Parse(configContent)
-  if err != nil {
-    return err
-  }
+	parsedConfig, err := config.Parse(configContent)
+	if err != nil {
+		return err
+	}
 
-  wf := workflow.MakeSimpleWorkflow(uint(len(parsedConfig.Workflow.Steps)))
+	wf := workflow.MakeSimpleWorkflow(uint(len(parsedConfig.Workflow.Steps)))
 
-  for i, stepDefinition := range parsedConfig.Workflow.Steps {
+	for i, stepDefinition := range parsedConfig.Workflow.Steps {
 
-    step := &dockerStep.DockerStep{
-      SimpleStep: workflow.SimpleStep{
-        Id:     i,
-        Status: workflow.CREATED,
-      },
-      Image:    stepDefinition.With["image"].(string),
-      Commands: stepDefinition.With["commands"].(string),
-    }
+		step, err := dockerStep.NewDockerStep(i, stepDefinition, spawner)
+		if err != nil {
+			return err
+		}
 
-    err = wf.AddStep(step, []workflow.Step{})
-    if err != nil {
-      return err
-    }
-  }
+		err = wf.AddStep(step, []workflow.Step{})
+		if err != nil {
+			return err
+		}
+	}
 
-  err = wf.Init(ctx)
+	err = wf.Init(ctx)
 
-  if err != nil {
-    return err
-  }
+	if err != nil {
+		return err
+	}
 
-  workflowExecutionResults, err := wf.Execute(ctx)
+	workflowExecutionResults, err := wf.Execute(ctx)
 
-  if err != nil {
-    return err
-  }
-  log.Println(workflowExecutionResults)
+	if err != nil {
+		return err
+	}
+	log.Println(workflowExecutionResults)
 
-  log.Println(parsedConfig.Metadata)
-  return nil
+	log.Println(parsedConfig.Metadata)
+	return nil
 }
