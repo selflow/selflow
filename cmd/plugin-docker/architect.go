@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	cs "github.com/selflow/selflow/pkg/container-spawner"
 	sp "github.com/selflow/selflow/pkg/selflow-plugin"
+	"os"
 )
 
 type DockerArchitect struct {
@@ -47,16 +49,34 @@ func (a *DockerArchitect) ValidateStepConfigSchema(_ context.Context, request *s
 }
 
 func (a *DockerArchitect) RunStep(ctx context.Context, request *sp.RunStep_Request) (*sp.RunStep_Response, error) {
-	var config ContainerSpawnConfig
+	var templateConfig ContainerSpawnConfig
 
-	if err := json.Unmarshal(request.StepConfig, &config); err != nil {
+	if err := json.Unmarshal(request.StepConfig, &templateConfig); err != nil {
 		return nil, err
 	}
 
-	if err := Spawn(ctx, &config); err != nil {
+	config := cs.SpawnConfig{
+		Image:               templateConfig.Image,
+		ContainerName:       generateContainerName(),
+		ContainerLogsWriter: os.Stdout,
+		Environment:         nil,
+		Mounts: []cs.Mountable{
+			cs.BinaryMount{
+				FileContent: []byte(templateConfig.Commands),
+				Destination: "/etc/start",
+				ReadOnly:    true,
+			},
+		},
+		Entrypoint: []string{},
+	}
+
+	containerExit, err := cs.Spawn(ctx, &config)
+
+	if err != nil {
 		return nil, err
 	}
 
+	<-containerExit
 	return &sp.RunStep_Response{}, nil
 }
 

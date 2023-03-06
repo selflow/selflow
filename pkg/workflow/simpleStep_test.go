@@ -45,8 +45,8 @@ func TestSimpleStep_Execute(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleStep{
-				id:     tt.fields.id,
-				status: tt.fields.status,
+				Id:     tt.fields.id,
+				Status: tt.fields.status,
 			}
 			got, err := s.Execute(tt.args.context)
 			if (err != nil) != tt.wantErr {
@@ -58,8 +58,8 @@ func TestSimpleStep_Execute(t *testing.T) {
 			}
 
 			expectedStep := &SimpleStep{
-				id:     tt.expectedFields.id,
-				status: tt.expectedFields.status,
+				Id:     tt.expectedFields.id,
+				Status: tt.expectedFields.status,
 			}
 
 			if !reflect.DeepEqual(s, expectedStep) {
@@ -88,8 +88,8 @@ func TestSimpleStep_GetId(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := SimpleStep{
-				id:     tt.fields.id,
-				status: tt.fields.status,
+				Id:     tt.fields.id,
+				Status: tt.fields.status,
 			}
 			if got := s.GetId(); got != tt.want {
 				t.Errorf("GetId() = %v, want %v", got, tt.want)
@@ -122,8 +122,8 @@ func TestSimpleStep_GetStatus(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := SimpleStep{
-				id:     tt.fields.id,
-				status: tt.fields.status,
+				Id:     tt.fields.id,
+				Status: tt.fields.status,
 			}
 			if got := s.GetStatus(); got != tt.want {
 				t.Errorf("GetStatus() = %v, want %v", got, tt.want)
@@ -146,8 +146,8 @@ func Test_makeSimpleStep(t *testing.T) {
 			"create step with id",
 			args{"my-step"},
 			&SimpleStep{
-				id:     "my-step",
-				status: CREATED,
+				Id:     "my-step",
+				Status: CREATED,
 			},
 			false,
 		},

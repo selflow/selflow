@@ -43,7 +43,7 @@
     "Steps": {
       "step-a": {
         "If": "",
-        "Timeout": "",
+        "Timeout": "2m",
         "Matrix": null,
         "Needs": null,
         "Kind": "docker",
