@@ -3,6 +3,7 @@ package container_spawner
 import (
 	"bytes"
 	"context"
+	"encoding/binary"
 	"errors"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -45,11 +46,18 @@ func (mdc *mockDockerClient) ContainerStart(ctx context.Context, container strin
 	return nil
 }
 
+func makeFakeDockerLog(b string) []byte {
+	size := make([]byte, 4)
+	binary.BigEndian.PutUint32(size, uint32(len(b)))
+	v := []byte{byte(1), 0x0, 0x0, 0x0}
+	return append(append(v, size...), b...)
+}
+
 func (mdc *mockDockerClient) ContainerLogs(ctx context.Context, container string, options types.ContainerLogsOptions) (io.ReadCloser, error) {
 	if mdc.logsFunction != nil {
 		return mdc.logsFunction()
 	}
-	return io.NopCloser(bytes.NewReader([]byte("Vim > Emacs"))), nil
+	return io.NopCloser(bytes.NewReader(makeFakeDockerLog("Vim > Emacs"))), nil
 }
 
 type mockNotFoundErr struct {
@@ -252,7 +260,7 @@ func Test_transferContainerLogs(t *testing.T) {
 			wantWriter: "Vim > Emacs",
 		},
 		{
-			name: "default",
+			name: "can not access docker logs",
 			args: args{
 				ctx: context.TODO(),
 				cli: &mockDockerClient{
