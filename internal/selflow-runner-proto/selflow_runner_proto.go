@@ -47,7 +47,7 @@ func (c *GRPCSelflowRunnerClient) InitRunner(ctx context.Context, spawner Contai
 	}
 
 	listener, err := net.Listen("tcp", "selflow-daemon:11002")
-	log.Printf("Start lisenting on port :11002\n")
+	log.Printf("Start listening on port :11002\n")
 	if err != nil {
 		return err
 	}

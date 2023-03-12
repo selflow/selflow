@@ -160,7 +160,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			if ok {
 
 			}
-			log.Printf("[INFO] : Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
+			log.Printf("Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
 				errorLst = appendErrorList(errorLst, s.cancelNextSteps(step))

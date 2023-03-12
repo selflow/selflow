@@ -2,11 +2,14 @@ package runners
 
 import (
 	"context"
+	"fmt"
+	"github.com/hashicorp/go-hclog"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
 	"os"
 )
 
 type containerSpawner struct {
+	runId string
 }
 
 func (c containerSpawner) SpawnContainer(ctx context.Context, containerId string, environmentVariables map[string]string, cmd string, image string) error {
@@ -23,7 +26,11 @@ func (c containerSpawner) SpawnContainer(ctx context.Context, containerId string
 
 	conf := &cs.SpawnConfig{}
 
-	conf.ContainerLogsWriter = os.Stdout
+	containerNameSuffix := fmt.Sprintf("cc-%s-%s", c.runId, containerId)
+
+	conf.ContainerLogsWriter = hclog.Default().Named(containerNameSuffix).StandardWriter(&hclog.StandardLoggerOptions{
+		ForceLevel: hclog.Debug,
+	})
 	conf.Image = image
 	conf.Mounts = []cs.Mountable{
 		cs.BinaryMount{
