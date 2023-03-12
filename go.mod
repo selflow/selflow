@@ -20,6 +20,7 @@ replace github.com/hashicorp/go-plugin v1.4.5 => github.com/Anthony-Jhoiro/go-pl
 
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
+	github.com/ahmetb/dlog v0.0.0-20170105205344-4fb5f8204f26 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/fatih/color v1.7.0 // indirect

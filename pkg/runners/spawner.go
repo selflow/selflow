@@ -20,7 +20,9 @@ func startRunnerContainer(ctx context.Context, flow config.Flow, runId string, l
 
 	spawnConfig := &cs.SpawnConfig{}
 	spawnConfig.Image = "selflow-runner"
-	spawnConfig.ContainerLogsWriter = logger.StandardWriter(&hclog.StandardLoggerOptions{})
+	spawnConfig.ContainerLogsWriter = logger.StandardWriter(&hclog.StandardLoggerOptions{
+		InferLevels: true,
+	})
 	spawnConfig.Environment = map[string]string{
 		sp.Handshake.MagicCookieKey: sp.Handshake.MagicCookieValue,
 	}
@@ -41,7 +43,7 @@ func startRunnerContainer(ctx context.Context, flow config.Flow, runId string, l
 		spawnConfig.PortForward = []cs.PortForwardConfig{
 			{
 				Host:      debugPort.(string),
-				Container: "40000", // Default port with delve
+				Container: debugPort.(string), // Default port with delve
 			},
 		}
 	}

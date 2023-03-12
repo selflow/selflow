@@ -4,17 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
 	sp "github.com/selflow/selflow/pkg/selflow-plugin"
 	"google.golang.org/grpc"
+	"log"
 	"net"
 )
 
 func initContainer(ctx context.Context, runId string) error {
 	host := fmt.Sprintf("%s-%s", runnerContainerBaseName, runId)
+	tcpAddr := fmt.Sprintf("%s:11001", host)
+	log.Printf("[DEBUG] initializing connection with runner %s on %s", runId, tcpAddr)
 
-	addr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:11001", host))
+	addr, err := net.ResolveTCPAddr("tcp", tcpAddr)
 	if err != nil {
 		return err
 	}
@@ -36,6 +40,7 @@ func initContainer(ctx context.Context, runId string) error {
 		Plugins: map[string]plugin.Plugin{
 			"selflowRunner": &selflowRunnerProto.SelflowRunnerPlugin{},
 		},
+		Logger: hclog.Default(),
 	})
 
 	rpcClient, err := pluginClient.Client()
@@ -53,7 +58,7 @@ func initContainer(ctx context.Context, runId string) error {
 		return errors.New("invalid protocol for selflow runner")
 	}
 
-	err = initiator.InitRunner(ctx, &containerSpawner{})
+	err = initiator.InitRunner(ctx, &containerSpawner{runId})
 	if err != nil {
 		return err
 	}

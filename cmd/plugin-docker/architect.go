@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"github.com/hashicorp/go-hclog"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
 	sp "github.com/selflow/selflow/pkg/selflow-plugin"
-	"os"
 )
 
 type DockerArchitect struct {
@@ -45,7 +45,6 @@ func (a *DockerArchitect) ValidateStepConfigSchema(_ context.Context, request *s
 	return &sp.ValidateStepConfigSchema_Response{
 		Valid: true,
 	}, nil
-
 }
 
 func (a *DockerArchitect) RunStep(ctx context.Context, request *sp.RunStep_Request) (*sp.RunStep_Response, error) {
@@ -58,7 +57,7 @@ func (a *DockerArchitect) RunStep(ctx context.Context, request *sp.RunStep_Reque
 	config := cs.SpawnConfig{
 		Image:               templateConfig.Image,
 		ContainerName:       generateContainerName(),
-		ContainerLogsWriter: os.Stdout,
+		ContainerLogsWriter: hclog.Default().StandardWriter(&hclog.StandardLoggerOptions{}),
 		Environment:         nil,
 		Mounts: []cs.Mountable{
 			cs.BinaryMount{

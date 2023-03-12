@@ -159,10 +159,7 @@ func Spawn(ctx context.Context, config *ContainerSpawnConfig) error {
 		return err
 	}
 
-	pluginLogger := hclog.New(&hclog.LoggerOptions{
-		Name:   fmt.Sprintf("plugin-%s", ctn.containerName),
-		Output: nil,
-	})
+	pluginLogger := hclog.Default().Named(fmt.Sprintf("plugin-%s", ctn.containerName))
 
 	err = transferContainerLogs(ctx, cli, ctn, pluginLogger.StandardWriter(&hclog.StandardLoggerOptions{}))
 	if err != nil {

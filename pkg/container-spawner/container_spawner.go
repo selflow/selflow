@@ -44,7 +44,7 @@ func Spawn(ctx context.Context, config *SpawnConfig) (chan int64, error) {
 
 		err = transferContainerLogs(ctx, cli, ctn, config.ContainerLogsWriter)
 		if err != nil {
-			log.Printf("[WARN] Fail to register plugin logs : %v\n", err)
+			log.Printf("[WARN] Fail to transfer container logs : %v\n", err)
 		}
 
 		containerOkBodyCh, _ := cli.ContainerWait(ctx, ctn.containerId, container.WaitConditionNotRunning)

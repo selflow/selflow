@@ -21,7 +21,7 @@ type DockerStep struct {
 }
 
 func (d *DockerStep) Execute(ctx context.Context) (map[string]string, error) {
-	err := d.ContainerSpawner.SpawnContainer(ctx, "", d.Environments, d.Commands, d.Image)
+	err := d.ContainerSpawner.SpawnContainer(ctx, d.Id, d.Environments, d.Commands, d.Image)
 	if err != nil {
 		return nil, err
 	}

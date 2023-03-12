@@ -1,8 +1,11 @@
 package container_spawner
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"fmt"
+	"github.com/ahmetb/dlog"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
@@ -135,6 +138,25 @@ func startContainer(ctx context.Context, cli client.APIClient, config *pluginCon
 	return nil
 }
 
+type DockerWriter struct {
+	io.Writer
+}
+
+func (dw *DockerWriter) Write(p []byte) (n int, err error) {
+
+	parsedReader := dlog.NewReader(bytes.NewReader(p))
+	scanner := bufio.NewScanner(parsedReader)
+
+	for scanner.Scan() {
+		_, err = dw.Writer.Write(scanner.Bytes())
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return len(p), nil
+}
+
 func transferContainerLogs(ctx context.Context, cli client.APIClient, config *pluginContainer, writer io.Writer) error {
 	out, err := cli.ContainerLogs(ctx, config.containerId, types.ContainerLogsOptions{
 		ShowStdout: true,
@@ -143,12 +165,12 @@ func transferContainerLogs(ctx context.Context, cli client.APIClient, config *pl
 	})
 
 	if err != nil {
-		return fmt.Errorf("fail to read container logs : %v", err)
+		return err
 	}
 
-	_, err = io.Copy(writer, out)
+	_, err = io.Copy(&DockerWriter{writer}, out)
 	if err != nil {
-		return fmt.Errorf("fail to transfer container logs: %v", err)
+		return err
 	}
 	return nil
 }
