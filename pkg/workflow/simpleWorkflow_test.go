@@ -71,55 +71,14 @@ func TestMakeSimpleWorkflow(t *testing.T) {
 			name: "Create simple workflow",
 			want: &SimpleWorkflow{
 				steps:        []Step{},
-				status:       CREATED,
 				dependencies: map[Step][]Step{},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MakeSimpleWorkflow(1); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MakeSimpleWorkflow() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestSimpleWorkflow_GetStatus(t *testing.T) {
-	type fields struct {
-		steps        []Step
-		status       Status
-		dependencies map[Step][]Step
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		want   Status
-	}{
-		{
-			name: "Pending status",
-			fields: fields{
-				status: PENDING,
-			},
-			want: PENDING,
-		},
-		{
-			name: "Created status",
-			fields: fields{
-				status: CREATED,
-			},
-			want: CREATED,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := SimpleWorkflow{
-				steps:        tt.fields.steps,
-				status:       tt.fields.status,
-				dependencies: tt.fields.dependencies,
-			}
-			if got := s.GetStatus(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetStatus() = %v, want %v", got, tt.want)
+			if got := NewWorkflow(1); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewWorkflow() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -219,8 +178,7 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		{
 			name: "with cancel",
 			fields: fields{
-				steps:  []Step{errorA, errorB, errorD},
-				status: CREATED,
+				steps: []Step{errorA, errorB, errorD},
 				dependencies: map[Step][]Step{
 					errorD: {},
 					errorA: {errorD},
@@ -247,7 +205,6 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				status:       tt.fields.status,
 				dependencies: tt.fields.dependencies,
 			}
 			got, err := s.Execute(tt.args.ctx)
@@ -353,10 +310,9 @@ func TestSimpleWorkflow_Init(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				status:       tt.fields.status,
 				dependencies: tt.fields.dependencies,
 			}
-			if err := s.Init(tt.args.context); (err != nil) != tt.wantErr {
+			if err := s.Init(); (err != nil) != tt.wantErr {
 				t.Errorf("Init() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -404,7 +360,6 @@ func TestSimpleWorkflow_AddStep(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				status:       tt.fields.status,
 				dependencies: tt.fields.dependencies,
 			}
 			if err := s.AddStep(tt.args.step, tt.args.dependencies); (err != nil) != tt.wantErr {
@@ -443,7 +398,6 @@ func TestSimpleWorkflow_debug(t *testing.T) {
 			}()
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				status:       tt.fields.status,
 				dependencies: tt.fields.dependencies,
 			}
 			s.debug()

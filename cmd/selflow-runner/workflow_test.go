@@ -27,7 +27,7 @@ func Test_buildWorkflow_classicWorkflow(t *testing.T) {
 		},
 	}
 
-	expected := workflow.MakeSimpleWorkflow(1)
+	expected := workflow.NewWorkflow(1)
 	stepA, err := dockerStep.NewDockerStep("step-a", config.StepDefinition{
 		Kind: "docker",
 		With: map[string]interface{}{},

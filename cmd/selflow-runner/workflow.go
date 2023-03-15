@@ -29,14 +29,14 @@ func mapStepsDefinitionsToSteps(definitions config.Steps) (map[string]workflow.S
 	return steps, nil
 }
 
-func buildWorkflow(parsedConfig *config.Flow) (*workflow.SimpleWorkflow, error) {
+func buildWorkflow(parsedConfig *config.Flow) (workflow.Workflow, error) {
 
 	parsedSteps, err := mapStepsDefinitionsToSteps(parsedConfig.Workflow.Steps)
 	if err != nil {
 		return nil, err
 	}
 
-	wf := workflow.MakeSimpleWorkflow(uint(len(parsedConfig.Workflow.Steps)))
+	wf := workflow.NewWorkflow(uint(len(parsedConfig.Workflow.Steps)))
 
 	for stepId, stepDefinition := range parsedConfig.Workflow.Steps {
 		requirements := make([]workflow.Step, len(stepDefinition.Needs))
