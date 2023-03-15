@@ -2,6 +2,8 @@ package selflow_runner_proto
 
 import "context"
 
+const ContainerSpawnerContextKey = "ContainerSpawnerContextKey"
+
 type ContainerSpawner interface {
 	SpawnContainer(ctx context.Context, containerId string, environmentVariables map[string]string, cmd string, image string) error
 }

@@ -59,11 +59,7 @@ func initContainer(ctx context.Context, runId string) error {
 	}
 
 	err = initiator.InitRunner(ctx, &containerSpawner{runId})
-	if err != nil {
-		return err
-	}
-
 	pluginClient.Kill()
 
-	return nil
+	return err
 }

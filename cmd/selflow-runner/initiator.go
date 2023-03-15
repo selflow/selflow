@@ -4,8 +4,6 @@ import (
 	"context"
 	"github.com/selflow/selflow/internal/config"
 	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
-	dockerStep "github.com/selflow/selflow/pkg/docker-step"
-	"github.com/selflow/selflow/pkg/workflow"
 	"log"
 	"os"
 )
@@ -14,8 +12,16 @@ type SelflowRunnerPlugin struct {
 	containerSpawner selflowRunnerProto.ContainerSpawner
 }
 
-func (s *SelflowRunnerPlugin) InitRunner(ctx context.Context, spawner selflowRunnerProto.ContainerSpawner) error {
-	s.containerSpawner = spawner
+func (s *SelflowRunnerPlugin) InitRunner(ctx context.Context, containerSpawner selflowRunnerProto.ContainerSpawner) error {
+	err := s.initRunner(ctx, containerSpawner)
+	if err != nil {
+		log.Printf("[ERROR] %v\n", err.Error())
+	}
+	return err
+}
+
+func (s *SelflowRunnerPlugin) initRunner(ctx context.Context, containerSpawner selflowRunnerProto.ContainerSpawner) error {
+	s.containerSpawner = containerSpawner
 
 	configContent, err := os.ReadFile("/etc/selflow/config.json")
 	if err != nil {
@@ -27,34 +33,24 @@ func (s *SelflowRunnerPlugin) InitRunner(ctx context.Context, spawner selflowRun
 		return err
 	}
 
-	wf := workflow.MakeSimpleWorkflow(uint(len(parsedConfig.Workflow.Steps)))
-
-	for i, stepDefinition := range parsedConfig.Workflow.Steps {
-
-		step, err := dockerStep.NewDockerStep(i, stepDefinition, spawner)
-		if err != nil {
-			return err
-		}
-
-		err = wf.AddStep(step, []workflow.Step{})
-		if err != nil {
-			return err
-		}
+	wf, err := buildWorkflow(parsedConfig)
+	if err != nil {
+		return err
 	}
 
-	err = wf.Init(ctx)
+	ctxWithSpawner := context.WithValue(ctx, selflowRunnerProto.ContainerSpawnerContextKey, containerSpawner)
+	err = wf.Init(ctxWithSpawner)
 
 	if err != nil {
 		return err
 	}
 
-	workflowExecutionResults, err := wf.Execute(ctx)
+	workflowExecutionResults, err := wf.Execute(ctxWithSpawner)
 
 	if err != nil {
 		return err
 	}
 	log.Println(workflowExecutionResults)
 
-	log.Println(parsedConfig.Metadata)
 	return nil
 }

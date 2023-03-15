@@ -2,6 +2,7 @@ package docker_step
 
 import (
 	"context"
+	"errors"
 	"github.com/mitchellh/mapstructure"
 	"github.com/selflow/selflow/internal/config"
 	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
@@ -17,11 +18,18 @@ type DockerStepConfig struct {
 type DockerStep struct {
 	workflow.SimpleStep
 	DockerStepConfig
-	ContainerSpawner selflowRunnerProto.ContainerSpawner
 }
 
+var MissingContainerSpawnerContextKey = errors.New("container spawner context key is missing")
+
 func (d *DockerStep) Execute(ctx context.Context) (map[string]string, error) {
-	err := d.ContainerSpawner.SpawnContainer(ctx, d.Id, d.Environments, d.Commands, d.Image)
+
+	containerSpawner, ok := ctx.Value(selflowRunnerProto.ContainerSpawnerContextKey).(selflowRunnerProto.ContainerSpawner)
+	if !ok {
+		return nil, MissingContainerSpawnerContextKey
+	}
+
+	err := containerSpawner.SpawnContainer(ctx, d.Id, d.Environments, d.Commands, d.Image)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +41,7 @@ func (d *DockerStep) Execute(ctx context.Context) (map[string]string, error) {
 
 var _ workflow.Step = &DockerStep{}
 
-func NewDockerStep(id string, definition config.StepDefinition, spawner selflowRunnerProto.ContainerSpawner) (*DockerStep, error) {
+func NewDockerStep(id string, definition config.StepDefinition) (*DockerStep, error) {
 	dockerStepConfig := DockerStepConfig{}
 
 	err := mapstructure.Decode(definition.With, &dockerStepConfig)
@@ -47,6 +55,5 @@ func NewDockerStep(id string, definition config.StepDefinition, spawner selflowR
 			Status: workflow.CREATED,
 		},
 		DockerStepConfig: dockerStepConfig,
-		ContainerSpawner: spawner,
 	}, nil
 }

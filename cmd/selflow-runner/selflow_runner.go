@@ -47,7 +47,4 @@ func main() {
 
 		Listener: listener,
 	})
-
-	log.Println("terminated")
-
 }

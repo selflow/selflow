@@ -197,6 +197,7 @@ func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.W
 		activeSteps.Add(1)
 
 		go func(step Step) {
+			log.Printf("Step %s started\n", step.GetId())
 			s.executeStep(ctx, step)
 			closingSteps <- step
 			activeSteps.Done()
