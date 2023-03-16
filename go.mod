@@ -3,6 +3,7 @@ module github.com/selflow/selflow
 go 1.19
 
 require (
+	github.com/ahmetb/dlog v0.0.0-20170105205344-4fb5f8204f26
 	github.com/docker/docker v20.10.22+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/eknkc/basex v1.0.1
@@ -21,7 +22,7 @@ replace github.com/hashicorp/go-plugin v1.4.5 => github.com/Anthony-Jhoiro/go-pl
 
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
-	github.com/ahmetb/dlog v0.0.0-20170105205344-4fb5f8204f26 // indirect
+	github.com/ahmetalpbalkan/dlog v0.0.0-20170105205344-4fb5f8204f26 // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/fatih/color v1.7.0 // indirect
@@ -42,9 +43,9 @@ require (
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.1.0 // indirect
-	golang.org/x/sys v0.1.0 // indirect
-	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect
