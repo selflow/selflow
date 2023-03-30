@@ -38,12 +38,13 @@ func (s *SelflowRunnerPlugin) initRunner(ctx context.Context, containerSpawner s
 		return err
 	}
 
-	ctxWithSpawner := context.WithValue(ctx, selflowRunnerProto.ContainerSpawnerContextKey, containerSpawner)
-	err = wf.Init(ctxWithSpawner)
+	err = wf.Init()
 
 	if err != nil {
 		return err
 	}
+
+	ctxWithSpawner := context.WithValue(ctx, selflowRunnerProto.ContainerSpawnerContextKey, containerSpawner)
 
 	workflowExecutionResults, err := wf.Execute(ctxWithSpawner)
 

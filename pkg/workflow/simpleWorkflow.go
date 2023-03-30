@@ -9,8 +9,13 @@ import (
 
 type SimpleWorkflow struct {
 	steps        []Step
-	status       Status
 	dependencies map[Step][]Step
+}
+
+type Workflow interface {
+	Init() error
+	AddStep(step Step, dependencies []Step) error
+	Execute(ctx context.Context) (map[string]map[string]string, error)
 }
 
 var stepOutputContextKey struct{}
@@ -47,7 +52,7 @@ func (s *SimpleWorkflow) hasCycle(visited []Step, secureCycles []Step, currentSt
 	return false, currentStepSecureCycles
 }
 
-func (s *SimpleWorkflow) Init(_ context.Context) error {
+func (s *SimpleWorkflow) Init() error {
 	visitedSteps := make([]Step, 0, len(s.steps))
 	secureSteps := make([]Step, 0, len(s.steps))
 
@@ -62,17 +67,12 @@ func (s *SimpleWorkflow) Init(_ context.Context) error {
 	return nil
 }
 
-// MakeSimpleWorkflow creates a SimpleWorkflow instance
-func MakeSimpleWorkflow(stepCount uint) *SimpleWorkflow {
+// NewWorkflow creates a SimpleWorkflow instance
+func NewWorkflow(stepCount uint) Workflow {
 	return &SimpleWorkflow{
 		steps:        make([]Step, 0, stepCount),
-		status:       CREATED,
 		dependencies: make(map[Step][]Step),
 	}
-}
-
-func (s *SimpleWorkflow) GetStatus() Status {
-	return s.status
 }
 
 func (s *SimpleWorkflow) getNextSteps() []Step {
@@ -222,3 +222,5 @@ func (s *SimpleWorkflow) AddStep(step Step, dependencies []Step) error {
 	s.dependencies[step] = dependencies
 	return nil
 }
+
+var _ Workflow = &SimpleWorkflow{}
