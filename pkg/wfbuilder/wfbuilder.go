@@ -1,6 +1,7 @@
 package wfbuilder
 
 import (
+	"errors"
 	"fmt"
 	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/workflow"
@@ -16,15 +17,13 @@ type Builder struct {
 
 // mapDefinitionToStep creates a step from the given step definition. If the step couldn't be created, an error is returned
 func (b Builder) mapDefinitionToStep(stepId string, stepDefinition config.StepDefinition) (step workflow.Step, err error) {
-	for stepType, stepMapper := range b.StepBuilderMap {
-		if stepDefinition.Kind == stepType {
-			step, err = stepMapper(stepId, stepDefinition)
-			if err == nil {
-				return step, nil
-			}
-		}
+
+	stepMapper, ok := b.StepBuilderMap[stepDefinition.Kind]
+	if !ok {
+		return nil, errors.New("unknown step kind")
 	}
-	return
+
+	return stepMapper(stepId, stepDefinition)
 }
 
 // mapStepsDefinitionsToSteps cast a map of step definition to a map of step.

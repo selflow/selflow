@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"reflect"
 	"sync"
 )
 
@@ -16,6 +17,7 @@ type Workflow interface {
 	Init() error
 	AddStep(step Step, dependencies []Step) error
 	Execute(ctx context.Context) (map[string]map[string]string, error)
+	Equals(s2 Workflow) bool
 }
 
 var stepOutputContextKey struct{}
@@ -221,6 +223,25 @@ func (s *SimpleWorkflow) AddStep(step Step, dependencies []Step) error {
 	s.steps = append(s.steps, step)
 	s.dependencies[step] = dependencies
 	return nil
+}
+
+func (s *SimpleWorkflow) Equals(s2 Workflow) bool {
+	sw2, ok := s2.(*SimpleWorkflow)
+	if !ok {
+		return false
+	}
+
+BaseStep:
+	for _, step := range s.steps {
+		for _, step2 := range sw2.steps {
+			if reflect.DeepEqual(step, step2) {
+				continue BaseStep
+			}
+		}
+		return false
+	}
+
+	return true
 }
 
 var _ Workflow = &SimpleWorkflow{}
