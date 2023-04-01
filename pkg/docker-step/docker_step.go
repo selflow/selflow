@@ -41,7 +41,7 @@ func (d *DockerStep) Execute(ctx context.Context) (map[string]string, error) {
 
 var _ workflow.Step = &DockerStep{}
 
-func NewDockerStep(id string, definition config.StepDefinition) (*DockerStep, error) {
+func NewDockerStep(id string, definition config.StepDefinition) (workflow.Step, error) {
 	dockerStepConfig := DockerStepConfig{}
 
 	err := mapstructure.Decode(definition.With, &dockerStepConfig)

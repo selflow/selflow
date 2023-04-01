@@ -8,6 +8,7 @@ require (
 	github.com/docker/go-connections v0.4.0
 	github.com/eknkc/basex v1.0.1
 	github.com/go-playground/validator/v10 v10.11.1
+	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.1.2
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-plugin v1.4.5
