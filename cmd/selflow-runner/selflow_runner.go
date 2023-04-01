@@ -4,7 +4,9 @@ import (
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
+	dockerStep "github.com/selflow/selflow/pkg/docker-step"
 	selflowPlugin "github.com/selflow/selflow/pkg/selflow-plugin"
+	"github.com/selflow/selflow/pkg/wfbuilder"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -35,10 +37,19 @@ func main() {
 		panic(err)
 	}
 
+	selflowRunnerPlugin := &SelflowRunnerPlugin{
+		workflowBuilder: wfbuilder.Builder{
+			StepBuilderMap: map[string]wfbuilder.StepMapper{
+				"docker": dockerStep.NewDockerStep,
+			},
+		},
+		configFileLocation: "/etc/selflow/config.json",
+	}
+
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: selflowPlugin.Handshake,
 		Plugins: map[string]plugin.Plugin{
-			"runner": &selflowRunnerProto.SelflowRunnerPlugin{Impl: &SelflowRunnerPlugin{}},
+			"runner": &selflowRunnerProto.SelflowRunnerPlugin{Impl: selflowRunnerPlugin},
 		},
 		GRPCServer: func(options []grpc.ServerOption) *grpc.Server {
 			return plugin.DefaultGRPCServer(options)

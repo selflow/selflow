@@ -4,12 +4,17 @@ import (
 	"context"
 	"github.com/selflow/selflow/internal/config"
 	selflowRunnerProto "github.com/selflow/selflow/internal/selflow-runner-proto"
+	"github.com/selflow/selflow/pkg/workflow"
 	"log"
 	"os"
 )
 
 type SelflowRunnerPlugin struct {
 	containerSpawner selflowRunnerProto.ContainerSpawner
+	workflowBuilder  interface {
+		BuildWorkflow(parsedConfig *config.Flow) (workflow.Workflow, error)
+	}
+	configFileLocation string
 }
 
 func (s *SelflowRunnerPlugin) InitRunner(ctx context.Context, containerSpawner selflowRunnerProto.ContainerSpawner) error {
@@ -23,7 +28,9 @@ func (s *SelflowRunnerPlugin) InitRunner(ctx context.Context, containerSpawner s
 func (s *SelflowRunnerPlugin) initRunner(ctx context.Context, containerSpawner selflowRunnerProto.ContainerSpawner) error {
 	s.containerSpawner = containerSpawner
 
-	configContent, err := os.ReadFile("/etc/selflow/config.json")
+	log.Println("[DEBUG] Parsing configuration")
+
+	configContent, err := os.ReadFile(s.configFileLocation)
 	if err != nil {
 		return err
 	}
@@ -33,7 +40,7 @@ func (s *SelflowRunnerPlugin) initRunner(ctx context.Context, containerSpawner s
 		return err
 	}
 
-	wf, err := buildWorkflow(parsedConfig)
+	wf, err := s.workflowBuilder.BuildWorkflow(parsedConfig)
 	if err != nil {
 		return err
 	}
@@ -46,12 +53,13 @@ func (s *SelflowRunnerPlugin) initRunner(ctx context.Context, containerSpawner s
 
 	ctxWithSpawner := context.WithValue(ctx, selflowRunnerProto.ContainerSpawnerContextKey, containerSpawner)
 
-	workflowExecutionResults, err := wf.Execute(ctxWithSpawner)
+	log.Println("[DEBUG] Start workflow execution")
+
+	_, err = wf.Execute(ctxWithSpawner)
 
 	if err != nil {
 		return err
 	}
-	log.Println(workflowExecutionResults)
 
 	return nil
 }
