@@ -49,6 +49,20 @@ func (mr *MockWorkflowMockRecorder) AddStep(arg0, arg1 interface{}) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddStep", reflect.TypeOf((*MockWorkflow)(nil).AddStep), arg0, arg1)
 }
 
+// Equals mocks base method.
+func (m *MockWorkflow) Equals(arg0 workflow.Workflow) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Equals", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// Equals indicates an expected call of Equals.
+func (mr *MockWorkflowMockRecorder) Equals(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Equals", reflect.TypeOf((*MockWorkflow)(nil).Equals), arg0)
+}
+
 // Execute mocks base method.
 func (m *MockWorkflow) Execute(arg0 context.Context) (map[string]map[string]string, error) {
 	m.ctrl.T.Helper()
