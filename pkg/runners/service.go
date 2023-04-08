@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/hashicorp/go-hclog"
+	"github.com/selflow/selflow/internal/sfenvironment"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
 	"os"
 )
@@ -34,10 +35,10 @@ func (c containerSpawner) SpawnContainer(ctx context.Context, containerId string
 	conf.Image = image
 	conf.Mounts = []cs.Mountable{
 		cs.BinaryMount{
-			FileContent:   []byte(cmd),
-			Destination:   "/start.sh",
-			ReadOnly:      true,
-			TempDirectory: os.Getenv("TMP_FILE_HOST_DIR"),
+			FileContent:       []byte(cmd),
+			Destination:       "/start.sh",
+			ReadOnly:          true,
+			HostTempDirectory: sfenvironment.GetDaemonHostBaseDirectory(),
 		},
 	}
 	conf.Entrypoint = []string{"/bin/sh", "/start.sh"}

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"github.com/hashicorp/go-hclog"
 	"github.com/selflow/selflow/internal/config"
+	"github.com/selflow/selflow/internal/sfenvironment"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
 	sp "github.com/selflow/selflow/pkg/selflow-plugin"
-	"os"
 )
 
 func startRunnerContainer(ctx context.Context, flow config.Flow, runId string, logger hclog.Logger) (chan int64, error) {
@@ -29,10 +29,11 @@ func startRunnerContainer(ctx context.Context, flow config.Flow, runId string, l
 	spawnConfig.ContainerName = fmt.Sprintf("%s-%s", runnerContainerBaseName, runId)
 	spawnConfig.Mounts = []cs.Mountable{
 		cs.BinaryMount{
-			FileContent:   flowAsBytes,
-			Destination:   "/etc/selflow/config.json",
-			ReadOnly:      true,
-			TempDirectory: os.Getenv("TMP_FILE_HOST_DIR"),
+			FileContent:        flowAsBytes,
+			Destination:        "/etc/selflow/config.json",
+			ReadOnly:           true,
+			HostTempDirectory:  sfenvironment.GetDaemonHostBaseDirectory(),
+			LocalTempDirectory: sfenvironment.GetDaemonBaseDirectory(),
 		},
 	}
 	spawnConfig.Networks = []string{
