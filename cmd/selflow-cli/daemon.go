@@ -14,7 +14,7 @@ func (sc *selflowClient) createNetworkIfNotExists(ctx context.Context, networkNa
 	network, err := sc.dockerClient.NetworkInspect(ctx, networkName, types.NetworkInspectOptions{})
 	if err != nil {
 		if !client.IsErrNotFound(err) {
-			return "", nil
+			return "", err
 		}
 
 		networkCreateResponse, err := sc.dockerClient.NetworkCreate(ctx, networkName, types.NetworkCreate{})

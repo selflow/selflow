@@ -19,7 +19,7 @@ type selflowClient struct {
 	daemonIsDebug   bool
 	daemonDebugPort string
 
-	dockerClient *client.Client
+	dockerClient client.APIClient
 	dockerOpts   []client.Opt
 }
 
