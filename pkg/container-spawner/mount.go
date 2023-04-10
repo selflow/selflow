@@ -12,14 +12,15 @@ type Mountable interface {
 }
 
 type BinaryMount struct {
-	FileContent   []byte
-	Destination   string
-	ReadOnly      bool
-	TempDirectory string
+	FileContent        []byte
+	Destination        string
+	ReadOnly           bool
+	HostTempDirectory  string
+	LocalTempDirectory string
 }
 
 func (b BinaryMount) ToMount() (mount.Mount, error) {
-	tmpFile, err := os.CreateTemp("/etc/selflow", "bind-volume")
+	tmpFile, err := os.CreateTemp(b.HostTempDirectory, "bind-volume")
 	if err != nil {
 		return mount.Mount{}, err
 	}
@@ -31,7 +32,7 @@ func (b BinaryMount) ToMount() (mount.Mount, error) {
 
 	return mount.Mount{
 		Type:     mount.TypeBind,
-		Source:   path.Join(b.TempDirectory, filepath.Base(tmpFile.Name())),
+		Source:   path.Join(b.HostTempDirectory, filepath.Base(tmpFile.Name())),
 		Target:   b.Destination,
 		ReadOnly: b.ReadOnly,
 	}, nil

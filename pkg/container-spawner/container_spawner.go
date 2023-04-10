@@ -23,6 +23,25 @@ type SpawnConfig struct {
 	Networks            []string
 }
 
+func SpawnAsync(ctx context.Context, config *SpawnConfig) (string, error) {
+	cli, err := GetClient()
+	if err != nil {
+		return "", err
+	}
+
+	var ctn *pluginContainer
+
+	if ctn, err = createContainer(ctx, cli, config); err != nil {
+		return "", err
+	}
+	if err = startContainer(ctx, cli, ctn); err != nil {
+		return "", err
+	}
+
+	return ctn.containerId, nil
+
+}
+
 func Spawn(ctx context.Context, config *SpawnConfig) (chan int64, error) {
 	containerTerminated := make(chan int64, 1)
 
