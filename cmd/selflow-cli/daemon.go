@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/selflow/selflow/internal/sfenvironment"
@@ -29,9 +28,9 @@ func (sc *selflowClient) createNetworkIfNotExists(ctx context.Context, networkNa
 	return network.ID, nil
 }
 
-func (sc *selflowClient) clearContainer(ctx context.Context, containerName string) error {
+func (sc *selflowClient) clearDaemon(ctx context.Context) error {
 
-	err := sc.dockerClient.ContainerStop(ctx, containerName, nil)
+	err := sc.dockerClient.ContainerStop(ctx, sc.daemonName, nil)
 	if err != nil {
 		if client.IsErrNotFound(err) {
 			return nil
@@ -39,26 +38,22 @@ func (sc *selflowClient) clearContainer(ctx context.Context, containerName strin
 		return err
 	}
 
-	return sc.dockerClient.ContainerRemove(ctx, containerName, types.ContainerRemoveOptions{
+	return sc.dockerClient.ContainerRemove(ctx, sc.daemonName, types.ContainerRemoveOptions{
 		RemoveVolumes: true,
 		Force:         false,
 	})
 }
 
-func (sc *selflowClient) startDaemon(ctx context.Context, selflowClient *selflowClient) (string, error) {
+func (sc *selflowClient) startDaemon(ctx context.Context) (string, error) {
 	var containerId string
 
-	containerId, err := sc.getRunningDaemon(ctx, selflowClient.daemonName)
+	containerId, err := sc.getRunningDaemon(ctx)
 	if err != nil {
-		if !errors.Is(err, ContainerNotFound) {
-			return "", err
-		}
-
-		err = sc.clearContainer(ctx, selflowClient.daemonName)
+		err = sc.clearDaemon(ctx)
 		if err != nil && !client.IsErrNotFound(err) {
 			return "", err
 		}
-		containerId, err = sc.createDaemon(ctx, selflowClient.daemonName)
+		containerId, err = sc.createDaemon(ctx)
 		if err != nil {
 			return "", err
 		}
@@ -67,9 +62,9 @@ func (sc *selflowClient) startDaemon(ctx context.Context, selflowClient *selflow
 	return containerId, nil
 }
 
-func (sc *selflowClient) getRunningDaemon(ctx context.Context, containerName string) (string, error) {
+func (sc *selflowClient) getRunningDaemon(ctx context.Context) (string, error) {
 
-	container, err := sc.dockerClient.ContainerInspect(ctx, containerName)
+	container, err := sc.dockerClient.ContainerInspect(ctx, sc.daemonName)
 	if err != nil {
 		return "", ContainerNotFound
 	}
@@ -77,7 +72,7 @@ func (sc *selflowClient) getRunningDaemon(ctx context.Context, containerName str
 	return container.ID, nil
 }
 
-func (sc *selflowClient) createDaemon(ctx context.Context, containerName string) (string, error) {
+func (sc *selflowClient) createDaemon(ctx context.Context) (string, error) {
 
 	dockerHostUrl, _ := url.Parse(sc.dockerClient.DaemonHost())
 
@@ -94,9 +89,9 @@ func (sc *selflowClient) createDaemon(ctx context.Context, containerName string)
 			Container: sc.daemonDebugPort,
 		})
 	}
-	return cs.SpawnAsync(ctx, &cs.SpawnConfig{
+	return sc.dockerClient.SpawnAsync(ctx, &cs.SpawnConfig{
 		Image:         "selflow-daemon",
-		ContainerName: containerName,
+		ContainerName: sc.daemonName,
 		Entrypoint:    nil,
 		Environment: map[string]string{
 			sfenvironment.DaemonPortEnvKey:              sc.daemonPort,
@@ -104,7 +99,6 @@ func (sc *selflowClient) createDaemon(ctx context.Context, containerName string)
 			sfenvironment.DaemonNameEnvKey:              sc.daemonName,
 			sfenvironment.DaemonBaseDirectoryEnvKey:     sc.daemonBaseDirectory,
 			sfenvironment.DaemonNetworkEnvKey:           sc.daemonNetworkName,
-			sfenvironment.DaemonImageEnvKey:             sc.daemonDockerImage,
 			sfenvironment.DaemonHostBaseDirectoryEnvKey: sc.daemonHostBaseDirectory,
 		},
 		Mounts: []cs.Mountable{
@@ -119,6 +113,6 @@ func (sc *selflowClient) createDaemon(ctx context.Context, containerName string)
 			},
 		},
 		PortForward: portForwardConfig,
-		Networks:    []string{containerName},
+		Networks:    []string{sc.daemonNetworkName},
 	})
 }

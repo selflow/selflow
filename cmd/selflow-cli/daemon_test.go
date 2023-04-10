@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	cs "github.com/selflow/selflow/pkg/container-spawner"
 	"testing"
 	"time"
 )
@@ -18,12 +19,12 @@ type fields struct {
 	daemonHostBaseDirectory string
 	daemonIsDebug           bool
 	daemonDebugPort         string
-	dockerClient            client.APIClient
+	dockerClient            ContainerSpawner
 	dockerOpts              []client.Opt
 }
 
 type mockDockerClient struct {
-	client.APIClient
+	ContainerSpawner
 	NetworkInspectNet types.NetworkResource
 	NetworkInspectErr error
 
@@ -33,6 +34,14 @@ type mockDockerClient struct {
 	ContainerStopErr error
 
 	ContainerRemoveErr error
+
+	SpawnAsyncContainerId string
+	SpawnAsyncError       error
+
+	DaemonHostResponse string
+
+	ContainerInspectContainer types.ContainerJSON
+	ContainerInspectError     error
 }
 
 func (m mockDockerClient) NetworkInspect(_ context.Context, _ string, _ types.NetworkInspectOptions) (types.NetworkResource, error) {
@@ -49,6 +58,18 @@ func (m mockDockerClient) ContainerStop(_ context.Context, _ string, _ *time.Dur
 
 func (m mockDockerClient) ContainerRemove(_ context.Context, _ string, _ types.ContainerRemoveOptions) error {
 	return m.ContainerRemoveErr
+}
+
+func (m mockDockerClient) SpawnAsync(_ context.Context, _ *cs.SpawnConfig) (string, error) {
+	return m.SpawnAsyncContainerId, m.SpawnAsyncError
+}
+
+func (m mockDockerClient) DaemonHost() string {
+	return m.DaemonHostResponse
+}
+
+func (m mockDockerClient) ContainerInspect(_ context.Context, _ string) (types.ContainerJSON, error) {
+	return m.ContainerInspectContainer, m.ContainerInspectError
 }
 
 type mockNotFoundErr struct {
@@ -122,8 +143,8 @@ func Test_selflowClient_clearContainer(t *testing.T) {
 				dockerClient:            tt.fields.dockerClient,
 				dockerOpts:              tt.fields.dockerOpts,
 			}
-			if err := sc.clearContainer(tt.args.ctx, tt.args.containerName); (err != nil) != tt.wantErr {
-				t.Errorf("clearContainer() error = %v, wantErr %v", err, tt.wantErr)
+			if err := sc.clearDaemon(tt.args.ctx); (err != nil) != tt.wantErr {
+				t.Errorf("clearDaemon() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
@@ -141,7 +162,45 @@ func Test_selflowClient_createDaemon(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "creation succeeded",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					DaemonHostResponse:    "unix:///var/run/docker.sock",
+					SpawnAsyncContainerId: "toto",
+				},
+				daemonPort:      "1111",
+				daemonIsDebug:   true,
+				daemonDebugPort: "2222",
+
+				daemonName:              "toto",
+				daemonBaseDirectory:     "/I/need/more/tea",
+				daemonNetworkName:       "some-daemon-network",
+				daemonDockerImage:       "some-daemon-docker-image",
+				daemonHostBaseDirectory: "/I/need/more/coffee",
+			},
+			wantErr: false,
+			want:    "toto",
+		},
+		{
+			name: "creation fails",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					DaemonHostResponse: "unix:///var/run/docker.sock",
+					SpawnAsyncError:    errors.New("some-error"),
+				},
+				daemonPort:      "1111",
+				daemonIsDebug:   true,
+				daemonDebugPort: "2222",
+
+				daemonName:              "toto",
+				daemonBaseDirectory:     "/I/need/more/tea",
+				daemonNetworkName:       "some-daemon-network",
+				daemonDockerImage:       "some-daemon-docker-image",
+				daemonHostBaseDirectory: "/I/need/more/coffee",
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -157,7 +216,7 @@ func Test_selflowClient_createDaemon(t *testing.T) {
 				dockerClient:            tt.fields.dockerClient,
 				dockerOpts:              tt.fields.dockerOpts,
 			}
-			got, err := sc.createDaemon(tt.args.ctx, tt.args.containerName)
+			got, err := sc.createDaemon(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("createDaemon() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -260,7 +319,26 @@ func Test_selflowClient_getRunningDaemon(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "container found",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					ContainerInspectContainer: types.ContainerJSON{
+						ContainerJSONBase: &types.ContainerJSONBase{ID: "toto"},
+					},
+				},
+			},
+			want: "toto",
+		},
+		{
+			name: "container not found",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					ContainerInspectError: errors.New("some-error"),
+				},
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -276,7 +354,7 @@ func Test_selflowClient_getRunningDaemon(t *testing.T) {
 				dockerClient:            tt.fields.dockerClient,
 				dockerOpts:              tt.fields.dockerOpts,
 			}
-			got, err := sc.getRunningDaemon(tt.args.ctx, tt.args.containerName)
+			got, err := sc.getRunningDaemon(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("getRunningDaemon() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -300,7 +378,47 @@ func Test_selflowClient_startDaemon(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "daemon already started",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					ContainerInspectContainer: types.ContainerJSON{
+						ContainerJSONBase: &types.ContainerJSONBase{ID: "toto"},
+					},
+				},
+			},
+			want: "toto",
+		},
+		{
+			name: "fail to clear daemon",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					ContainerInspectError: errors.New("some-error"),
+					ContainerStopErr:      errors.New("another-error"),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "fail to create daemon",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					ContainerInspectError: errors.New("some-error"),
+					SpawnAsyncError:       errors.New("another-error"),
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "daemon created",
+			fields: fields{
+				dockerClient: mockDockerClient{
+					ContainerInspectError: errors.New("some-error"),
+					SpawnAsyncContainerId: "toto",
+				},
+			},
+			want: "toto",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -316,7 +434,7 @@ func Test_selflowClient_startDaemon(t *testing.T) {
 				dockerClient:            tt.fields.dockerClient,
 				dockerOpts:              tt.fields.dockerOpts,
 			}
-			got, err := sc.startDaemon(tt.args.ctx, tt.args.selflowClient)
+			got, err := sc.startDaemon(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("startDaemon() error = %v, wantErr %v", err, tt.wantErr)
 				return

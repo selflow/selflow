@@ -31,7 +31,7 @@ func startRun(selflowClient *selflowClient, fileName string) error {
 		return err
 	}
 
-	daemonId, err := selflowClient.startDaemon(ctx, selflowClient)
+	daemonId, err := selflowClient.startDaemon(ctx)
 	if err != nil {
 		panic(err)
 	}

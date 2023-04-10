@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -31,7 +30,7 @@ func init() {
 			if err != nil {
 				log.Fatalf("fail to initialize selflow: %v", err)
 			}
-			err = sc.clearContainer(context.Background(), sfenvironment.GetDaemonName())
+			err = sc.clearDaemon(context.Background())
 			if err != nil {
 				log.Fatalf("fail to stop daemon : %v", err)
 			}

@@ -60,18 +60,6 @@ func Test_newSelflowClient(t *testing.T) {
 }
 
 func Test_selflowClient_init(t *testing.T) {
-	type fields struct {
-		daemonName              string
-		daemonPort              string
-		daemonNetworkName       string
-		daemonDockerImage       string
-		daemonBaseDirectory     string
-		daemonHostBaseDirectory string
-		daemonIsDebug           bool
-		daemonDebugPort         string
-		dockerClient            *client.Client
-		dockerOpts              []client.Opt
-	}
 	tests := []struct {
 		name    string
 		fields  fields

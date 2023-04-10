@@ -19,7 +19,7 @@ type selflowClient struct {
 	daemonIsDebug   bool
 	daemonDebugPort string
 
-	dockerClient client.APIClient
+	dockerClient ContainerSpawner
 	dockerOpts   []client.Opt
 }
 
@@ -42,10 +42,12 @@ func newSelflowClient() *selflowClient {
 
 func (sc *selflowClient) init() error {
 	var err error
-	sc.dockerClient, err = client.NewClientWithOpts(sc.dockerOpts...)
+	dockerClient, err := client.NewClientWithOpts(sc.dockerOpts...)
 	if err != nil {
 		return err
 	}
+
+	sc.dockerClient = containerSpawner{dockerClient}
 
 	return err
 }
