@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/ahmetb/dlog v0.0.0-20170105205344-4fb5f8204f26
-	github.com/docker/docker v20.10.22+incompatible
+	github.com/docker/docker v20.10.24+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/eknkc/basex v1.0.1
 	github.com/go-playground/validator/v10 v10.11.1
