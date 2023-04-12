@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/docker/docker/client"
 	"github.com/hashicorp/go-hclog"
 	"github.com/selflow/selflow/internal/config"
-	"github.com/selflow/selflow/pkg/runners"
 	"log"
 	"os"
 )
@@ -30,7 +30,7 @@ func setupLogger() {
 func main() {
 	setupLogger()
 
-	configAsBytes, err := os.ReadFile("/etc/selflow/config.yaml")
+	configAsBytes, err := os.ReadFile("/home/anthony/Projets/selflow/internal/config/testdata/flow.yaml")
 	if err != nil {
 		panic(err)
 	}
@@ -40,8 +40,28 @@ func main() {
 		panic(err)
 	}
 
-	ctx := context.WithValue(context.Background(), "debug-port", "40001")
+	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		panic(err)
+	}
 
-	runners.StartRunner(ctx, *flow)
+	workflowBuilder := WorkflowBuilder{
+		stepMappers: []StepMapper{
+			&ContainerStepMapper{
+				containerSpawner: &dockerSpawner{
+					dockerClient,
+				},
+			},
+		},
+	}
+
+	wf, err := workflowBuilder.BuildWorkflow(flow)
+	if err != nil {
+		panic(err)
+	}
+	_, err = wf.Execute(context.Background())
+	if err != nil {
+		panic(err)
+	}
 
 }

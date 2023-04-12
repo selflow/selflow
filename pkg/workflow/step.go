@@ -5,6 +5,7 @@ import (
 )
 
 type Step interface {
+	SetStatus(status Status)
 	GetStatus() Status
 	Execute(context context.Context) (map[string]string, error)
 	Cancel() error

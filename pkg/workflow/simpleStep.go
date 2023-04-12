@@ -15,7 +15,7 @@ type SimpleStep struct {
 func (s *SimpleStep) GetOutput() map[string]string {
 	return map[string]string{}
 }
-func (s *SimpleStep) SetStatus(status SimpleStatus) {
+func (s *SimpleStep) SetStatus(status Status) {
 	s.statusMu.Lock()
 	defer s.statusMu.Unlock()
 

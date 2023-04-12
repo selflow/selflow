@@ -158,10 +158,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			errorLst = s.cancelRemainingSteps(errorLst)
 			close(closingSteps)
 
-		case step, ok := <-closingSteps:
-			if ok {
-
-			}
+		case step := <-closingSteps:
 			log.Printf("Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
@@ -214,14 +211,15 @@ func (s *SimpleWorkflow) debug() {
 }
 
 func (s *SimpleWorkflow) AddStep(step Step, dependencies []Step) error {
+	wrappedStep := wrapStep(step)
 	for _, previousStep := range s.steps {
-		if previousStep.GetId() == step.GetId() {
+		if previousStep.GetId() == wrappedStep.GetId() {
 			return fmt.Errorf("step [%s] is already present in workflow", step.GetId())
 		}
 	}
 
-	s.steps = append(s.steps, step)
-	s.dependencies[step] = dependencies
+	s.steps = append(s.steps, wrappedStep)
+	s.dependencies[wrappedStep] = dependencies
 	return nil
 }
 
