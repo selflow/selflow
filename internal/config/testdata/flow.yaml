@@ -61,6 +61,7 @@ workflow:
       kind: docker
       # if true, if the step was marked as ERROR, it will be marked ass SUCCESS instead
       on-error-ignore: true
+      entrypoint: /bin/sh -c /entrypoint.sh
       # configuration for the docker plugin
       with:
         image: node:lts
@@ -95,8 +96,8 @@ workflow:
           MY_ENV_VAR: 123
         commands: |
           echo wow
-          echo ${{ matrix.item }}
-          echo ${{ step-a.outputs.mi }}
+          echo wow2
+          echo wow3
 
     step-c:
       # Use the hosted plugin to run the step
@@ -116,5 +117,5 @@ workflow:
           MY_ENV_VAR: 123
         commands: |
           echo wow
-          echo ${{ matrix.item }}
-          echo ${{ step-a.outputs.mi }}
+          echo wow2
+          echo wow3

@@ -8,9 +8,10 @@ import (
 type ContainerConfig struct {
 	Image               string
 	ContainerName       string
+	Commands            string
 	ContainerLogsWriter io.Writer
 	Environment         map[string]string
-	Entrypoint          []string
+	Entrypoint          string
 	Mounts              []Mountable
 	OpenPorts           []OpenPortConfig
 	Networks            []string
@@ -43,5 +44,4 @@ type ContainerSpawner interface {
 	StartContainerDetached(ctx context.Context, config *ContainerConfig) (string, error)
 	TransferContainerLogs(ctx context.Context, containerId string, writer io.Writer) error
 	WaitContainer(ctx context.Context, containerId string) (int64, error)
-	CreateArtifact(ctx context.Context, artifactId string, content []byte)
 }

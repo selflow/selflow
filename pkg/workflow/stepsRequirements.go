@@ -4,11 +4,11 @@ func getStepThatRequires(requiredStep Step, dependencies map[Step][]Step) []Step
 	results := make([]Step, 0, len(dependencies))
 	for step, stepDependencies := range dependencies {
 		for _, dependency := range stepDependencies {
-			if dependency == requiredStep {
+			if dependency.GetId() == requiredStep.GetId() {
 				results = append(results, step)
+				// Switch to next step
+				break
 			}
-			// Switch to next step
-			break
 		}
 	}
 	return results

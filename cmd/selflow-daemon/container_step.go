@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"errors"
+	"github.com/hashicorp/go-hclog"
 	"github.com/mitchellh/mapstructure"
 	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/workflow"
 	"log"
-	"os"
 )
 
 type ContainerStep struct {
@@ -18,6 +19,8 @@ type ContainerStep struct {
 type ContainerStepMapper struct {
 	containerSpawner ContainerSpawner
 }
+
+var ContainerExitedNon0StatusCodeError = errors.New("container exited with a non-zero status code")
 
 func (c *ContainerStepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
 	dockerStepConfig := ContainerConfig{}
@@ -39,18 +42,20 @@ func (c *ContainerStepMapper) MapStep(stepId string, definition config.StepDefin
 func (step *ContainerStep) Execute(ctx context.Context) (map[string]string, error) {
 	step.SetStatus(workflow.RUNNING)
 
+	stepLogger := hclog.L().Named(step.GetId())
+
 	containerId, err := step.containerSpawner.StartContainerDetached(ctx, step.config)
 	if err != nil {
 		return nil, err
 	}
 
-	go func() {
-		err := step.containerSpawner.TransferContainerLogs(ctx, containerId, os.Stdout)
-		if err != nil {
+	err = step.containerSpawner.TransferContainerLogs(ctx, containerId, stepLogger.StandardWriter(&hclog.StandardLoggerOptions{
+		ForceLevel: hclog.Debug,
+	}))
+	if err != nil {
 
-			log.Printf("[WARN] fail to transfer container logs : %v", err)
-		}
-	}()
+		log.Printf("[WARN] fail to transfer container logs : %v", err)
+	}
 
 	exitCode, err := step.containerSpawner.WaitContainer(ctx, containerId)
 	if err != nil {
@@ -58,8 +63,8 @@ func (step *ContainerStep) Execute(ctx context.Context) (map[string]string, erro
 	}
 
 	if exitCode != 0 {
-		log.Printf("[INFO] fail to transfer container logs : %v", err)
-		return nil, err
+		stepLogger.Error("container exited with status", "ExitCode", exitCode)
+		return nil, ContainerExitedNon0StatusCodeError
 	}
 
 	return map[string]string{}, nil

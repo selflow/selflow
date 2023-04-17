@@ -14,6 +14,8 @@ import (
 	"github.com/docker/go-connections/nat"
 	"io"
 	"log"
+	"os"
+	"strings"
 )
 
 type dockerSpawner struct {
@@ -48,16 +50,33 @@ func (d *dockerSpawner) pullDockerImage(ctx context.Context, imageName string) e
 
 func (d *dockerSpawner) createContainer(ctx context.Context, config *ContainerConfig) (string, error) {
 
+	file, err := os.CreateTemp("", "selflow-start")
+
+	if err != nil {
+		return "", err
+	}
+
+	_, err = file.Write([]byte(config.Commands))
+	if err != nil {
+		return "", err
+	}
+
 	containerConfig := &container.Config{}
 	containerConfig.Env = buildEnvMap(config.Environment)
 	containerConfig.Image = config.Image
-	containerConfig.Entrypoint = config.Entrypoint
+	containerConfig.Entrypoint = strings.Split("/bin/sh /entrypoint.sh", " ")
 	containerConfig.ExposedPorts = nat.PortSet{}
 
 	hostConfig := &container.HostConfig{}
 	hostConfig.PortBindings = nat.PortMap{}
-	mounts := make([]mount.Mount, 0, 0) // TODO : handle mounts
-	hostConfig.Mounts = mounts
+	hostConfig.Mounts = []mount.Mount{
+		{
+			Type:     mount.TypeBind,
+			Source:   file.Name(),
+			ReadOnly: true,
+			Target:   "/entrypoint.sh",
+		},
+	}
 
 	networkConfig := &network.NetworkingConfig{}
 	networkConfig.EndpointsConfig = map[string]*network.EndpointSettings{}
@@ -171,8 +190,4 @@ func (d *dockerSpawner) WaitContainer(ctx context.Context, containerId string) (
 	case containerOkBody := <-containerOkBodyCh:
 		return containerOkBody.StatusCode, nil
 	}
-}
-
-func (d *dockerSpawner) CreateArtifact(ctx context.Context, artifactId string, content []byte) {
-	log.Printf("create artifact : %v\n", artifactId)
 }

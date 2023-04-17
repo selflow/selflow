@@ -96,7 +96,7 @@ func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
 	}
 }
 
-func (s *SimpleWorkflow) cancelNextSteps(lastStep Step) error {
+func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) error {
 	errorsLst := createErrorList(len(s.steps))
 
 	concernedSteps := getStepThatRequires(lastStep, s.dependencies)
@@ -107,6 +107,7 @@ func (s *SimpleWorkflow) cancelNextSteps(lastStep Step) error {
 			if err != nil {
 				errorsLst = append(errorsLst, fmt.Errorf("fail to cancel step %v : %v", step.GetId(), err))
 			}
+			closingSteps <- step
 		}
 	}
 	if len(errorsLst) != 0 {
@@ -162,7 +163,11 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			log.Printf("Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
-				errorLst = appendErrorList(errorLst, s.cancelNextSteps(step))
+				err := s.cancelNextSteps(step, closingSteps)
+				if err != nil {
+					errorLst = appendErrorList(errorLst, err)
+				}
+
 			} else {
 				s.startNextSteps(ctx, activeSteps, closingSteps)
 			}
