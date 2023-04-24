@@ -1,7 +1,6 @@
 package workflow
 
 import (
-	"errors"
 	"reflect"
 	"testing"
 )
@@ -64,39 +63,5 @@ func Test_mergeStringStringStringMaps(t *testing.T) {
 				t.Errorf("mergeStringStringStringMaps() = %v, want %v", got, tt.want)
 			}
 		})
-	}
-}
-
-func Test_appendErrorList(t *testing.T) {
-	type args struct {
-		errorLst []error
-		err      error
-	}
-	tests := []struct {
-		name string
-		args args
-		want []error
-	}{
-		{
-			name: "should return unchanged list if err is nil",
-			args: args{
-				errorLst: []error{errors.New("errA"), errors.New("errB")},
-				err:      nil,
-			},
-			want: []error{errors.New("errA"), errors.New("errB")},
-		},
-		{
-			name: "should add err to list",
-			args: args{
-				errorLst: []error{errors.New("errA"), errors.New("errB")},
-				err:      errors.New("errC"),
-			},
-			want: []error{errors.New("errA"), errors.New("errB"), errors.New("errC")},
-		},
-	}
-	for _, tt := range tests {
-		if got := appendErrorList(tt.args.errorLst, tt.args.err); !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("appendErrorList() = %v, want %v", got, tt.want)
-		}
 	}
 }

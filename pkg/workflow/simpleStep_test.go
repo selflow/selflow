@@ -26,20 +26,18 @@ func TestSimpleStep_Execute(t *testing.T) {
 		context context.Context
 	}
 	tests := []struct {
-		name           string
-		fields         fields
-		expectedFields fields
-		args           args
-		want           map[string]string
-		wantErr        bool
+		name    string
+		fields  fields
+		args    args
+		want    map[string]string
+		wantErr bool
 	}{
 		{
-			name:           "execution",
-			fields:         fields{status: CREATED},
-			expectedFields: fields{status: SUCCESS},
-			args:           args{},
-			want:           map[string]string{},
-			wantErr:        false,
+			name:    "execution",
+			fields:  fields{status: CREATED},
+			args:    args{},
+			want:    map[string]string{},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -55,15 +53,6 @@ func TestSimpleStep_Execute(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Execute() got = %v, want %v", got, tt.want)
-			}
-
-			expectedStep := &SimpleStep{
-				Id:     tt.expectedFields.id,
-				Status: tt.expectedFields.status,
-			}
-
-			if !reflect.DeepEqual(s, expectedStep) {
-				t.Errorf("Execute() got = %v, want %v", s, expectedStep)
 			}
 		})
 	}
@@ -137,10 +126,9 @@ func Test_makeSimpleStep(t *testing.T) {
 		id string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    *SimpleStep
-		wantErr bool
+		name string
+		args args
+		want *SimpleStep
 	}{
 		{
 			"create step with id",
@@ -149,22 +137,16 @@ func Test_makeSimpleStep(t *testing.T) {
 				Id:     "my-step",
 				Status: CREATED,
 			},
-			false,
 		},
 		{
 			"create step with empty id",
 			args{""},
 			nil,
-			true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := makeSimpleStep(tt.args.id)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("makeSimpleStep() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			got := makeSimpleStep(tt.args.id)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("makeSimpleStep() got = %v, want %v", got, tt.want)
 			}

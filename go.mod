@@ -1,6 +1,6 @@
 module github.com/selflow/selflow
 
-go 1.19
+go 1.20
 
 require (
 	github.com/ahmetb/dlog v0.0.0-20170105205344-4fb5f8204f26

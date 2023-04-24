@@ -2,6 +2,7 @@ package workflow
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"reflect"
@@ -97,23 +98,17 @@ func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
 }
 
 func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) error {
-	errorsLst := createErrorList(len(s.steps))
+	var err error
 
 	concernedSteps := getStepThatRequires(lastStep, s.dependencies)
 
 	for _, step := range concernedSteps {
 		if step.GetStatus().IsCancellable() {
-			err := step.Cancel()
-			if err != nil {
-				errorsLst = append(errorsLst, fmt.Errorf("fail to cancel step %v : %v", step.GetId(), err))
-			}
+			err = errors.Join(step.Cancel())
 			closingSteps <- step
 		}
 	}
-	if len(errorsLst) != 0 {
-		return joinErrorList(errorsLst)
-	}
-	return nil
+	return err
 }
 
 func (s *SimpleWorkflow) getRequirementsOutputs(step Step) map[string]map[string]string {
@@ -147,7 +142,8 @@ func (s *SimpleWorkflow) hasUnfinishedSteps() bool {
 
 func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]string, error) {
 	closingSteps := make(chan Step, len(s.steps))
-	errorLst := make([]error, 0, len(s.steps))
+
+	var err error
 
 	activeSteps := &sync.WaitGroup{}
 
@@ -156,26 +152,18 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	for s.hasUnfinishedSteps() {
 		select {
 		case <-ctx.Done():
-			errorLst = s.cancelRemainingSteps(errorLst)
+			err = errors.Join(err, s.cancelRemainingSteps())
 			close(closingSteps)
 
 		case step := <-closingSteps:
 			log.Printf("Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
-				err := s.cancelNextSteps(step, closingSteps)
-				if err != nil {
-					errorLst = appendErrorList(errorLst, err)
-				}
-
+				err = errors.Join(err, s.cancelNextSteps(step, closingSteps))
 			} else {
 				s.startNextSteps(ctx, activeSteps, closingSteps)
 			}
 		}
-	}
-
-	if len(errorLst) > 0 {
-		return nil, joinErrorList(errorLst)
 	}
 
 	activeSteps.Wait()
@@ -183,16 +171,14 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	return s.getOutput(), nil
 }
 
-func (s *SimpleWorkflow) cancelRemainingSteps(errorLst []error) []error {
+func (s *SimpleWorkflow) cancelRemainingSteps() error {
+	var err error
 	for _, step := range s.steps {
-		if step.GetStatus().IsCancellable() {
-			err := step.Cancel()
-			if err != nil {
-				errorLst = append(errorLst, err)
-			}
+		if !step.GetStatus().IsFinished() && step.GetStatus().IsCancellable() {
+			err = errors.Join(step.Cancel())
 		}
 	}
-	return errorLst
+	return err
 }
 
 func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.WaitGroup, closingSteps chan Step) {
@@ -237,7 +223,7 @@ func (s *SimpleWorkflow) Equals(s2 Workflow) bool {
 BaseStep:
 	for _, step := range s.steps {
 		for _, step2 := range sw2.steps {
-			if reflect.DeepEqual(step, step2) {
+			if reflect.DeepEqual(step.GetId(), step2.GetId()) {
 				continue BaseStep
 			}
 		}
