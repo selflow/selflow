@@ -5,6 +5,8 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/hashicorp/go-hclog"
 	"github.com/selflow/selflow/internal/config"
+	"github.com/selflow/selflow/pkg/container-spawner/docker"
+	"github.com/selflow/selflow/pkg/steps/container"
 	"log"
 	"os"
 )
@@ -47,10 +49,8 @@ func main() {
 
 	workflowBuilder := WorkflowBuilder{
 		stepMappers: []StepMapper{
-			&ContainerStepMapper{
-				containerSpawner: &dockerSpawner{
-					dockerClient,
-				},
+			&container.StepMapper{
+				ContainerSpawner: docker.NewSpawner(dockerClient),
 			},
 		},
 	}

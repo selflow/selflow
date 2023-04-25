@@ -1,4 +1,4 @@
-package main
+package container
 
 import (
 	"context"
@@ -10,19 +10,19 @@ import (
 	"log"
 )
 
-type ContainerStep struct {
+var ContainerExitedNon0StatusCodeError = errors.New("container exited with a non-zero status code")
+
+type Step struct {
 	workflow.SimpleStep
 	containerSpawner ContainerSpawner
 	config           *ContainerConfig
 }
 
-type ContainerStepMapper struct {
-	containerSpawner ContainerSpawner
+type StepMapper struct {
+	ContainerSpawner ContainerSpawner
 }
 
-var ContainerExitedNon0StatusCodeError = errors.New("container exited with a non-zero status code")
-
-func (c *ContainerStepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
+func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
 	dockerStepConfig := ContainerConfig{}
 
 	delete(definition.With, "environment") // TODO : handle environment
@@ -32,14 +32,14 @@ func (c *ContainerStepMapper) MapStep(stepId string, definition config.StepDefin
 		return nil, err
 	}
 
-	return &ContainerStep{
-		containerSpawner: c.containerSpawner,
+	return &Step{
+		containerSpawner: c.ContainerSpawner,
 		SimpleStep:       workflow.SimpleStep{Id: stepId, Status: workflow.CREATED},
 		config:           &dockerStepConfig,
 	}, nil
 }
 
-func (step *ContainerStep) Execute(ctx context.Context) (map[string]string, error) {
+func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 	step.SetStatus(workflow.RUNNING)
 
 	stepLogger := hclog.L().Named(step.GetId())

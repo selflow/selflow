@@ -1,4 +1,4 @@
-package main
+package docker
 
 import (
 	"bufio"
@@ -7,19 +7,24 @@ import (
 	"fmt"
 	"github.com/ahmetb/dlog"
 	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
+	dockerContainer "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"github.com/selflow/selflow/pkg/steps/container"
 	"io"
 	"log"
 	"os"
 	"strings"
 )
 
-type dockerSpawner struct {
+type spawner struct {
 	dockerClient client.APIClient
+}
+
+func NewSpawner(dockerClient client.APIClient) container.ContainerSpawner {
+	return &spawner{dockerClient: dockerClient}
 }
 
 func buildEnvString(key string, value string) string {
@@ -34,7 +39,7 @@ func buildEnvMap(environmentVariables map[string]string) []string {
 	return envAsString
 }
 
-func (d *dockerSpawner) pullDockerImage(ctx context.Context, imageName string) error {
+func (d *spawner) pullDockerImage(ctx context.Context, imageName string) error {
 	out, err := d.dockerClient.ImagePull(ctx, imageName, types.ImagePullOptions{})
 	if err != nil {
 		return fmt.Errorf("fail to pull image %s : %v", imageName, err)
@@ -48,8 +53,7 @@ func (d *dockerSpawner) pullDockerImage(ctx context.Context, imageName string) e
 	return nil
 }
 
-func (d *dockerSpawner) createContainer(ctx context.Context, config *ContainerConfig) (string, error) {
-
+func createSpawner(config *container.ContainerConfig) (string, error) {
 	file, err := os.CreateTemp("", "selflow-start")
 
 	if err != nil {
@@ -60,19 +64,25 @@ func (d *dockerSpawner) createContainer(ctx context.Context, config *ContainerCo
 	if err != nil {
 		return "", err
 	}
+	return file.Name(), nil
+}
 
-	containerConfig := &container.Config{}
+func (d *spawner) createContainer(ctx context.Context, config *container.ContainerConfig) (string, error) {
+
+	fileName, err := createSpawner(config)
+
+	containerConfig := &dockerContainer.Config{}
 	containerConfig.Env = buildEnvMap(config.Environment)
 	containerConfig.Image = config.Image
 	containerConfig.Entrypoint = strings.Split("/bin/sh /entrypoint.sh", " ")
 	containerConfig.ExposedPorts = nat.PortSet{}
 
-	hostConfig := &container.HostConfig{}
+	hostConfig := &dockerContainer.HostConfig{}
 	hostConfig.PortBindings = nat.PortMap{}
 	hostConfig.Mounts = []mount.Mount{
 		{
 			Type:     mount.TypeBind,
-			Source:   file.Name(),
+			Source:   fileName,
 			ReadOnly: true,
 			Target:   "/entrypoint.sh",
 		},
@@ -118,7 +128,7 @@ func (d *dockerSpawner) createContainer(ctx context.Context, config *ContainerCo
 	return response.ID, nil
 }
 
-func (d *dockerSpawner) startContainer(ctx context.Context, containerId string) error {
+func (d *spawner) startContainer(ctx context.Context, containerId string) error {
 	err := d.dockerClient.ContainerStart(
 		ctx,
 		containerId,
@@ -131,7 +141,7 @@ func (d *dockerSpawner) startContainer(ctx context.Context, containerId string) 
 	return nil
 }
 
-func (d *dockerSpawner) StartContainerDetached(ctx context.Context, config *ContainerConfig) (string, error) {
+func (d *spawner) StartContainerDetached(ctx context.Context, config *container.ContainerConfig) (string, error) {
 
 	containerId, err := d.createContainer(ctx, config)
 	if err != nil {
@@ -164,7 +174,7 @@ func (dw *DockerWriter) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func (d *dockerSpawner) TransferContainerLogs(ctx context.Context, containerId string, writer io.Writer) error {
+func (d *spawner) TransferContainerLogs(ctx context.Context, containerId string, writer io.Writer) error {
 	out, err := d.dockerClient.ContainerLogs(ctx, containerId, types.ContainerLogsOptions{
 		ShowStdout: true,
 		ShowStderr: true,
@@ -182,8 +192,8 @@ func (d *dockerSpawner) TransferContainerLogs(ctx context.Context, containerId s
 	return nil
 }
 
-func (d *dockerSpawner) WaitContainer(ctx context.Context, containerId string) (int64, error) {
-	containerOkBodyCh, errCh := d.dockerClient.ContainerWait(ctx, containerId, container.WaitConditionNotRunning)
+func (d *spawner) WaitContainer(ctx context.Context, containerId string) (int64, error) {
+	containerOkBodyCh, errCh := d.dockerClient.ContainerWait(ctx, containerId, dockerContainer.WaitConditionNotRunning)
 	select {
 	case err := <-errCh:
 		return -1, err
