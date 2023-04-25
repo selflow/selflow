@@ -32,7 +32,7 @@ func setupLogger() {
 func main() {
 	setupLogger()
 
-	configAsBytes, err := os.ReadFile("/home/anthony/Projets/selflow/internal/config/testdata/flow.yaml")
+	configAsBytes, err := os.ReadFile("/etc/selflow/config.yaml")
 	if err != nil {
 		panic(err)
 	}
