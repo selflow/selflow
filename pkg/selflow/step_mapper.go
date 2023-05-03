@@ -1,4 +1,4 @@
-package server
+package selflow
 
 import (
 	"github.com/selflow/selflow/internal/config"

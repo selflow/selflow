@@ -1,4 +1,4 @@
-package server
+package selflow
 
 import (
 	"errors"
@@ -10,12 +10,12 @@ import (
 var UnknownStepKindError = errors.New("unknown step kind")
 
 type WorkflowBuilder struct {
-	stepMappers []StepMapper
+	StepMappers []StepMapper
 }
 
 func (b WorkflowBuilder) mapDefinitionToStep(stepId string, stepDefinition config.StepDefinition) (workflow.Step, error) {
 
-	for _, stepMapper := range b.stepMappers {
+	for _, stepMapper := range b.StepMappers {
 		step, err := stepMapper.MapStep(stepId, stepDefinition)
 		if err == nil {
 			return step, nil
