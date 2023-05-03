@@ -1,0 +1,34 @@
+syntax = "proto3";
+option go_package = "cmd/selflow-daemon/server/proto";
+
+
+// ---------- GLOBAL UTILITIES ----------
+
+enum DiagnosticType {
+  ERROR = 0;
+  WARNING = 1;
+  INFO = 2;
+  DEBUG = 3;
+}
+
+message Diagnostic {
+  DiagnosticType type = 1;
+  string message = 2;
+}
+
+// ---------- PLUGIN BASIS ----------
+
+message StartRun {
+  message Request {
+    bytes runConfig = 1;
+  }
+
+  message Response {
+    repeated Diagnostic diagnostics = 1;
+    string runId = 2;
+  }
+}
+
+service Daemon {
+  rpc StartRun(StartRun.Request) returns (StartRun.Response);
+}

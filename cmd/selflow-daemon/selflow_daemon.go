@@ -1,14 +1,14 @@
 package main
 
 import (
-	"context"
-	"github.com/docker/docker/client"
+	"fmt"
 	"github.com/hashicorp/go-hclog"
-	"github.com/selflow/selflow/internal/config"
-	"github.com/selflow/selflow/pkg/container-spawner/docker"
-	"github.com/selflow/selflow/pkg/steps/container"
+	"github.com/selflow/selflow/cmd/selflow-daemon/server"
+	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	"github.com/selflow/selflow/internal/sfenvironment"
+	"google.golang.org/grpc"
 	"log"
-	"os"
+	"net"
 )
 
 func setupLogger() {
@@ -32,36 +32,16 @@ func setupLogger() {
 func main() {
 	setupLogger()
 
-	configAsBytes, err := os.ReadFile("/etc/selflow/config.yaml")
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", sfenvironment.GetDaemonPort()))
 	if err != nil {
 		panic(err)
 	}
 
-	flow, err := config.Parse(configAsBytes)
-	if err != nil {
+	s := grpc.NewServer()
+	proto.RegisterDaemonServer(s, &server.Server{})
+
+	log.Printf("[INFO] Start listening at %v\n", lis.Addr())
+	if err = s.Serve(lis); err != nil {
 		panic(err)
 	}
-
-	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		panic(err)
-	}
-
-	workflowBuilder := WorkflowBuilder{
-		stepMappers: []StepMapper{
-			&container.StepMapper{
-				ContainerSpawner: docker.NewSpawner(dockerClient),
-			},
-		},
-	}
-
-	wf, err := workflowBuilder.BuildWorkflow(flow)
-	if err != nil {
-		panic(err)
-	}
-	_, err = wf.Execute(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
 }

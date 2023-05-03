@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
+	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"log"
+	"os"
 )
 
 func NewRunCommand(selflowClient *selflowClient) *cobra.Command {
@@ -31,12 +35,30 @@ func startRun(selflowClient *selflowClient, fileName string) error {
 		return err
 	}
 
-	daemonId, err := selflowClient.startDaemon(ctx)
+	_, err = selflowClient.startDaemon(ctx)
 	if err != nil {
 		panic(err)
 	}
 
-	log.Println(daemonId)
+	bytes, err := os.ReadFile(fileName)
+	if err != nil {
+		return err
+	}
+
+	conn, err := grpc.Dial("localhost:10011", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer func() {
+		_ = conn.Close()
+	}()
+
+	c := proto.NewDaemonClient(conn)
+
+	r, err := c.StartRun(ctx, &proto.StartRun_Request{RunConfig: bytes})
+
+	log.Println(r)
+	log.Println(err)
 
 	return nil
 
