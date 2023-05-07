@@ -6,8 +6,8 @@ import (
 	"github.com/hashicorp/go-hclog"
 	"github.com/mitchellh/mapstructure"
 	"github.com/selflow/selflow/internal/config"
+	"github.com/selflow/selflow/pkg/sflog"
 	"github.com/selflow/selflow/pkg/workflow"
-	"log"
 )
 
 var ContainerExitedNon0StatusCodeError = errors.New("container exited with a non-zero status code")
@@ -42,7 +42,8 @@ func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (w
 func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 	step.SetStatus(workflow.RUNNING)
 
-	stepLogger := hclog.L().Named(step.GetId())
+	logger := sflog.LoggerFromContext(ctx)
+	stepLogger := logger.Named(step.GetId())
 
 	containerId, err := step.containerSpawner.StartContainerDetached(ctx, step.config)
 	if err != nil {
@@ -54,7 +55,7 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 	}))
 	if err != nil {
 
-		log.Printf("[WARN] fail to transfer container logs : %v", err)
+		logger.Warn("fail to transfer container logs", "error", err)
 	}
 
 	exitCode, err := step.containerSpawner.WaitContainer(ctx, containerId)

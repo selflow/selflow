@@ -2,35 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/hashicorp/go-hclog"
 	"github.com/selflow/selflow/cmd/selflow-daemon/server"
 	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/sfenvironment"
+	"github.com/selflow/selflow/pkg/sflog"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 )
 
 func setupLogger() {
-	logger := hclog.New(&hclog.LoggerOptions{
-		Name:            "selflow-daemon",
-		Output:          nil,
-		JSONFormat:      false,
-		IncludeLocation: false,
-		TimeFormat:      "2006-01-02 15:04:05",
-		Color:           hclog.ForceColor,
-		Level:           hclog.Debug,
-	})
-
-	hclog.SetDefault(logger)
-
-	log.SetOutput(logger.StandardWriter(&hclog.StandardLoggerOptions{InferLevels: true}))
-	log.SetPrefix("")
-	log.SetFlags(0)
+	logger := sflog.LoggerFromEnv("selflow-daemon")
+	sflog.SetDefaultLogger(logger)
 }
 
 func main() {
-	setupLogger()
+	logger := sflog.LoggerFromEnv("selflow-daemon")
+	sflog.SetDefaultLogger(logger)
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", sfenvironment.GetDaemonPort()))
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/selflow/selflow/pkg/sflog"
 	"log"
 	"reflect"
 	"sync"
@@ -89,11 +90,12 @@ func (s *SimpleWorkflow) getNextSteps() []Step {
 }
 
 func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
+	logger := sflog.LoggerFromContext(ctx)
 	requirementsOutputs := s.getRequirementsOutputs(step)
 	stepContext := context.WithValue(ctx, stepOutputContextKey, requirementsOutputs)
 	_, err := step.Execute(stepContext)
 	if err != nil {
-		log.Printf("[WARN]: step %v ended with error : %v", step.GetId(), err)
+		logger.Warn("step ended with an error", "step-id", step.GetId(), "error", err)
 	}
 }
 
@@ -141,6 +143,7 @@ func (s *SimpleWorkflow) hasUnfinishedSteps() bool {
 }
 
 func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]string, error) {
+	logger := sflog.LoggerFromContext(ctx)
 	closingSteps := make(chan Step, len(s.steps))
 
 	var err error
@@ -156,7 +159,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			close(closingSteps)
 
 		case step := <-closingSteps:
-			log.Printf("Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
+			logger.Info("step terminated", "step-id", step.GetId(), "status", step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
 				err = errors.Join(err, s.cancelNextSteps(step, closingSteps))
@@ -182,12 +185,13 @@ func (s *SimpleWorkflow) cancelRemainingSteps() error {
 }
 
 func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.WaitGroup, closingSteps chan Step) {
+	logger := sflog.LoggerFromContext(ctx)
 	nextSteps := s.getNextSteps()
 	for _, step := range nextSteps {
 		activeSteps.Add(1)
 
 		go func(step Step) {
-			log.Printf("Step %s started\n", step.GetId())
+			logger.Info("step started", "step-id", step.GetId())
 			s.executeStep(ctx, step)
 			closingSteps <- step
 			activeSteps.Done()

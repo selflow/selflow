@@ -265,7 +265,7 @@ func Test_transferContainerLogs(t *testing.T) {
 				ctx: context.TODO(),
 				cli: &mockDockerClient{
 					logsFunction: func() (io.ReadCloser, error) {
-						return nil, errors.New("log transfer failed")
+						return nil, errors.New("sflog transfer failed")
 					},
 				},
 				config: &pluginContainer{
