@@ -165,6 +165,115 @@ func (*StartRun) Descriptor() ([]byte, []int) {
 	return file_cmd_selflow_daemon_server_proto_daemon_proto_rawDescGZIP(), []int{1}
 }
 
+type GetLogStream struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *GetLogStream) Reset() {
+	*x = GetLogStream{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLogStream) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLogStream) ProtoMessage() {}
+
+func (x *GetLogStream) ProtoReflect() protoreflect.Message {
+	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLogStream.ProtoReflect.Descriptor instead.
+func (*GetLogStream) Descriptor() ([]byte, []int) {
+	return file_cmd_selflow_daemon_server_proto_daemon_proto_rawDescGZIP(), []int{2}
+}
+
+type Log struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Level    string `protobuf:"bytes,1,opt,name=level,proto3" json:"level,omitempty"`
+	DateTime string `protobuf:"bytes,2,opt,name=dateTime,proto3" json:"dateTime,omitempty"`
+	Name     string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Message  string `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *Log) Reset() {
+	*x = Log{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Log) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Log) ProtoMessage() {}
+
+func (x *Log) ProtoReflect() protoreflect.Message {
+	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Log.ProtoReflect.Descriptor instead.
+func (*Log) Descriptor() ([]byte, []int) {
+	return file_cmd_selflow_daemon_server_proto_daemon_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Log) GetLevel() string {
+	if x != nil {
+		return x.Level
+	}
+	return ""
+}
+
+func (x *Log) GetDateTime() string {
+	if x != nil {
+		return x.DateTime
+	}
+	return ""
+}
+
+func (x *Log) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Log) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 type StartRun_Request struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -176,7 +285,7 @@ type StartRun_Request struct {
 func (x *StartRun_Request) Reset() {
 	*x = StartRun_Request{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[2]
+		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -189,7 +298,7 @@ func (x *StartRun_Request) String() string {
 func (*StartRun_Request) ProtoMessage() {}
 
 func (x *StartRun_Request) ProtoReflect() protoreflect.Message {
-	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[2]
+	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -224,7 +333,7 @@ type StartRun_Response struct {
 func (x *StartRun_Response) Reset() {
 	*x = StartRun_Response{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[3]
+		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -237,7 +346,7 @@ func (x *StartRun_Response) String() string {
 func (*StartRun_Response) ProtoMessage() {}
 
 func (x *StartRun_Response) ProtoReflect() protoreflect.Message {
-	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[3]
+	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -267,6 +376,53 @@ func (x *StartRun_Response) GetRunId() string {
 	return ""
 }
 
+type GetLogStream_Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RunId string `protobuf:"bytes,1,opt,name=runId,proto3" json:"runId,omitempty"`
+}
+
+func (x *GetLogStream_Request) Reset() {
+	*x = GetLogStream_Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetLogStream_Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetLogStream_Request) ProtoMessage() {}
+
+func (x *GetLogStream_Request) ProtoReflect() protoreflect.Message {
+	mi := &file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetLogStream_Request.ProtoReflect.Descriptor instead.
+func (*GetLogStream_Request) Descriptor() ([]byte, []int) {
+	return file_cmd_selflow_daemon_server_proto_daemon_proto_rawDescGZIP(), []int{2, 0}
+}
+
+func (x *GetLogStream_Request) GetRunId() string {
+	if x != nil {
+		return x.RunId
+	}
+	return ""
+}
+
 var File_cmd_selflow_daemon_server_proto_daemon_proto protoreflect.FileDescriptor
 
 var file_cmd_selflow_daemon_server_proto_daemon_proto_rawDesc = []byte{
@@ -286,17 +442,29 @@ var file_cmd_selflow_daemon_server_proto_daemon_proto_rawDesc = []byte{
 	0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x44, 0x69, 0x61, 0x67, 0x6e, 0x6f, 0x73, 0x74, 0x69, 0x63, 0x52,
 	0x0b, 0x64, 0x69, 0x61, 0x67, 0x6e, 0x6f, 0x73, 0x74, 0x69, 0x63, 0x73, 0x12, 0x14, 0x0a, 0x05,
 	0x72, 0x75, 0x6e, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x72, 0x75, 0x6e,
-	0x49, 0x64, 0x2a, 0x3d, 0x0a, 0x0e, 0x44, 0x69, 0x61, 0x67, 0x6e, 0x6f, 0x73, 0x74, 0x69, 0x63,
-	0x54, 0x79, 0x70, 0x65, 0x12, 0x09, 0x0a, 0x05, 0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x00, 0x12,
-	0x0b, 0x0a, 0x07, 0x57, 0x41, 0x52, 0x4e, 0x49, 0x4e, 0x47, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04,
-	0x49, 0x4e, 0x46, 0x4f, 0x10, 0x02, 0x12, 0x09, 0x0a, 0x05, 0x44, 0x45, 0x42, 0x55, 0x47, 0x10,
-	0x03, 0x32, 0x3b, 0x0a, 0x06, 0x44, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x12, 0x31, 0x0a, 0x08, 0x53,
-	0x74, 0x61, 0x72, 0x74, 0x52, 0x75, 0x6e, 0x12, 0x11, 0x2e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x52,
-	0x75, 0x6e, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x53, 0x74, 0x61,
-	0x72, 0x74, 0x52, 0x75, 0x6e, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x21,
-	0x5a, 0x1f, 0x63, 0x6d, 0x64, 0x2f, 0x73, 0x65, 0x6c, 0x66, 0x6c, 0x6f, 0x77, 0x2d, 0x64, 0x61,
-	0x65, 0x6d, 0x6f, 0x6e, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x49, 0x64, 0x22, 0x2f, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x67, 0x53, 0x74, 0x72, 0x65,
+	0x61, 0x6d, 0x1a, 0x1f, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a,
+	0x05, 0x72, 0x75, 0x6e, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x72, 0x75,
+	0x6e, 0x49, 0x64, 0x22, 0x65, 0x0a, 0x03, 0x4c, 0x6f, 0x67, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x65,
+	0x76, 0x65, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x65, 0x76, 0x65, 0x6c,
+	0x12, 0x1a, 0x0a, 0x08, 0x64, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x64, 0x61, 0x74, 0x65, 0x54, 0x69, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2a, 0x3d, 0x0a, 0x0e, 0x44, 0x69,
+	0x61, 0x67, 0x6e, 0x6f, 0x73, 0x74, 0x69, 0x63, 0x54, 0x79, 0x70, 0x65, 0x12, 0x09, 0x0a, 0x05,
+	0x45, 0x52, 0x52, 0x4f, 0x52, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x57, 0x41, 0x52, 0x4e, 0x49,
+	0x4e, 0x47, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x49, 0x4e, 0x46, 0x4f, 0x10, 0x02, 0x12, 0x09,
+	0x0a, 0x05, 0x44, 0x45, 0x42, 0x55, 0x47, 0x10, 0x03, 0x32, 0x6a, 0x0a, 0x06, 0x44, 0x61, 0x65,
+	0x6d, 0x6f, 0x6e, 0x12, 0x31, 0x0a, 0x08, 0x53, 0x74, 0x61, 0x72, 0x74, 0x52, 0x75, 0x6e, 0x12,
+	0x11, 0x2e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x52, 0x75, 0x6e, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x12, 0x2e, 0x53, 0x74, 0x61, 0x72, 0x74, 0x52, 0x75, 0x6e, 0x2e, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x67,
+	0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x12, 0x15, 0x2e, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x67, 0x53,
+	0x74, 0x72, 0x65, 0x61, 0x6d, 0x2e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x04, 0x2e,
+	0x4c, 0x6f, 0x67, 0x30, 0x01, 0x42, 0x21, 0x5a, 0x1f, 0x63, 0x6d, 0x64, 0x2f, 0x73, 0x65, 0x6c,
+	0x66, 0x6c, 0x6f, 0x77, 0x2d, 0x64, 0x61, 0x65, 0x6d, 0x6f, 0x6e, 0x2f, 0x73, 0x65, 0x72, 0x76,
+	0x65, 0x72, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -312,21 +480,26 @@ func file_cmd_selflow_daemon_server_proto_daemon_proto_rawDescGZIP() []byte {
 }
 
 var file_cmd_selflow_daemon_server_proto_daemon_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_cmd_selflow_daemon_server_proto_daemon_proto_goTypes = []interface{}{
-	(DiagnosticType)(0),       // 0: DiagnosticType
-	(*Diagnostic)(nil),        // 1: Diagnostic
-	(*StartRun)(nil),          // 2: StartRun
-	(*StartRun_Request)(nil),  // 3: StartRun.Request
-	(*StartRun_Response)(nil), // 4: StartRun.Response
+	(DiagnosticType)(0),          // 0: DiagnosticType
+	(*Diagnostic)(nil),           // 1: Diagnostic
+	(*StartRun)(nil),             // 2: StartRun
+	(*GetLogStream)(nil),         // 3: GetLogStream
+	(*Log)(nil),                  // 4: Log
+	(*StartRun_Request)(nil),     // 5: StartRun.Request
+	(*StartRun_Response)(nil),    // 6: StartRun.Response
+	(*GetLogStream_Request)(nil), // 7: GetLogStream.Request
 }
 var file_cmd_selflow_daemon_server_proto_daemon_proto_depIdxs = []int32{
 	0, // 0: Diagnostic.type:type_name -> DiagnosticType
 	1, // 1: StartRun.Response.diagnostics:type_name -> Diagnostic
-	3, // 2: Daemon.StartRun:input_type -> StartRun.Request
-	4, // 3: Daemon.StartRun:output_type -> StartRun.Response
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
+	5, // 2: Daemon.StartRun:input_type -> StartRun.Request
+	7, // 3: Daemon.GetLogStream:input_type -> GetLogStream.Request
+	6, // 4: Daemon.StartRun:output_type -> StartRun.Response
+	4, // 5: Daemon.GetLogStream:output_type -> Log
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -363,7 +536,7 @@ func file_cmd_selflow_daemon_server_proto_daemon_proto_init() {
 			}
 		}
 		file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*StartRun_Request); i {
+			switch v := v.(*GetLogStream); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -375,7 +548,43 @@ func file_cmd_selflow_daemon_server_proto_daemon_proto_init() {
 			}
 		}
 		file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Log); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*StartRun_Request); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*StartRun_Response); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_cmd_selflow_daemon_server_proto_daemon_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetLogStream_Request); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -393,7 +602,7 @@ func file_cmd_selflow_daemon_server_proto_daemon_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_cmd_selflow_daemon_server_proto_daemon_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

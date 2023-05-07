@@ -66,6 +66,7 @@ workflow:
       with:
         image: node:lts
         commands: |
+          sleep 5
           echo this
           echo that
           echo ::output::foo::bar

@@ -7,15 +7,13 @@ import (
 	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/container-spawner/docker"
-	"github.com/selflow/selflow/pkg/logger/systemfile"
 	"github.com/selflow/selflow/pkg/selflow"
 	"github.com/selflow/selflow/pkg/steps/container"
-	"os"
-	"path"
 )
 
 type Server struct {
-	logger hclog.Logger
+	logger     hclog.Logger
+	LogFactory selflow.LogFactory
 	proto.UnimplementedDaemonServer
 }
 
@@ -39,9 +37,7 @@ func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) 
 		},
 	}
 
-	self := selflow.NewSelflow(workflowBuilder, &systemfile.LogFactory{
-		BaseDirectory: path.Join(os.Getenv("PWD"), "tmp"),
-	})
+	self := selflow.NewSelflow(workflowBuilder, s.LogFactory)
 
 	runId, err := self.StartRun(ctx, flow)
 	if err != nil {

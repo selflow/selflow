@@ -29,6 +29,20 @@ message StartRun {
   }
 }
 
+message GetLogStream {
+  message Request {
+    string runId = 1;
+  }
+}
+
+message Log {
+  string level = 1;
+  string dateTime = 2;
+  string name = 3;
+  string message = 4;
+}
+
 service Daemon {
   rpc StartRun(StartRun.Request) returns (StartRun.Response);
+  rpc GetLogStream(GetLogStream.Request) returns (stream Log);
 }

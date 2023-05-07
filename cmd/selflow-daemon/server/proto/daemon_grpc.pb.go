@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DaemonClient interface {
 	StartRun(ctx context.Context, in *StartRun_Request, opts ...grpc.CallOption) (*StartRun_Response, error)
+	GetLogStream(ctx context.Context, in *GetLogStream_Request, opts ...grpc.CallOption) (Daemon_GetLogStreamClient, error)
 }
 
 type daemonClient struct {
@@ -42,11 +43,44 @@ func (c *daemonClient) StartRun(ctx context.Context, in *StartRun_Request, opts 
 	return out, nil
 }
 
+func (c *daemonClient) GetLogStream(ctx context.Context, in *GetLogStream_Request, opts ...grpc.CallOption) (Daemon_GetLogStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Daemon_ServiceDesc.Streams[0], "/Daemon/GetLogStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &daemonGetLogStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Daemon_GetLogStreamClient interface {
+	Recv() (*Log, error)
+	grpc.ClientStream
+}
+
+type daemonGetLogStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *daemonGetLogStreamClient) Recv() (*Log, error) {
+	m := new(Log)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // DaemonServer is the server API for Daemon service.
 // All implementations must embed UnimplementedDaemonServer
 // for forward compatibility
 type DaemonServer interface {
 	StartRun(context.Context, *StartRun_Request) (*StartRun_Response, error)
+	GetLogStream(*GetLogStream_Request, Daemon_GetLogStreamServer) error
 	mustEmbedUnimplementedDaemonServer()
 }
 
@@ -56,6 +90,9 @@ type UnimplementedDaemonServer struct {
 
 func (UnimplementedDaemonServer) StartRun(context.Context, *StartRun_Request) (*StartRun_Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartRun not implemented")
+}
+func (UnimplementedDaemonServer) GetLogStream(*GetLogStream_Request, Daemon_GetLogStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetLogStream not implemented")
 }
 func (UnimplementedDaemonServer) mustEmbedUnimplementedDaemonServer() {}
 
@@ -88,6 +125,27 @@ func _Daemon_StartRun_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Daemon_GetLogStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetLogStream_Request)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(DaemonServer).GetLogStream(m, &daemonGetLogStreamServer{stream})
+}
+
+type Daemon_GetLogStreamServer interface {
+	Send(*Log) error
+	grpc.ServerStream
+}
+
+type daemonGetLogStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *daemonGetLogStreamServer) Send(m *Log) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // Daemon_ServiceDesc is the grpc.ServiceDesc for Daemon service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +158,12 @@ var Daemon_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Daemon_StartRun_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetLogStream",
+			Handler:       _Daemon_GetLogStream_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "cmd/selflow-daemon/server/proto/daemon.proto",
 }
