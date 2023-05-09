@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	"os"
 	"path"
 )
 
@@ -29,7 +28,7 @@ func main() {
 
 	s := grpc.NewServer()
 	proto.RegisterDaemonServer(s, &server.Server{
-		LogFactory: systemfile.NewLogFactory(path.Join(os.Getenv("PWD"), "tmp")),
+		LogFactory: systemfile.NewLogFactory(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
 	})
 
 	log.Printf("[INFO] Start listening at %v\n", lis.Addr())

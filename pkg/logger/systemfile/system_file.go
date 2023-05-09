@@ -24,12 +24,21 @@ func (l *LogFactory) getLogFilename(runId string) string {
 }
 
 func (l *LogFactory) GetRunLogger(runId string) (io.Reader, io.WriteCloser, error) {
+	err := os.MkdirAll(l.BaseDirectory, 0777)
+	if err != nil {
+		return nil, nil, err
+	}
 	file, err := os.Create(l.getLogFilename(runId))
 
 	return file, file, err
 }
 
 func (l *LogFactory) GetRunReader(runId string) (chan string, error) {
+	err := os.MkdirAll(l.BaseDirectory, 0777)
+	if err != nil {
+		return nil, err
+	}
+
 	ch := make(chan string)
 
 	tf, err := tail.TailFile(l.getLogFilename(runId), tail.Config{Follow: true})

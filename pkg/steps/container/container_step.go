@@ -25,7 +25,7 @@ type StepMapper struct {
 func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
 	dockerStepConfig := ContainerConfig{}
 
-	delete(definition.With, "environment") // TODO : handle environment
+	delete(definition.With, "environment")
 
 	err := mapstructure.Decode(definition.With, &dockerStepConfig)
 	if err != nil {

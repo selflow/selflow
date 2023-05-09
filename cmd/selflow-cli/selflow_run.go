@@ -18,7 +18,7 @@ func NewRunCommand(selflowClient *selflowClient) *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := startRun(selflowClient, args[0]); err != nil {
-				if _, err = fmt.Fprintf(os.Stderr, "%v", err); err != nil {
+				if _, err = fmt.Fprintf(os.Stderr, "%v\n", err); err != nil {
 					panic(err)
 				}
 				os.Exit(1)

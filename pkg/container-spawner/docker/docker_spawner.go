@@ -12,10 +12,12 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
+	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/selflow/selflow/pkg/steps/container"
 	"io"
 	"log"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -54,7 +56,11 @@ func (d *spawner) pullDockerImage(ctx context.Context, imageName string) error {
 }
 
 func createSpawner(config *container.ContainerConfig) (string, error) {
-	file, err := os.CreateTemp("", "selflow-start")
+	err := os.MkdirAll(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp"), 0777)
+	if err != nil {
+		return "", err
+	}
+	file, err := os.CreateTemp(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp"), "selflow-start")
 
 	if err != nil {
 		return "", err
@@ -64,7 +70,7 @@ func createSpawner(config *container.ContainerConfig) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return file.Name(), nil
+	return path.Join(sfenvironment.GetDaemonHostBaseDirectory(), "tmp", path.Base(file.Name())), nil
 }
 
 func (d *spawner) createContainer(ctx context.Context, config *container.ContainerConfig) (string, error) {
