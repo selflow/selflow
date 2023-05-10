@@ -3,7 +3,6 @@ package workflow
 import (
 	"bytes"
 	"context"
-	"errors"
 	"log"
 	"os"
 	"reflect"
@@ -15,12 +14,12 @@ func Test_areRequirementsFullFilled(t *testing.T) {
 		step         Step
 		dependencies map[Step][]Step
 	}
-	stepA, _ := makeSimpleStep("step-a")
-	stepSuccessB, _ := makeSimpleStep("step-b")
+	stepA := makeSimpleStep("step-a")
+	stepSuccessB := makeSimpleStep("step-b")
 	stepSuccessB.Status = SUCCESS
-	stepSuccessC, _ := makeSimpleStep("step-c")
+	stepSuccessC := makeSimpleStep("step-c")
 	stepSuccessC.Status = SUCCESS
-	stepPendingD, _ := makeSimpleStep("step-c")
+	stepPendingD := makeSimpleStep("step-c")
 	stepPendingD.Status = PENDING
 
 	tests := []struct {
@@ -84,59 +83,23 @@ func TestMakeSimpleWorkflow(t *testing.T) {
 	}
 }
 
-func Test_joinErrorList(t *testing.T) {
-	type args struct {
-		errorLst []error
-	}
-	tests := []struct {
-		name           string
-		args           args
-		wantErr        bool
-		wantErrMessage string
-	}{
-		{
-			name:           "Empty errors",
-			args:           args{},
-			wantErr:        true,
-			wantErrMessage: "",
-		},
-		{
-			name:           "2 errors",
-			args:           args{errorLst: []error{errors.New("aaa"), errors.New("bbb")}},
-			wantErr:        true,
-			wantErrMessage: "aaa ; bbb ; ",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := joinErrorList(tt.args.errorLst)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("joinErrorList() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if err.Error() != tt.wantErrMessage {
-				t.Errorf("joinErrorList() error = %v, wantErrMessage %v", err.Error(), tt.wantErrMessage)
-			}
-		})
-	}
-}
-
 func TestSimpleWorkflow_Execute(t *testing.T) {
 	type fields struct {
 		steps        []Step
 		status       Status
 		dependencies map[Step][]Step
 	}
-	stepA, _ := makeSimpleStep("step-a")
-	stepB, _ := makeSimpleStep("step-b")
-	stepC, _ := makeSimpleStep("step-c")
+	stepA := &stepWrapper{makeSimpleStep("step-a")}
+	stepB := &stepWrapper{makeSimpleStep("step-b")}
+	stepC := &stepWrapper{makeSimpleStep("step-c")}
 
-	stepD, _ := makeSimpleStep("step-d")
-	stepE, _ := makeSimpleStep("step-e")
-	stepF, _ := makeSimpleStep("step-f")
+	stepD := &stepWrapper{makeSimpleStep("step-d")}
+	stepE := &stepWrapper{makeSimpleStep("step-e")}
+	stepF := &stepWrapper{makeSimpleStep("step-f")}
 
-	errorA, _ := makeSimpleStep("error-a")
-	errorB, _ := makeSimpleStep("error-b")
-	errorD, _ := makeErrorStep("error-d")
+	errorA := &stepWrapper{makeSimpleStep("error-a")}
+	errorB := &stepWrapper{makeSimpleStep("error-b")}
+	errorD := &stepWrapper{makeErrorStep("error-d")}
 
 	type args struct {
 		ctx context.Context
@@ -238,10 +201,10 @@ func TestSimpleWorkflow_Init(t *testing.T) {
 	type args struct {
 		context context.Context
 	}
-	A, _ := makeSimpleStep("step-a")
-	B, _ := makeSimpleStep("step-b")
-	C, _ := makeSimpleStep("step-c")
-	D, _ := makeSimpleStep("step-d")
+	A := makeSimpleStep("step-a")
+	B := makeSimpleStep("step-b")
+	C := makeSimpleStep("step-c")
+	D := makeSimpleStep("step-d")
 
 	tests := []struct {
 		name    string
@@ -329,7 +292,7 @@ func TestSimpleWorkflow_AddStep(t *testing.T) {
 		step         Step
 		dependencies []Step
 	}
-	step, _ := makeSimpleStep("sample-step")
+	step := makeSimpleStep("sample-step")
 
 	tests := []struct {
 		name    string

@@ -34,7 +34,7 @@ func TestCreateContainer(t *testing.T) {
 
 	pc, err := createContainer(ctx, cli, config)
 	if err != nil {
-		t.Fatalf("CreateContainer failed: %v", err)
+		t.Fatalf("StartContainerDetached failed: %v", err)
 	}
 
 	if pc.containerName != config.ContainerName {
@@ -58,7 +58,7 @@ func TestCreateContainerImageNotFound(t *testing.T) {
 
 	pc, err := createContainer(ctx, cli, config)
 	if err != nil {
-		t.Fatalf("CreateContainer failed: %v", err)
+		t.Fatalf("StartContainerDetached failed: %v", err)
 	}
 
 	if pc.containerName != config.ContainerName {

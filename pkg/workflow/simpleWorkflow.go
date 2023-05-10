@@ -2,7 +2,9 @@ package workflow
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/selflow/selflow/pkg/sflog"
 	"log"
 	"reflect"
 	"sync"
@@ -88,31 +90,27 @@ func (s *SimpleWorkflow) getNextSteps() []Step {
 }
 
 func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
+	logger := sflog.LoggerFromContext(ctx)
 	requirementsOutputs := s.getRequirementsOutputs(step)
 	stepContext := context.WithValue(ctx, stepOutputContextKey, requirementsOutputs)
 	_, err := step.Execute(stepContext)
 	if err != nil {
-		log.Printf("[WARN]: step %v ended with error : %v", step.GetId(), err)
+		logger.Warn("step ended with an error", "step-id", step.GetId(), "error", err)
 	}
 }
 
-func (s *SimpleWorkflow) cancelNextSteps(lastStep Step) error {
-	errorsLst := createErrorList(len(s.steps))
+func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) error {
+	var err error
 
 	concernedSteps := getStepThatRequires(lastStep, s.dependencies)
 
 	for _, step := range concernedSteps {
 		if step.GetStatus().IsCancellable() {
-			err := step.Cancel()
-			if err != nil {
-				errorsLst = append(errorsLst, fmt.Errorf("fail to cancel step %v : %v", step.GetId(), err))
-			}
+			err = errors.Join(step.Cancel())
+			closingSteps <- step
 		}
 	}
-	if len(errorsLst) != 0 {
-		return joinErrorList(errorsLst)
-	}
-	return nil
+	return err
 }
 
 func (s *SimpleWorkflow) getRequirementsOutputs(step Step) map[string]map[string]string {
@@ -145,8 +143,10 @@ func (s *SimpleWorkflow) hasUnfinishedSteps() bool {
 }
 
 func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]string, error) {
+	logger := sflog.LoggerFromContext(ctx)
 	closingSteps := make(chan Step, len(s.steps))
-	errorLst := make([]error, 0, len(s.steps))
+
+	var err error
 
 	activeSteps := &sync.WaitGroup{}
 
@@ -155,25 +155,18 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	for s.hasUnfinishedSteps() {
 		select {
 		case <-ctx.Done():
-			errorLst = s.cancelRemainingSteps(errorLst)
+			err = errors.Join(err, s.cancelRemainingSteps())
 			close(closingSteps)
 
-		case step, ok := <-closingSteps:
-			if ok {
-
-			}
-			log.Printf("Step %v terminated with status %v", step.GetId(), step.GetStatus().GetName())
+		case step := <-closingSteps:
+			logger.Info("step terminated", "step-id", step.GetId(), "status", step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
-				errorLst = appendErrorList(errorLst, s.cancelNextSteps(step))
+				err = errors.Join(err, s.cancelNextSteps(step, closingSteps))
 			} else {
 				s.startNextSteps(ctx, activeSteps, closingSteps)
 			}
 		}
-	}
-
-	if len(errorLst) > 0 {
-		return nil, joinErrorList(errorLst)
 	}
 
 	activeSteps.Wait()
@@ -181,25 +174,24 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	return s.getOutput(), nil
 }
 
-func (s *SimpleWorkflow) cancelRemainingSteps(errorLst []error) []error {
+func (s *SimpleWorkflow) cancelRemainingSteps() error {
+	var err error
 	for _, step := range s.steps {
-		if step.GetStatus().IsCancellable() {
-			err := step.Cancel()
-			if err != nil {
-				errorLst = append(errorLst, err)
-			}
+		if !step.GetStatus().IsFinished() && step.GetStatus().IsCancellable() {
+			err = errors.Join(step.Cancel())
 		}
 	}
-	return errorLst
+	return err
 }
 
 func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.WaitGroup, closingSteps chan Step) {
+	logger := sflog.LoggerFromContext(ctx)
 	nextSteps := s.getNextSteps()
 	for _, step := range nextSteps {
 		activeSteps.Add(1)
 
 		go func(step Step) {
-			log.Printf("Step %s started\n", step.GetId())
+			logger.Info("step started", "step-id", step.GetId())
 			s.executeStep(ctx, step)
 			closingSteps <- step
 			activeSteps.Done()
@@ -214,14 +206,15 @@ func (s *SimpleWorkflow) debug() {
 }
 
 func (s *SimpleWorkflow) AddStep(step Step, dependencies []Step) error {
+	wrappedStep := wrapStep(step)
 	for _, previousStep := range s.steps {
-		if previousStep.GetId() == step.GetId() {
+		if previousStep.GetId() == wrappedStep.GetId() {
 			return fmt.Errorf("step [%s] is already present in workflow", step.GetId())
 		}
 	}
 
-	s.steps = append(s.steps, step)
-	s.dependencies[step] = dependencies
+	s.steps = append(s.steps, wrappedStep)
+	s.dependencies[wrappedStep] = dependencies
 	return nil
 }
 
@@ -234,7 +227,7 @@ func (s *SimpleWorkflow) Equals(s2 Workflow) bool {
 BaseStep:
 	for _, step := range s.steps {
 		for _, step2 := range sw2.steps {
-			if reflect.DeepEqual(step, step2) {
+			if reflect.DeepEqual(step.GetId(), step2.GetId()) {
 				continue BaseStep
 			}
 		}

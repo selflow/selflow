@@ -1,47 +1,38 @@
 package main
 
 import (
-	"context"
-	"github.com/hashicorp/go-hclog"
-	"github.com/selflow/selflow/internal/config"
-	"github.com/selflow/selflow/pkg/runners"
+	"fmt"
+	"github.com/selflow/selflow/cmd/selflow-daemon/server"
+	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	"github.com/selflow/selflow/internal/sfenvironment"
+	"github.com/selflow/selflow/pkg/logger/systemfile"
+	"github.com/selflow/selflow/pkg/sflog"
+	"google.golang.org/grpc"
 	"log"
-	"os"
+	"net"
+	"path"
 )
 
 func setupLogger() {
-	logger := hclog.New(&hclog.LoggerOptions{
-		Name:            "selflow-daemon",
-		Output:          nil,
-		JSONFormat:      false,
-		IncludeLocation: false,
-		TimeFormat:      "2006-01-02 15:04:05",
-		Color:           hclog.ForceColor,
-		Level:           hclog.Debug,
-	})
-
-	hclog.SetDefault(logger)
-
-	log.SetOutput(logger.StandardWriter(&hclog.StandardLoggerOptions{InferLevels: true}))
-	log.SetPrefix("")
-	log.SetFlags(0)
+	logger := sflog.LoggerFromEnv("selflow-daemon")
+	sflog.SetDefaultLogger(logger)
 }
 
 func main() {
 	setupLogger()
 
-	configAsBytes, err := os.ReadFile("/etc/selflow/config.yaml")
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", sfenvironment.GetDaemonPort()))
 	if err != nil {
 		panic(err)
 	}
 
-	flow, err := config.Parse(configAsBytes)
-	if err != nil {
+	s := grpc.NewServer()
+	proto.RegisterDaemonServer(s, &server.Server{
+		LogFactory: systemfile.NewLogFactory(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
+	})
+
+	log.Printf("[INFO] Start listening at %v\n", lis.Addr())
+	if err = s.Serve(lis); err != nil {
 		panic(err)
 	}
-
-	ctx := context.WithValue(context.Background(), "debug-port", "40001")
-
-	runners.StartRunner(ctx, *flow)
-
 }

@@ -2,7 +2,6 @@ package workflow
 
 import (
 	"context"
-	"fmt"
 	"sync"
 )
 
@@ -15,7 +14,7 @@ type SimpleStep struct {
 func (s *SimpleStep) GetOutput() map[string]string {
 	return map[string]string{}
 }
-func (s *SimpleStep) SetStatus(status SimpleStatus) {
+func (s *SimpleStep) SetStatus(status Status) {
 	s.statusMu.Lock()
 	defer s.statusMu.Unlock()
 
@@ -38,16 +37,14 @@ func (s *SimpleStep) GetId() string {
 }
 
 func (s *SimpleStep) Execute(_ context.Context) (map[string]string, error) {
-	s.SetStatus(SUCCESS)
-
 	return map[string]string{}, nil
 }
 
-func makeSimpleStep(id string) (*SimpleStep, error) {
+func makeSimpleStep(id string) *SimpleStep {
 	if len(id) == 0 {
-		return nil, fmt.Errorf("id must not be empty")
+		return nil
 	}
-	return newSimpleStep(id, CREATED), nil
+	return newSimpleStep(id, CREATED)
 }
 
 func newSimpleStep(id string, status Status) *SimpleStep {
