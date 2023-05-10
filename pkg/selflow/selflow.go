@@ -3,6 +3,7 @@ package selflow
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/sflog"
 	"github.com/selflow/selflow/pkg/workflow"
@@ -35,7 +36,7 @@ func NewSelflow(workflowBuilder WorkflowBuilder, logFactory LogFactory) Selflow 
 }
 
 func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, error) {
-	runId := "toto"
+	runId := uuid.New().String()
 
 	wf, err := s.workflowBuilder.BuildWorkflow(flow)
 	if err != nil {

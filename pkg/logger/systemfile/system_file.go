@@ -5,6 +5,7 @@ import (
 	"github.com/hpcloud/tail"
 	"github.com/selflow/selflow/pkg/selflow"
 	"io"
+	"log"
 	"os"
 	"path"
 )
@@ -41,13 +42,20 @@ func (l *LogFactory) GetRunReader(runId string) (chan string, error) {
 
 	ch := make(chan string)
 
-	tf, err := tail.TailFile(l.getLogFilename(runId), tail.Config{Follow: true})
+	tf, err := tail.TailFile(l.getLogFilename(runId), tail.Config{
+		Follow: true,
+	})
 	if err != nil {
 		return nil, err
 	}
 
 	go func() {
 		for line := range tf.Lines {
+			if err := line.Err; err != nil {
+				log.Printf("[WARN]: fail to fetch logs %v", err)
+				close(ch)
+				break
+			}
 			if line.Text == selflow.TerminationLogText {
 				close(ch)
 				break
