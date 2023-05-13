@@ -4,7 +4,7 @@
 FROM golang:1.20-buster
 WORKDIR /usr/src/goapp/
 USER ${USER}
-COPY --link ./go.mod .
+COPY ./go.mod .
 COPY . .
 
 ###############################
