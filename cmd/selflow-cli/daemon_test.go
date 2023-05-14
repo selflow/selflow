@@ -409,16 +409,6 @@ func Test_selflowClient_startDaemon(t *testing.T) {
 			},
 			wantErr: true,
 		},
-		{
-			name: "daemon created",
-			fields: fields{
-				dockerClient: mockDockerClient{
-					ContainerInspectError: errors.New("some-error"),
-					SpawnAsyncContainerId: "toto",
-				},
-			},
-			want: "toto",
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -6,7 +6,10 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/selflow/selflow/internal/sfenvironment"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/url"
+	"time"
 )
 
 func (sc *selflowClient) createNetworkIfNotExists(ctx context.Context, networkName string) (string, error) {
@@ -42,6 +45,19 @@ func (sc *selflowClient) clearDaemon(ctx context.Context) error {
 		RemoveVolumes: true,
 		Force:         false,
 	})
+}
+
+func (sc *selflowClient) waitDaemon(ctx context.Context) error {
+	var err error
+	for i := 0; i < 5; i++ {
+		_, err = grpc.Dial("localhost:10011", grpc.WithTransportCredentials(insecure.NewCredentials()))
+		if err == nil {
+			return nil
+		}
+		time.Sleep(2 * time.Second)
+	}
+
+	return sc.waitDaemon(ctx)
 }
 
 func (sc *selflowClient) startDaemon(ctx context.Context) (string, error) {
