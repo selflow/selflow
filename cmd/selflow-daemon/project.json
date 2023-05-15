@@ -22,6 +22,12 @@
     },
     "lint": {
       "executor": "@nx-go/nx-go:lint"
+    },
+    "docker": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -f ./cmd/selflow-daemon/Dockerfile -t selflow-daemon ."
+      }
     }
   },
   "tags": ["type:cmd"]

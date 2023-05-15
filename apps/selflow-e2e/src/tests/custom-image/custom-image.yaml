@@ -1,0 +1,21 @@
+# Metadata of the flow, accessible with the "metadata" key
+name: Custom images example
+description: step-python should output the python version, and step-node the node version
+author: Anthony-Jhoiro
+
+workflow:
+  timeout: 5m
+  steps:
+    step-node:
+      kind: docker
+      with:
+        image: node:18-alpine
+        commands: |
+          node --version
+
+    step-python:
+      kind: docker
+      with:
+        image: python:3-alpine
+        commands: |
+          python --version
