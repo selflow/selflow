@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.1.0",
+    "@nrwl/nx-cloud": "16.0.5",
     "@nx/devkit": "16.1.4",
     "@nx/esbuild": "16.1.4",
     "@nx/eslint-plugin": "16.1.4",
