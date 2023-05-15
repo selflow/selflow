@@ -39,6 +39,7 @@ func init() {
 
 	rootCmd.AddCommand(
 		NewRunCommand(sc),
+		NewRecreateDaemonCommand(sc),
 	)
 }
 
