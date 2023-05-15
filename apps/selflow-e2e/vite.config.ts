@@ -2,12 +2,10 @@
 import { defineConfig } from 'vite';
 
 import viteTsConfigPaths from 'vite-tsconfig-paths';
-import {join} from "path";
+import { join } from 'path';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/selflow-e2e',
-
-
 
   plugins: [
     viteTsConfigPaths({
@@ -23,6 +21,6 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     singleThread: true,
-    globalSetup: join(__dirname, 'src/setup.ts')
+    globalSetup: join(__dirname, 'src/setup.ts'),
   },
 });

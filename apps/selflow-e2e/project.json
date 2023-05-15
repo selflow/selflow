@@ -16,9 +16,7 @@
           "codeCoverage": true
         }
       },
-      "dependsOn": [
-        "^docker"
-      ]
+      "dependsOn": ["^docker"]
     }
   },
   "tags": [],
