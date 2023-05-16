@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type DaemonClient interface {
 	StartRun(ctx context.Context, in *StartRun_Request, opts ...grpc.CallOption) (*StartRun_Response, error)
 	GetLogStream(ctx context.Context, in *GetLogStream_Request, opts ...grpc.CallOption) (Daemon_GetLogStreamClient, error)
+	GetRunStatus(ctx context.Context, in *GetRunStatus_Request, opts ...grpc.CallOption) (*GetRunStatus_Response, error)
 }
 
 type daemonClient struct {
@@ -75,12 +76,22 @@ func (x *daemonGetLogStreamClient) Recv() (*Log, error) {
 	return m, nil
 }
 
+func (c *daemonClient) GetRunStatus(ctx context.Context, in *GetRunStatus_Request, opts ...grpc.CallOption) (*GetRunStatus_Response, error) {
+	out := new(GetRunStatus_Response)
+	err := c.cc.Invoke(ctx, "/Daemon/GetRunStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DaemonServer is the server API for Daemon service.
 // All implementations must embed UnimplementedDaemonServer
 // for forward compatibility
 type DaemonServer interface {
 	StartRun(context.Context, *StartRun_Request) (*StartRun_Response, error)
 	GetLogStream(*GetLogStream_Request, Daemon_GetLogStreamServer) error
+	GetRunStatus(context.Context, *GetRunStatus_Request) (*GetRunStatus_Response, error)
 	mustEmbedUnimplementedDaemonServer()
 }
 
@@ -93,6 +104,9 @@ func (UnimplementedDaemonServer) StartRun(context.Context, *StartRun_Request) (*
 }
 func (UnimplementedDaemonServer) GetLogStream(*GetLogStream_Request, Daemon_GetLogStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetLogStream not implemented")
+}
+func (UnimplementedDaemonServer) GetRunStatus(context.Context, *GetRunStatus_Request) (*GetRunStatus_Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRunStatus not implemented")
 }
 func (UnimplementedDaemonServer) mustEmbedUnimplementedDaemonServer() {}
 
@@ -146,6 +160,24 @@ func (x *daemonGetLogStreamServer) Send(m *Log) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Daemon_GetRunStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRunStatus_Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DaemonServer).GetRunStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Daemon/GetRunStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DaemonServer).GetRunStatus(ctx, req.(*GetRunStatus_Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Daemon_ServiceDesc is the grpc.ServiceDesc for Daemon service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -156,6 +188,10 @@ var Daemon_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StartRun",
 			Handler:    _Daemon_StartRun_Handler,
+		},
+		{
+			MethodName: "GetRunStatus",
+			Handler:    _Daemon_GetRunStatus_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
