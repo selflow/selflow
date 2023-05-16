@@ -12,7 +12,8 @@ import (
 
 type SimpleWorkflow struct {
 	steps        []Step
-	dependencies map[Step][]Step
+	Dependencies map[Step][]Step
+	StateCh      chan map[string]Status
 }
 
 type Workflow interface {
@@ -41,7 +42,7 @@ func (s *SimpleWorkflow) hasCycle(visited []Step, secureCycles []Step, currentSt
 	currentStepSecureCycles := make([]Step, 0, len(s.steps))
 
 	// Check for each step if its dependencies contains cycles
-	if dependencies, ok := s.dependencies[currentStep]; ok {
+	if dependencies, ok := s.Dependencies[currentStep]; ok {
 		for _, dependency := range dependencies {
 			if hasCycle, dependencySecureCycles := s.hasCycle(visited, secureCycles, dependency); !hasCycle {
 				currentStepSecureCycles = append(currentStepSecureCycles, dependencySecureCycles...)
@@ -72,17 +73,18 @@ func (s *SimpleWorkflow) Init() error {
 }
 
 // NewWorkflow creates a SimpleWorkflow instance
-func NewWorkflow(stepCount uint) Workflow {
+func NewWorkflow(stepCount uint) *SimpleWorkflow {
 	return &SimpleWorkflow{
 		steps:        make([]Step, 0, stepCount),
-		dependencies: make(map[Step][]Step),
+		Dependencies: make(map[Step][]Step),
+		StateCh:      make(chan map[string]Status),
 	}
 }
 
 func (s *SimpleWorkflow) getNextSteps() []Step {
 	nextSteps := make([]Step, 0, len(s.steps))
 	for _, step := range s.steps {
-		if !step.GetStatus().IsFinished() && step.GetStatus() != RUNNING && areRequirementsFullFilled(step, s.dependencies) {
+		if !step.GetStatus().IsFinished() && step.GetStatus() != RUNNING && areRequirementsFullFilled(step, s.Dependencies) {
 			nextSteps = append(nextSteps, step)
 		}
 	}
@@ -102,7 +104,7 @@ func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
 func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) error {
 	var err error
 
-	concernedSteps := getStepThatRequires(lastStep, s.dependencies)
+	concernedSteps := getStepThatRequires(lastStep, s.Dependencies)
 
 	for _, step := range concernedSteps {
 		if step.GetStatus().IsCancellable() {
@@ -115,7 +117,7 @@ func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) 
 
 func (s *SimpleWorkflow) getRequirementsOutputs(step Step) map[string]map[string]string {
 	res := make(map[string]map[string]string)
-	stepDependencies := s.dependencies[step]
+	stepDependencies := s.Dependencies[step]
 
 	for _, dependency := range stepDependencies {
 		res[dependency.GetId()] = dependency.GetOutput()
@@ -142,6 +144,15 @@ func (s *SimpleWorkflow) hasUnfinishedSteps() bool {
 	return false
 }
 
+func (s *SimpleWorkflow) updateState() {
+	state := map[string]Status{}
+	for _, step := range s.steps {
+		state[step.GetId()] = step.GetStatus()
+	}
+
+	s.StateCh <- state
+}
+
 func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]string, error) {
 	logger := sflog.LoggerFromContext(ctx)
 	closingSteps := make(chan Step, len(s.steps))
@@ -159,6 +170,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			close(closingSteps)
 
 		case step := <-closingSteps:
+			s.updateState()
 			logger.Info("step terminated", "step-id", step.GetId(), "status", step.GetStatus().GetName())
 			// A step as ended
 			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
@@ -170,6 +182,8 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	}
 
 	activeSteps.Wait()
+
+	close(s.StateCh)
 
 	return s.getOutput(), nil
 }
@@ -214,7 +228,7 @@ func (s *SimpleWorkflow) AddStep(step Step, dependencies []Step) error {
 	}
 
 	s.steps = append(s.steps, wrappedStep)
-	s.dependencies[wrappedStep] = dependencies
+	s.Dependencies[wrappedStep] = dependencies
 	return nil
 }
 

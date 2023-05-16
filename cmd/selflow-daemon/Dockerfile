@@ -11,7 +11,6 @@ COPY . .
 # DOCKER ENVIRONMENT STAGE
 ###############################
 ENV GO111MODULE="on" \
-  CGO_ENABLED="0" \
   GO_GC="off"
 
 ###############################
