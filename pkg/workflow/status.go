@@ -8,26 +8,26 @@ type Status interface {
 }
 
 type SimpleStatus struct {
-	code        uint
-	name        string
-	finished    bool
-	cancellable bool
+	Code        uint
+	Name        string
+	Finished    bool
+	Cancellable bool
 }
 
 func (s SimpleStatus) GetCode() uint {
-	return s.code
+	return s.Code
 }
 
 func (s SimpleStatus) GetName() string {
-	return s.name
+	return s.Name
 }
 
 func (s SimpleStatus) IsFinished() bool {
-	return s.finished
+	return s.Finished
 }
 
 func (s SimpleStatus) IsCancellable() bool {
-	return s.cancellable
+	return s.Cancellable
 }
 
 const (
