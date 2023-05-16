@@ -32,5 +32,18 @@
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"]
     }
   },
-  "plugins": ["@nx-go/nx-go"]
+  "plugins": ["@nx-go/nx-go"],
+  "generators": {
+    "@nx/react": {
+      "application": {
+        "babel": true
+      }
+    },
+    "@nx/next": {
+      "application": {
+        "style": "none",
+        "linter": "eslint"
+      }
+    }
+  }
 }

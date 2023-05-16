@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"]
+      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"],
+      "@selflow/selflow-node-client": ["libs/selflow-node-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
