@@ -16,7 +16,13 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e"],
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e",
+          "build-storybook"
+        ],
         "accessToken": "ZTQxNGVjNGUtNzM2MC00MzI5LTkzMGItZjcwMGQyZmE1ZGU2fHJlYWQtd3JpdGU="
       }
     }
@@ -37,6 +43,9 @@
     "@nx/react": {
       "application": {
         "babel": true
+      },
+      "library": {
+        "unitTestRunner": "jest"
       }
     },
     "@nx/next": {

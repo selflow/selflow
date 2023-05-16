@@ -1,0 +1,16 @@
+{
+  "name": "ui-tailwind-config",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/common/tailwind-config/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/ui/tailwind-config/**/*.js"]
+      }
+    }
+  },
+  "tags": []
+}
