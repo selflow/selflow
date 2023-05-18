@@ -1,12 +1,12 @@
 import {Meta, StoryFn} from "@storybook/react";
-import {WorkflowStep, WorkflowStepProps} from "./WorkflowStep";
+import {WorkflowStepNode, WorkflowStepProps} from "./WorkflowStepNode";
 import ReactFlow, {NodeProps} from "reactflow";
 import {statusList, statusMap} from "../statusList";
 
 
-const Story: Meta<typeof WorkflowStep> = {
-  component: WorkflowStep,
-  title: 'ui-kit/WorkflowStep',
+const Story: Meta<typeof WorkflowStepNode> = {
+  component: WorkflowStepNode,
+  title: 'ui-kit/WorkflowStepNode',
   parameters: {
     layout: 'fullscreen'
   }
@@ -14,7 +14,7 @@ const Story: Meta<typeof WorkflowStep> = {
 
 export default Story
 
-export const Template: StoryFn<NodeProps<WorkflowStepProps>> = (args) => <WorkflowStep {...args} />
+export const Template: StoryFn<NodeProps<WorkflowStepProps>> = (args) => <WorkflowStepNode {...args} />
 
 Template.args = {
   id: 'some-step',
@@ -30,7 +30,7 @@ Template.decorators = [
     </ReactFlow>
 ]
 
-const nodeTypes = {workflowStep: WorkflowStep};
+const nodeTypes = {workflowStep: WorkflowStepNode};
 
 const colCount = 3;
 

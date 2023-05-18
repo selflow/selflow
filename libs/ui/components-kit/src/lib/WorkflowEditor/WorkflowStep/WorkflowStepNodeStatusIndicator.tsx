@@ -21,7 +21,7 @@ const PendingIcon = <span className="relative flex h-3 w-3">
 </span>
 
 
-export const WorkflowStepStatusIndicator = ({status}: WorkflowStepStatusIndicatorProps) => {
+export const WorkflowStepNodeStatusIndicator = ({status}: WorkflowStepStatusIndicatorProps) => {
 
   return WorkflowStepStatusIndicatorByStatusName[status.name] ?? PendingIcon
 }
