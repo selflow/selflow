@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "reactflow": "^11.7.2"
+  },
+  "devDependencies": {
+    "react-icons": "^4.8.0"
+  }
+}

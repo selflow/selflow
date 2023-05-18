@@ -1,3 +1,7 @@
+.wheel-and-hamster.xs {
+  font-size: 3px;
+}
+
 .wheel-and-hamster.sm {
   font-size: 6px;
 }
@@ -17,6 +21,7 @@
   position: relative;
   width: 12em;
   height: 12em;
+  transform: scale(-1, 1);
 }
 
 .wheel,

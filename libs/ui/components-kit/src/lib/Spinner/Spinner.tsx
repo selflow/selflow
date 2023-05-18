@@ -1,6 +1,6 @@
 import "./Spinner.css"
 
-export const SpinnerSizes = ['sm', 'md', 'lg'] as const
+export const SpinnerSizes = ['xs', 'sm', 'md', 'lg'] as const
 
 export type SpinnerSize = typeof SpinnerSizes[number]
 
