@@ -1,19 +1,21 @@
-import ReactFlow, {
+import {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  Background,
-  Controls,
   Edge,
+  MarkerType,
   OnConnect,
   OnEdgesChange,
   OnNodesChange
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {useState} from "react";
-import {WorkflowStepNode, WorkflowStepProps} from "./WorkflowStep/WorkflowStepNode";
+import {WorkflowStepProps} from "./WorkflowStep/WorkflowStepNode";
 import {Node} from "@reactflow/core/dist/esm/types";
 import {WorkflowStep} from "./types";
+import {statusMap} from "./statusList";
+import {WorkflowViewer} from "./WorkflowViewer/WorkflowViewer";
+import {RightSidePanel} from "./RightSidePanel/RightSidePanel";
 
 export type WorkflowEditorProps = {
   steps: WorkflowStep[]
@@ -52,7 +54,10 @@ const mapWorkflowStepToReactFlowNodeAndEdges = (steps: WorkflowStep[]): [Node<Wo
     edges.push(...step.dependencies.map(dependency => ({
       id: `${step.id}_${dependency}`,
       source: dependency,
-      target: step.id
+      target: step.id,
+      markerEnd: {
+        type: MarkerType.Arrow,
+      },
     })))
     withDepth[depth] = lineIndex;
   }
@@ -62,30 +67,42 @@ const mapWorkflowStepToReactFlowNodeAndEdges = (steps: WorkflowStep[]): [Node<Wo
   return [nodes, edges]
 }
 
-const nodeTypes = {workflowStep: WorkflowStepNode};
-
 
 export const WorkflowEditor = ({steps}: WorkflowEditorProps) => {
   const [initNodes, initEdges] = mapWorkflowStepToReactFlowNodeAndEdges(steps)
   const [nodes, setNodes] = useState<Node<WorkflowStepProps>[]>(initNodes);
   const [edges, setEdges] = useState<Edge[]>(initEdges);
+  const [isRightSidePanelOpen, setIsRightSidePanelOpen] = useState(false)
 
   const onNodesChange: OnNodesChange = (changes) => setNodes((nds) => applyNodeChanges(changes, nds));
   const onEdgesChange: OnEdgesChange = (changes) => setEdges((eds) => applyEdgeChanges(changes, eds));
   const onConnect: OnConnect = (connection) => setEdges((eds) => addEdge(connection, eds));
 
+  const onNew = () => setNodes([...nodes,
+    {
+      id: `toto-${Date.now()}`,
+      type: 'workflowStep',
+      position: {
+        x: 0,
+        y: 0,
+      },
+      data: {
+        status: statusMap.CREATED
+      }
+    }])
 
-  return <div className={"w-full h-full"}>
-    <ReactFlow
+
+  return <div className={"w-full h-full flex overflow-hidden"}>
+    <WorkflowViewer
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      nodeTypes={nodeTypes}
-    >
-      <Background/>
-      <Controls/>
-    </ReactFlow>
+      setSideMenuOpen={setIsRightSidePanelOpen}
+      viewOnly={false}
+      isSideMenuOpen={isRightSidePanelOpen}
+    />
+    <RightSidePanel isOpen={isRightSidePanelOpen} close={() => setIsRightSidePanelOpen(false)}/>
   </div>
 }
