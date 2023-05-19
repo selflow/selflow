@@ -3,7 +3,7 @@ import {CodeEditor} from './CodeEditor';
 
 const Story: Meta<typeof CodeEditor> = {
   component: CodeEditor,
-  title: 'ui-kit/inputs/CodeEditor',
+  title: 'inputs/CodeEditor',
 };
 export default Story;
 

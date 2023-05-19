@@ -3,7 +3,7 @@ import { MultiSelect } from './MultiSelect';
 
 const Story: Meta<typeof MultiSelect> = {
   component: MultiSelect,
-  title: 'ui-kit/inputs/MultiSelect',
+  title: 'inputs/MultiSelect',
 };
 export default Story;
 

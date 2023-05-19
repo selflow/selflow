@@ -3,7 +3,7 @@ import {Label} from './Label';
 
 const Story: Meta<typeof Label> = {
   component: Label,
-  title: 'ui-kit/inputs/Label',
+  title: 'inputs/Label',
 };
 export default Story;
 

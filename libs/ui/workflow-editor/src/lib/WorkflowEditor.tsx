@@ -13,7 +13,6 @@ import {useState} from "react";
 import {WorkflowStepProps} from "./WorkflowStep/WorkflowStepNode";
 import {Node} from "@reactflow/core/dist/esm/types";
 import {WorkflowStep} from "./types";
-import {statusMap} from "./statusList";
 import {WorkflowViewer} from "./WorkflowViewer/WorkflowViewer";
 import {RightSidePanel} from "./RightSidePanel/RightSidePanel";
 

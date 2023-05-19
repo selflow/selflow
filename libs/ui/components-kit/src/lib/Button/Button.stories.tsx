@@ -4,7 +4,7 @@ import {Meta} from "@storybook/react";
 
 const Story: Meta<typeof Button> = {
   component: Button,
-  title: 'ui-kit/Button'
+  title: 'Button'
 }
 
 export default Story

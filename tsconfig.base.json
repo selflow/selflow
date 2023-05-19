@@ -30,6 +30,10 @@
       "@selflow/ui/storybook-host": ["libs/ui/storybook-host/src/index.ts"],
       "@selflow/ui/storybook-host/server": [
         "libs/ui/storybook-host/src/server.ts"
+      ],
+      "@selflow/ui/workflow-editor": ["libs/ui/workflow-editor/src/index.ts"],
+      "@selflow/ui/workflow-editor/server": [
+        "libs/ui/workflow-editor/src/server.ts"
       ]
     }
   },

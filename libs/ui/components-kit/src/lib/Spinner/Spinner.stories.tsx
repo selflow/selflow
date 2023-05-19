@@ -4,7 +4,7 @@ import {Spinner, SpinnerSizes} from "./Spinner";
 
 const Story: Meta<typeof Spinner> = {
   component: Spinner,
-  title: 'ui-kit/Spinner'
+  title: 'Spinner'
 }
 
 export default Story

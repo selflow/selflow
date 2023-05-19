@@ -1,7 +1,4 @@
-import {Input, MultiSelect} from "../../Inputs";
-import {CodeEditor} from "../../Inputs/CodeEditor/CodeEditor";
-import {Button} from "@selflow/ui/components-kit";
-
+import {CodeEditor, Input, MultiSelect, Button} from "@selflow/ui/components-kit";
 
 export type EditStepFormProps = {}
 

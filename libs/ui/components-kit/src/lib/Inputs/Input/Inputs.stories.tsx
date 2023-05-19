@@ -3,7 +3,7 @@ import { Input } from './Inputs';
 
 const Story: Meta<typeof Input> = {
   component: Input,
-  title: 'ui-kit/inputs/Input',
+  title: 'inputs/Input',
 };
 export default Story;
 

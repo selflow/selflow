@@ -5,7 +5,7 @@ import {statusMap} from "./statusList";
 
 const Story: Meta<typeof WorkflowEditor> = {
   component: WorkflowEditor,
-  title: 'Workflow-Editor/WorkflowEditor',
+  title: 'WorkflowEditor',
   parameters: {
     layout: 'fullscreen'
   }

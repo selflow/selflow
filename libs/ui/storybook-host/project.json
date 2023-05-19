@@ -52,5 +52,5 @@
       }
     }
   },
-  "implicitDependencies": ["ui-components-kit"]
+  "implicitDependencies": ["ui-components-kit", "ui-workflow-editor"]
 }

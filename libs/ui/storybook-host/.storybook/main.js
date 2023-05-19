@@ -1,5 +1,17 @@
 const config = {
-  stories: ['../../**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  stories: [
+    '../../**/*.stories.@(js|jsx|ts|tsx|mdx)',
+    {
+      directory: '../../components-kit',
+      titlePrefix: 'ui-kit',
+      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)'
+    },
+    {
+      directory: '../../workflow-editor',
+      titlePrefix: 'workflow-editor',
+      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)'
+    },
+  ],
   addons: ['@storybook/addon-essentials'],
   framework: {
     name: '@storybook/nextjs',
