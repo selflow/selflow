@@ -72,24 +72,11 @@ export const WorkflowEditor = ({steps}: WorkflowEditorProps) => {
   const [initNodes, initEdges] = mapWorkflowStepToReactFlowNodeAndEdges(steps)
   const [nodes, setNodes] = useState<Node<WorkflowStepProps>[]>(initNodes);
   const [edges, setEdges] = useState<Edge[]>(initEdges);
-  const [isRightSidePanelOpen, setIsRightSidePanelOpen] = useState(false)
+  const [isRightSidePanelOpen, setIsRightSidePanelOpen] = useState(true)
 
   const onNodesChange: OnNodesChange = (changes) => setNodes((nds) => applyNodeChanges(changes, nds));
   const onEdgesChange: OnEdgesChange = (changes) => setEdges((eds) => applyEdgeChanges(changes, eds));
   const onConnect: OnConnect = (connection) => setEdges((eds) => addEdge(connection, eds));
-
-  const onNew = () => setNodes([...nodes,
-    {
-      id: `toto-${Date.now()}`,
-      type: 'workflowStep',
-      position: {
-        x: 0,
-        y: 0,
-      },
-      data: {
-        status: statusMap.CREATED
-      }
-    }])
 
 
   return <div className={"w-full h-full flex overflow-hidden"}>

@@ -1,5 +1,5 @@
 import {Button} from "./Button";
-import {Meta, StoryFn} from "@storybook/react";
+import {Meta} from "@storybook/react";
 
 
 const Story: Meta<typeof Button> = {
@@ -9,7 +9,11 @@ const Story: Meta<typeof Button> = {
 
 export default Story
 
-export const Template: StoryFn = (args) => <Button {...args} />
-
+export const Primary = {
+  args: {
+    children: 'Click Me !',
+    onClick: () => alert('You clicked me !')
+  }
+}
 
 

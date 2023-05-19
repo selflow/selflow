@@ -6,7 +6,7 @@ import {statusList, statusMap} from "../statusList";
 
 const Story: Meta<typeof WorkflowStepNode> = {
   component: WorkflowStepNode,
-  title: 'ui-kit/WorkflowStepNode',
+  title: 'Workflow-Editor/WorkflowStepNode',
   parameters: {
     layout: 'fullscreen'
   }
