@@ -24,7 +24,7 @@ export const mapWorkflowStepToReactFlowNodeAndEdges = (
   steps: WorkflowStep[]
 ): [Node<WorkflowStepProps>[], Edge[]] => {
   const stepsAsMap = steps.reduce(
-    (acc, step) => ({...acc, [step.id]: step}),
+    (acc, step) => ({ ...acc, [step.id]: step }),
     {}
   );
 

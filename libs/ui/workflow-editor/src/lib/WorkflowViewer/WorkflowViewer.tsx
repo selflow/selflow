@@ -1,10 +1,4 @@
-import ReactFlow, {
-  Background,
-  Controls,
-  NodeMouseHandler,
-  OnConnect,
-  Panel,
-} from 'reactflow';
+import ReactFlow, {Background, Controls, NodeMouseHandler, OnConnect, Panel,} from 'reactflow';
 import 'reactflow/dist/style.css';
 import {WorkflowStepNode} from '../WorkflowStep/WorkflowStepNode';
 import {FaBars, FaTimes} from 'react-icons/all';
@@ -17,22 +11,22 @@ export type WorkflowViewerProps = {
   onStepClick?: (nodeId: string) => void;
 };
 
-const nodeTypes = {workflowStep: WorkflowStepNode};
+const nodeTypes = { workflowStep: WorkflowStepNode };
 
 export const WorkflowViewer = ({
-                                 isSideMenuOpen,
-                                 setSideMenuOpen,
-                                 viewOnly,
-                                 onStepClick,
-                               }: WorkflowViewerProps) => {
-  const {nodes, edges, onEdgesChange, addDependency} = useWorkflow();
+  isSideMenuOpen,
+  setSideMenuOpen,
+  viewOnly,
+  onStepClick,
+}: WorkflowViewerProps) => {
+  const { nodes, edges, onEdgesChange, addDependency } = useWorkflow();
 
   const onConnect: OnConnect = (connection) => {
     if (!connection.source || !connection.target) return;
     addDependency(connection.target, connection.source);
   };
 
-  const nodeClick: NodeMouseHandler = (_, {id}) =>
+  const nodeClick: NodeMouseHandler = (_, { id }) =>
     onStepClick && onStepClick(id);
 
   return (
@@ -56,15 +50,15 @@ export const WorkflowViewer = ({
               }
             >
               {isSideMenuOpen ? (
-                <FaTimes className={'fill-white'} size={24}/>
+                <FaTimes className={'fill-white'} size={24} />
               ) : (
-                <FaBars className={'fill-white'} size={24}/>
+                <FaBars className={'fill-white'} size={24} />
               )}
             </button>
           </Panel>
         )}
-        <Background/>
-        <Controls/>
+        <Background />
+        <Controls />
       </ReactFlow>
     </div>
   );

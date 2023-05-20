@@ -6,7 +6,7 @@ export type InputProps = ComponentPropsWithoutRef<'input'> & {
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({label, id, className, ...defaultInputProps}, ref) => (
+  ({ label, id, className, ...defaultInputProps }, ref) => (
     <div className={`my-2 ${className}`}>
       <Label htmlFor={id}>{label}</Label>
       <input

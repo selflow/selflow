@@ -1,22 +1,9 @@
-import {
-  createContext,
-  FC,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import {createContext, FC, PropsWithChildren, useContext, useEffect, useState,} from 'react';
 import {WorkflowStep} from '../types';
 import {mapWorkflowStepToReactFlowNodeAndEdges} from './stepToNode';
 import {Node} from '@reactflow/core/dist/esm/types';
 import {WorkflowStepProps} from '../WorkflowStep/WorkflowStepNode';
-import {
-  addEdge,
-  applyEdgeChanges,
-  Edge,
-  OnConnect,
-  OnEdgesChange,
-} from 'reactflow';
+import {addEdge, applyEdgeChanges, Edge, OnConnect, OnEdgesChange,} from 'reactflow';
 
 export type WorkflowProviderState = {
   steps: WorkflowStep[];
@@ -48,9 +35,9 @@ export type WorkflowProviderProps = PropsWithChildren & {
 };
 
 export const WorkflowProvider: FC<WorkflowProviderProps> = ({
-                                                              children,
-                                                              initialSteps,
-                                                            }) => {
+  children,
+  initialSteps,
+}) => {
   const [initialNodes, initialEdges] =
     mapWorkflowStepToReactFlowNodeAndEdges(initialSteps);
   const [steps, setSteps] = useState(initialSteps);
@@ -93,12 +80,12 @@ export const WorkflowProvider: FC<WorkflowProviderProps> = ({
       setSteps(
         steps.map((step) => {
           if (step.id === oldStep.id) {
-            return {...newStep};
+            return { ...newStep };
           }
           const dependencyIndex = step.needs.indexOf(oldStep.id);
           if (dependencyIndex === -1) {
             console.log('dep not found for step ' + step.id);
-            return {...step};
+            return { ...step };
           }
 
           console.log('dep found for step ' + step.id);

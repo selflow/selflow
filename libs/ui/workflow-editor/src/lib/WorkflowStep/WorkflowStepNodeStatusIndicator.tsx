@@ -8,10 +8,10 @@ export type WorkflowStepStatusIndicatorProps = {
 };
 
 const WorkflowStepStatusIndicatorByStatusName: Record<string, JSX.Element> = {
-  SUCCESS: <FaCheck className={'fill-green-700'} size={20}/>,
-  ERROR: <FaTimes className={'fill-red-700'} size={20}/>,
-  CANCELLED: <FaBan className={'fill-gray-700'} size={20}/>,
-  RUNNING: <Spinner size={'xs'}/>,
+  SUCCESS: <FaCheck className={'fill-green-700'} size={20} />,
+  ERROR: <FaTimes className={'fill-red-700'} size={20} />,
+  CANCELLED: <FaBan className={'fill-gray-700'} size={20} />,
+  RUNNING: <Spinner size={'xs'} />,
 };
 
 const PendingIcon = (
@@ -22,7 +22,7 @@ const PendingIcon = (
 );
 
 export const WorkflowStepNodeStatusIndicator = ({
-                                                  status,
-                                                }: WorkflowStepStatusIndicatorProps) => {
+  status,
+}: WorkflowStepStatusIndicatorProps) => {
   return WorkflowStepStatusIndicatorByStatusName[status.name] ?? PendingIcon;
 };

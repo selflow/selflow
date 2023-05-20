@@ -8,7 +8,7 @@ export type SpinnerProps = {
   size?: SpinnerSize;
 };
 
-export const Spinner = ({size = 'md'}: SpinnerProps) => (
+export const Spinner = ({ size = 'md' }: SpinnerProps) => (
   <div
     aria-label="Blue hamster running in a metal wheel"
     role="img"

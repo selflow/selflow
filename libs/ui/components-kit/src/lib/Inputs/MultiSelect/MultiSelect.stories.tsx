@@ -1,5 +1,5 @@
-import type { Meta } from '@storybook/react';
-import { MultiSelect } from './MultiSelect';
+import type {Meta} from '@storybook/react';
+import {MultiSelect} from './MultiSelect';
 
 const Story: Meta<typeof MultiSelect> = {
   component: MultiSelect,
@@ -8,10 +8,10 @@ const Story: Meta<typeof MultiSelect> = {
 export default Story;
 
 const items = [
-  {id: 'toto', name: 'Toto'},
-  {id: 'tata', name: 'Tata'},
-  {id: 'titi', name: 'Titi'},
-  {id: 'tutu', name: 'tutu'},
+  { id: 'toto', name: 'Toto' },
+  { id: 'tata', name: 'Tata' },
+  { id: 'titi', name: 'Titi' },
+  { id: 'tutu', name: 'tutu' },
 ];
 
 export const Primary = {

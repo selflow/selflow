@@ -17,7 +17,7 @@ export const Sizes = () => (
         <code className={'grid content-center text-center font-mono'}>
           {size}
         </code>
-        <Spinner size={size}/>
+        <Spinner size={size} />
       </>
     ))}
   </div>

@@ -23,10 +23,10 @@ export class DaemonService extends DaemonClient {
 
   public async doGetRunStatus(runId: string) {
     return promisify(this.getRunStatus)
-      .bind(this)({runId})
+      .bind(this)({ runId })
       .then<DaemonState>((response: any) => {
         if (!response) {
-          return {state: {}, dependencies: {}};
+          return { state: {}, dependencies: {} };
         }
 
         const responseState = response.state ?? {};
@@ -34,7 +34,7 @@ export class DaemonService extends DaemonClient {
         return {
           state: mapObject<{ name: string }, StepStatus>(
             responseState,
-            (v) => ({...v})
+            (v) => ({ ...v })
           ),
           dependencies: mapObject<{ dependencies: string[] }, string[]>(
             responseDependencies,

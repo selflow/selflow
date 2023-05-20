@@ -15,12 +15,12 @@ export type MultiSelectProps = {
 };
 
 export const MultiSelect: FC<MultiSelectProps> = ({
-                                                    items,
-                                                    label,
-                                                    placeholder,
-                                                    initialSelectedItems = [],
-                                                    onChange,
-                                                  }) => {
+  items,
+  label,
+  placeholder,
+  initialSelectedItems = [],
+  onChange,
+}) => {
   const [selectedItems, setSelectedItems] = useState<MultiSelectItem[]>(
     initialSelectedItems ?? []
   );
@@ -60,7 +60,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
                 onClick={() => removeItem(selectedItem)}
               >
                 <span>{selectedItem}</span>
-                <FaTimes/>
+                <FaTimes />
               </li>
             ))}
           </ul>
@@ -74,21 +74,20 @@ export const MultiSelect: FC<MultiSelectProps> = ({
             placeholder={placeholder}
             className={'grow bg-transparent outline-none ring-none'}
           />
-          <FaChevronDown/>
+          <FaChevronDown />
         </Combobox.Button>
-        <Combobox.Options
-          className="absolute w-full mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+        <Combobox.Options className="absolute w-full mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
           {items.length === 0 && <p className={'p-1'}>No item found</p>}
           {items.map((item) => (
             <Combobox.Option key={item} value={item}>
-              {({selected, active}) => (
+              {({ selected, active }) => (
                 <div
                   className={`p-2 cursor-pointer bg-white hover:bg-gray-100 flex items-center ${
                     active ? 'bg-gray-100 ' : ''
                   }`}
                 >
                   <span className={'w-8 flex items-center justify-center'}>
-                    {selected && <FaLink className={'fill-sky-500'}/>}
+                    {selected && <FaLink className={'fill-sky-500'} />}
                   </span>
 
                   <span>{item}</span>

@@ -67,8 +67,7 @@ export interface Diagnostic {
   message: string;
 }
 
-export interface StartRun {
-}
+export interface StartRun {}
 
 export interface StartRun_Request {
   runConfig: Uint8Array;
@@ -79,8 +78,7 @@ export interface StartRun_Response {
   runId: string;
 }
 
-export interface GetLogStream {
-}
+export interface GetLogStream {}
 
 export interface GetLogStream_Request {
   runId: string;
@@ -93,8 +91,7 @@ export interface Log {
   message: string;
 }
 
-export interface GetRunStatus {
-}
+export interface GetRunStatus {}
 
 export interface GetRunStatus_Request {
   runId: string;
@@ -124,7 +121,7 @@ export interface GetRunStatus_Response_DependenciesEntry {
 }
 
 function createBaseDiagnostic(): Diagnostic {
-  return {type: 0, message: ''};
+  return { type: 0, message: '' };
 }
 
 export const Diagnostic = {
@@ -182,7 +179,7 @@ export const Diagnostic = {
   toJSON(message: Diagnostic): unknown {
     const obj: any = {};
     message.type !== undefined &&
-    (obj.type = diagnosticTypeToJSON(message.type));
+      (obj.type = diagnosticTypeToJSON(message.type));
     message.message !== undefined && (obj.message = message.message);
     return obj;
   },
@@ -296,9 +293,9 @@ export const StartRun_Request = {
   toJSON(message: StartRun_Request): unknown {
     const obj: any = {};
     message.runConfig !== undefined &&
-    (obj.runConfig = base64FromBytes(
-      message.runConfig !== undefined ? message.runConfig : new Uint8Array()
-    ));
+      (obj.runConfig = base64FromBytes(
+        message.runConfig !== undefined ? message.runConfig : new Uint8Array()
+      ));
     return obj;
   },
 
@@ -318,7 +315,7 @@ export const StartRun_Request = {
 };
 
 function createBaseStartRun_Response(): StartRun_Response {
-  return {diagnostics: [], runId: ''};
+  return { diagnostics: [], runId: '' };
 }
 
 export const StartRun_Response = {
@@ -458,7 +455,7 @@ export const GetLogStream = {
 };
 
 function createBaseGetLogStream_Request(): GetLogStream_Request {
-  return {runId: ''};
+  return { runId: '' };
 }
 
 export const GetLogStream_Request = {
@@ -500,7 +497,7 @@ export const GetLogStream_Request = {
   },
 
   fromJSON(object: any): GetLogStream_Request {
-    return {runId: isSet(object.runId) ? String(object.runId) : ''};
+    return { runId: isSet(object.runId) ? String(object.runId) : '' };
   },
 
   toJSON(message: GetLogStream_Request): unknown {
@@ -525,7 +522,7 @@ export const GetLogStream_Request = {
 };
 
 function createBaseLog(): Log {
-  return {level: '', dateTime: '', name: '', message: ''};
+  return { level: '', dateTime: '', name: '', message: '' };
 }
 
 export const Log = {
@@ -675,7 +672,7 @@ export const GetRunStatus = {
 };
 
 function createBaseGetRunStatus_Request(): GetRunStatus_Request {
-  return {runId: ''};
+  return { runId: '' };
 }
 
 export const GetRunStatus_Request = {
@@ -717,7 +714,7 @@ export const GetRunStatus_Request = {
   },
 
   fromJSON(object: any): GetRunStatus_Request {
-    return {runId: isSet(object.runId) ? String(object.runId) : ''};
+    return { runId: isSet(object.runId) ? String(object.runId) : '' };
   },
 
   toJSON(message: GetRunStatus_Request): unknown {
@@ -742,7 +739,7 @@ export const GetRunStatus_Request = {
 };
 
 function createBaseGetRunStatus_Status(): GetRunStatus_Status {
-  return {name: ''};
+  return { name: '' };
 }
 
 export const GetRunStatus_Status = {
@@ -781,7 +778,7 @@ export const GetRunStatus_Status = {
   },
 
   fromJSON(object: any): GetRunStatus_Status {
-    return {name: isSet(object.name) ? String(object.name) : ''};
+    return { name: isSet(object.name) ? String(object.name) : '' };
   },
 
   toJSON(message: GetRunStatus_Status): unknown {
@@ -891,13 +888,13 @@ export const GetRunStatus_Response = {
   ): _m0.Writer {
     Object.entries(message.state).forEach(([key, value]) => {
       GetRunStatus_Response_StateEntry.encode(
-        {key: key as any, value},
+        { key: key as any, value },
         writer.uint32(10).fork()
       ).ldelim();
     });
     Object.entries(message.dependencies).forEach(([key, value]) => {
       GetRunStatus_Response_DependenciesEntry.encode(
-        {key: key as any, value},
+        { key: key as any, value },
         writer.uint32(18).fork()
       ).ldelim();
     });
@@ -954,19 +951,19 @@ export const GetRunStatus_Response = {
     return {
       state: isObject(object.state)
         ? Object.entries(object.state).reduce<{
-          [key: string]: GetRunStatus_Status;
-        }>((acc, [key, value]) => {
-          acc[key] = GetRunStatus_Status.fromJSON(value);
-          return acc;
-        }, {})
+            [key: string]: GetRunStatus_Status;
+          }>((acc, [key, value]) => {
+            acc[key] = GetRunStatus_Status.fromJSON(value);
+            return acc;
+          }, {})
         : {},
       dependencies: isObject(object.dependencies)
         ? Object.entries(object.dependencies).reduce<{
-          [key: string]: GetRunStatus_Dependence;
-        }>((acc, [key, value]) => {
-          acc[key] = GetRunStatus_Dependence.fromJSON(value);
-          return acc;
-        }, {})
+            [key: string]: GetRunStatus_Dependence;
+          }>((acc, [key, value]) => {
+            acc[key] = GetRunStatus_Dependence.fromJSON(value);
+            return acc;
+          }, {})
         : {},
     };
   },
@@ -1019,7 +1016,7 @@ export const GetRunStatus_Response = {
 };
 
 function createBaseGetRunStatus_Response_StateEntry(): GetRunStatus_Response_StateEntry {
-  return {key: '', value: undefined};
+  return { key: '', value: undefined };
 }
 
 export const GetRunStatus_Response_StateEntry = {
@@ -1086,9 +1083,9 @@ export const GetRunStatus_Response_StateEntry = {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
-    (obj.value = message.value
-      ? GetRunStatus_Status.toJSON(message.value)
-      : undefined);
+      (obj.value = message.value
+        ? GetRunStatus_Status.toJSON(message.value)
+        : undefined);
     return obj;
   },
 
@@ -1112,7 +1109,7 @@ export const GetRunStatus_Response_StateEntry = {
 };
 
 function createBaseGetRunStatus_Response_DependenciesEntry(): GetRunStatus_Response_DependenciesEntry {
-  return {key: '', value: undefined};
+  return { key: '', value: undefined };
 }
 
 export const GetRunStatus_Response_DependenciesEntry = {
@@ -1182,9 +1179,9 @@ export const GetRunStatus_Response_DependenciesEntry = {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
-    (obj.value = message.value
-      ? GetRunStatus_Dependence.toJSON(message.value)
-      : undefined);
+      (obj.value = message.value
+        ? GetRunStatus_Dependence.toJSON(message.value)
+        : undefined);
     return obj;
   },
 
@@ -1308,7 +1305,7 @@ export const DaemonClient = makeGenericClientConstructor(
   DaemonService,
   'Daemon'
 ) as unknown as {
-  new(
+  new (
     address: string,
     credentials: ChannelCredentials,
     options?: Partial<ClientOptions>
@@ -1372,19 +1369,19 @@ type Builtin =
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : T extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : T extends {}
-        ? { [K in keyof T]?: DeepPartial<T[K]> }
-        : Partial<T>;
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-  [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
-};
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function isObject(value: any): boolean {
   return typeof value === 'object' && value !== null;

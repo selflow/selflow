@@ -1,9 +1,4 @@
-import {
-  Button,
-  CodeEditor,
-  Input,
-  MultiSelect,
-} from '@selflow/ui/components-kit';
+import {Button, CodeEditor, Input, MultiSelect,} from '@selflow/ui/components-kit';
 import {Controller, useForm} from 'react-hook-form';
 import {useWorkflow} from '../Providers/WorkflowProvider';
 import {WorkflowStep} from '../types';
@@ -14,10 +9,10 @@ type EditStepFormFields = WorkflowStep;
 export type EditStepFormProps = {
   initialStep?: EditStepFormFields;
 };
-export const EditStepForm = ({initialStep}: EditStepFormProps) => {
-  const {steps, setStep, addStep} = useWorkflow();
+export const EditStepForm = ({ initialStep }: EditStepFormProps) => {
+  const { steps, setStep, addStep } = useWorkflow();
 
-  const {register, handleSubmit, control, reset} =
+  const { register, handleSubmit, control, reset } =
     useForm<EditStepFormFields>({
       defaultValues: initialStep,
     });
@@ -42,14 +37,14 @@ export const EditStepForm = ({initialStep}: EditStepFormProps) => {
         <Input
           type="text"
           label={'Step Id'}
-          {...register('id', {required: true})}
+          {...register('id', { required: true })}
         />
 
         <Controller
           name={'needs'}
           control={control}
           defaultValue={[]}
-          render={({field}) => (
+          render={({ field }) => (
             <MultiSelect
               items={steps.map((step) => step.id)}
               placeholder={'Pick the step dependencies'}
@@ -65,14 +60,14 @@ export const EditStepForm = ({initialStep}: EditStepFormProps) => {
         <Input
           type="text"
           label={'Docker Image'}
-          {...register('with.image', {required: true})}
+          {...register('with.image', { required: true })}
         />
 
         <Controller
           name={'with.commands'}
           control={control}
           defaultValue={''}
-          render={({field}) => (
+          render={({ field }) => (
             <CodeEditor
               lang={'sh'}
               label={'Commands'}

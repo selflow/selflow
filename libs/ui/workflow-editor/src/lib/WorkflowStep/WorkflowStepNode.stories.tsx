@@ -26,7 +26,7 @@ Template.args = {
 
 Template.decorators = [(story) => <ReactFlow>{story()}</ReactFlow>];
 
-const nodeTypes = {workflowStep: WorkflowStepNode};
+const nodeTypes = { workflowStep: WorkflowStepNode };
 
 const colCount = 3;
 
@@ -37,7 +37,7 @@ const stepStatusNodes = statusList.map((status, index) => ({
     x: (index % colCount) * 300,
     y: Math.floor(index / colCount) * 100,
   },
-  data: {status},
+  data: { status },
 }));
 
 export const StepStatus = () => (

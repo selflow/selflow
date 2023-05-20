@@ -10,10 +10,10 @@ export type CodeEditorProps = Omit<IAceEditorProps, 'theme' | 'setOptions'> & {
 };
 
 export const CodeEditor = ({
-                             lang,
-                             label,
-                             ...editorProps
-                           }: CodeEditorProps) => {
+  lang,
+  label,
+  ...editorProps
+}: CodeEditorProps) => {
   return (
     <div className={'my-2'}>
       <Label>
@@ -22,7 +22,7 @@ export const CodeEditor = ({
           className={'rounded-lg w-full h-64'}
           mode={lang}
           theme="github"
-          editorProps={{$blockScrolling: true}}
+          editorProps={{ $blockScrolling: true }}
           showPrintMargin={true}
           showGutter={true}
           highlightActiveLine={true}

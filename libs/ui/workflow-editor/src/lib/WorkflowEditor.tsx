@@ -10,10 +10,10 @@ export type WorkflowEditorProps = {
   steps: WorkflowStep[];
 };
 
-export const WorkflowEditor = ({steps}: WorkflowEditorProps) => {
+export const WorkflowEditor = ({ steps }: WorkflowEditorProps) => {
   return (
     <WorkflowProvider initialSteps={steps}>
-      <WorkflowEditor$/>
+      <WorkflowEditor$ />
     </WorkflowProvider>
   );
 };
@@ -24,7 +24,7 @@ export const WorkflowEditor$ = () => {
     undefined
   );
 
-  const {steps} = useWorkflow();
+  const { steps } = useWorkflow();
 
   const onStepClick = (stepId: string) => {
     const step = steps.find((step) => step.id === stepId) ?? undefined;
@@ -40,7 +40,7 @@ export const WorkflowEditor$ = () => {
         onStepClick={onStepClick}
       />
       <RightSidePanel isOpen={isRightSidePanelOpen}>
-        <EditStepForm initialStep={editedStep}/>
+        <EditStepForm initialStep={editedStep} />
       </RightSidePanel>
     </div>
   );
