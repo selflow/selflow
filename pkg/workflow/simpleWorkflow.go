@@ -110,6 +110,8 @@ func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) 
 		if step.GetStatus().IsCancellable() {
 			err = errors.Join(step.Cancel())
 			closingSteps <- step
+
+			err = errors.Join(s.cancelNextSteps(step, closingSteps))
 		}
 	}
 	return err
@@ -153,37 +155,45 @@ func (s *SimpleWorkflow) updateState() {
 	s.StateCh <- state
 }
 
+func shouldCancelNextSteps(stepStatus Status) bool {
+	return stepStatus.GetCode() == ERROR.GetCode() || stepStatus.GetCode() == CANCELLED.GetCode()
+}
+
 func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]string, error) {
 	logger := sflog.LoggerFromContext(ctx)
 	closingSteps := make(chan Step, len(s.steps))
-
-	var err error
-
 	activeSteps := &sync.WaitGroup{}
 
-	s.startNextSteps(ctx, activeSteps, closingSteps)
+	defer close(s.StateCh)
 
 	for s.hasUnfinishedSteps() {
+		s.startNextSteps(ctx, activeSteps, closingSteps)
+
 		select {
 		case <-ctx.Done():
-			err = errors.Join(err, s.cancelRemainingSteps())
+			// The context has been closed
+
+			err := s.cancelRemainingSteps()
+			if err != nil {
+				logger.Error("cancel error", "error", err)
+			}
 			close(closingSteps)
 
 		case step := <-closingSteps:
+			// A step as ended
+
 			s.updateState()
 			logger.Info("step terminated", "step-id", step.GetId(), "status", step.GetStatus().GetName())
-			// A step as ended
-			if step.GetStatus() == ERROR || step.GetStatus() == CANCELLED {
-				err = errors.Join(err, s.cancelNextSteps(step, closingSteps))
-			} else {
-				s.startNextSteps(ctx, activeSteps, closingSteps)
+			if shouldCancelNextSteps(step.GetStatus()) {
+				err := s.cancelNextSteps(step, closingSteps)
+				if err != nil {
+					logger.Error("cancel error", "error", err)
+				}
 			}
 		}
 	}
 
 	activeSteps.Wait()
-
-	close(s.StateCh)
 
 	return s.getOutput(), nil
 }

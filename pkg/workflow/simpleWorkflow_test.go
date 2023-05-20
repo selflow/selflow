@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -148,10 +149,14 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
 				Dependencies: tt.fields.dependencies,
-				StateCh:      make(chan map[string]Status, 1),
+				StateCh:      ch,
 			}
 
+			wg := sync.WaitGroup{}
+			wg.Add(2)
+
 			go func() {
+				defer wg.Done()
 				got, err := s.Execute(tt.args.ctx)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Execute() error = %v, wantErr %v", err, tt.wantErr)
@@ -173,9 +178,13 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 			}()
 
 			go func() {
+				defer wg.Done()
 				for range ch {
 				}
+
 			}()
+
+			wg.Wait()
 		})
 	}
 }
