@@ -7,9 +7,12 @@ export interface WorkflowStepStatus {
   isCancellable: boolean
 }
 
-
 export interface WorkflowStep {
   id: string
-  status: WorkflowStepStatus
-  dependencies: string[]
+  status?: WorkflowStepStatus
+  needs: string[]
+  with: {
+    image: string
+    commands: string
+  }
 }

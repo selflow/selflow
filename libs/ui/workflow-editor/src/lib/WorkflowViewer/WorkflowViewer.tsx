@@ -1,18 +1,14 @@
-import ReactFlow, {Background, Controls, Edge, OnConnect, OnEdgesChange, OnNodesChange, Panel} from 'reactflow';
+import ReactFlow, {Background, Controls, NodeMouseHandler, OnConnect, Panel} from 'reactflow';
 import 'reactflow/dist/style.css';
-import {WorkflowStepNode, WorkflowStepProps} from "../WorkflowStep/WorkflowStepNode";
-import {Node} from "@reactflow/core/dist/esm/types";
+import {WorkflowStepNode} from "../WorkflowStep/WorkflowStepNode";
 import {FaBars, FaTimes} from "react-icons/all";
+import {useWorkflow} from "../Providers/WorkflowProvider";
 
 export type WorkflowViewerProps = {
-  nodes: Node<WorkflowStepProps>[],
-  edges: Edge[],
-  onNodesChange: OnNodesChange,
-  onEdgesChange: OnEdgesChange,
-  onConnect: OnConnect,
   isSideMenuOpen: boolean
   setSideMenuOpen: (open: boolean) => void
   viewOnly: boolean
+  onStepClick?: (nodeId: string) => void
 }
 
 
@@ -20,25 +16,30 @@ const nodeTypes = {workflowStep: WorkflowStepNode};
 
 
 export const WorkflowViewer = ({
-                                 nodes,
-                                 edges,
-                                 onNodesChange,
-                                 onEdgesChange,
-                                 onConnect,
                                  isSideMenuOpen,
                                  setSideMenuOpen,
-                                 viewOnly
+                                 viewOnly,
+                                 onStepClick
                                }: WorkflowViewerProps) => {
+  const {nodes, edges, onEdgesChange, addDependency} = useWorkflow()
+
+  const onConnect: OnConnect = (connection) => {
+    if (!connection.source || !connection.target) return
+    addDependency(connection.target, connection.source)
+  }
+
+  const nodeClick: NodeMouseHandler = (_, {id}) => onStepClick && onStepClick(id)
 
   return <div className={"w-full h-full"}>
     <ReactFlow
       nodesConnectable={!viewOnly}
       nodes={nodes}
       edges={edges}
-      onNodesChange={onNodesChange}
+      nodesDraggable={false}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       nodeTypes={nodeTypes}
+      onNodeClick={nodeClick}
     >
       {viewOnly ? null : <Panel position={"top-right"}>
         <button onClick={() => setSideMenuOpen(!isSideMenuOpen)}

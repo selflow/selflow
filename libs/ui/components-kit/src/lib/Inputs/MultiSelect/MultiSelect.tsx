@@ -1,42 +1,54 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Combobox} from "@headlessui/react";
 import {FaChevronDown, FaLink, FaTimes} from "react-icons/all";
 import {Label} from "../Label/Label";
 
 
-export type MultiSelectItem = { id: string, name: string }
+export type MultiSelectItem = string
 
 export type MultiSelectProps = {
   items: MultiSelectItem[],
   placeholder?: string
   label: string
-  initialSelectedItems?: MultiSelectItem[]
+  initialSelectedItems?: MultiSelectItem[],
+  onChange?: (selectedItems: MultiSelectItem[]) => void
 }
 
 
-export const MultiSelect: FC<MultiSelectProps> = ({items, label, placeholder, initialSelectedItems}) => {
+export const MultiSelect: FC<MultiSelectProps> = ({
+                                                    items,
+                                                    label,
+                                                    placeholder,
+                                                    initialSelectedItems = [],
+                                                    onChange,
+                                                  }) => {
   const [selectedItems, setSelectedItems] = useState<MultiSelectItem[]>(initialSelectedItems ?? [])
 
-  const removeItem = (itemId: MultiSelectItem['id']) => {
-    const index = selectedItems.findIndex(item => item.id === itemId)
+  useEffect(() => {
+    onChange && onChange(selectedItems)
+  }, [selectedItems, onChange])
+
+  const removeItem = (itemId: MultiSelectItem) => {
+    const index = selectedItems.findIndex(item => item === itemId)
     setSelectedItems([...selectedItems.slice(0, index), ...selectedItems.slice(index + 1)])
   }
 
   return (
     <div className={"relative"}>
-      {/* @ts-ignore */}
-      <Combobox value={selectedItems} onChange={setSelectedItems} multiple>
+      <Combobox value={initialSelectedItems} onChange={setSelectedItems}
+        /* @ts-ignore */
+                multiple>
         <Combobox.Label>
           <Label>{label}</Label>
         </Combobox.Label>
 
-        {selectedItems.length > 0 && (
+        {initialSelectedItems.length > 0 && (
           <ul className={"flex flex-wrap gap-2 my-2"}>
-            {selectedItems.map((selectedItem) => (
-              <li key={selectedItem.id}
+            {initialSelectedItems.map((selectedItem) => (
+              <li key={selectedItem}
                   className={"inline-block py-1 px-2 text-white bg-blue-400 rounded cursor-pointer flex items-center gap-1"}
-                  onClick={() => removeItem(selectedItem.id)}>
-                <span>{selectedItem.name}</span>
+                  onClick={() => removeItem(selectedItem)}>
+                <span>{selectedItem}</span>
                 <FaTimes/>
               </li>
             ))}
@@ -47,9 +59,11 @@ export const MultiSelect: FC<MultiSelectProps> = ({items, label, placeholder, in
           <Combobox.Input placeholder={placeholder} className={"grow bg-transparent outline-none ring-none"}/>
           <FaChevronDown/>
         </Combobox.Button>
-        <Combobox.Options className="absolute w-full mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+        <Combobox.Options
+          className="absolute w-full mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          {items.length === 0 && <p className={"p-1"}>No item found</p>}
           {items.map((item) => (
-            <Combobox.Option key={item.id} value={item}>
+            <Combobox.Option key={item} value={item}>
               {({selected, active}) => (
                 <div
                   className={`p-2 cursor-pointer bg-white hover:bg-gray-100 flex items-center ${active ? 'bg-gray-100 ' : ''}`}>
@@ -59,7 +73,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({items, label, placeholder, in
                   }
                 </span>
 
-                  <span>{item.name}</span>
+                  <span>{item}</span>
                 </div>
               )}
             </Combobox.Option>

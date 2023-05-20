@@ -5,17 +5,18 @@ import {WorkflowStepNodeStatusIndicator} from "./WorkflowStepNodeStatusIndicator
 
 
 export type WorkflowStepProps = {
-  status: WorkflowStepStatus
+  status?: WorkflowStepStatus
 }
 
 
 export const WorkflowStepNode = ({id, data: {status}}: NodeProps<WorkflowStepProps>) => {
   return <>
     <Handle type="target" position={Position.Left}  />
-    <div className={"h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded flex items-center gap-2 font-mono"}>
-      <WorkflowStepNodeStatusIndicator status={status} />
+    {status ? <div
+      className={"h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded flex items-center gap-2 font-mono"}>
+      <WorkflowStepNodeStatusIndicator status={status}/>
       <span>{id}</span>
-    </div>
+    </div> : null}
     <Handle type="source" position={Position.Right} />
   </>
 }
