@@ -28,12 +28,12 @@ export const mapWorkflowStepToReactFlowNodeAndEdges = (
     {}
   );
 
-  let withDepth: Record<number, number> = {};
+  const withDepth: Record<number, number> = {};
 
-  let nodes: Node<WorkflowStepProps>[] = [];
-  let edges: Edge[] = [];
+  const nodes: Node<WorkflowStepProps>[] = [];
+  const edges: Edge[] = [];
 
-  for (let step of steps) {
+  for (const step of steps) {
     const depth = getDepth(step.id, stepsAsMap);
     const lineIndex = withDepth[depth] === undefined ? 0 : withDepth[depth] + 1;
     nodes.push({

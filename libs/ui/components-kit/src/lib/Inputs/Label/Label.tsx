@@ -1,9 +1,6 @@
 import {ComponentPropsWithoutRef, forwardRef} from 'react';
 
-export type LabelProps = Omit<
-  ComponentPropsWithoutRef<'label'>,
-  'className'
-> & {};
+export type LabelProps = Omit<ComponentPropsWithoutRef<'label'>, 'className'>;
 
 export const Label = forwardRef<HTMLLabelElement, LabelProps>((props, ref) => (
   <label

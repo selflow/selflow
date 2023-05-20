@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, {FC, useEffect, useState} from 'react';
 import {Combobox} from '@headlessui/react';
 import {FaChevronDown, FaLink, FaTimes} from 'react-icons/all';

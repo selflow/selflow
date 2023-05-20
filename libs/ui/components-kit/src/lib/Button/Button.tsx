@@ -1,9 +1,6 @@
 import {ComponentPropsWithoutRef, forwardRef} from 'react';
 
-export type ButtonProps = Omit<
-  ComponentPropsWithoutRef<'button'>,
-  'className'
-> & {};
+export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'className'>;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => (
