@@ -12,10 +12,10 @@ import {
   Metadata,
   ServiceError,
   UntypedServiceImplementation,
-} from "@grpc/grpc-js";
-import * as _m0 from "protobufjs/minimal";
+} from '@grpc/grpc-js';
+import * as _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "";
+export const protobufPackage = '';
 
 export enum DiagnosticType {
   ERROR = 0,
@@ -28,19 +28,19 @@ export enum DiagnosticType {
 export function diagnosticTypeFromJSON(object: any): DiagnosticType {
   switch (object) {
     case 0:
-    case "ERROR":
+    case 'ERROR':
       return DiagnosticType.ERROR;
     case 1:
-    case "WARNING":
+    case 'WARNING':
       return DiagnosticType.WARNING;
     case 2:
-    case "INFO":
+    case 'INFO':
       return DiagnosticType.INFO;
     case 3:
-    case "DEBUG":
+    case 'DEBUG':
       return DiagnosticType.DEBUG;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return DiagnosticType.UNRECOGNIZED;
   }
@@ -49,16 +49,16 @@ export function diagnosticTypeFromJSON(object: any): DiagnosticType {
 export function diagnosticTypeToJSON(object: DiagnosticType): string {
   switch (object) {
     case DiagnosticType.ERROR:
-      return "ERROR";
+      return 'ERROR';
     case DiagnosticType.WARNING:
-      return "WARNING";
+      return 'WARNING';
     case DiagnosticType.INFO:
-      return "INFO";
+      return 'INFO';
     case DiagnosticType.DEBUG:
-      return "DEBUG";
+      return 'DEBUG';
     case DiagnosticType.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return 'UNRECOGNIZED';
   }
 }
 
@@ -124,22 +124,26 @@ export interface GetRunStatus_Response_DependenciesEntry {
 }
 
 function createBaseDiagnostic(): Diagnostic {
-  return { type: 0, message: "" };
+  return {type: 0, message: ''};
 }
 
 export const Diagnostic = {
-  encode(message: Diagnostic, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: Diagnostic,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.type !== 0) {
       writer.uint32(8).int32(message.type);
     }
-    if (message.message !== "") {
+    if (message.message !== '') {
       writer.uint32(18).string(message.message);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Diagnostic {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDiagnostic();
     while (reader.pos < end) {
@@ -171,13 +175,14 @@ export const Diagnostic = {
   fromJSON(object: any): Diagnostic {
     return {
       type: isSet(object.type) ? diagnosticTypeFromJSON(object.type) : 0,
-      message: isSet(object.message) ? String(object.message) : "",
+      message: isSet(object.message) ? String(object.message) : '',
     };
   },
 
   toJSON(message: Diagnostic): unknown {
     const obj: any = {};
-    message.type !== undefined && (obj.type = diagnosticTypeToJSON(message.type));
+    message.type !== undefined &&
+    (obj.type = diagnosticTypeToJSON(message.type));
     message.message !== undefined && (obj.message = message.message);
     return obj;
   },
@@ -186,10 +191,12 @@ export const Diagnostic = {
     return Diagnostic.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<Diagnostic>, I>>(object: I): Diagnostic {
+  fromPartial<I extends Exact<DeepPartial<Diagnostic>, I>>(
+    object: I
+  ): Diagnostic {
     const message = createBaseDiagnostic();
     message.type = object.type ?? 0;
-    message.message = object.message ?? "";
+    message.message = object.message ?? '';
     return message;
   },
 };
@@ -204,7 +211,8 @@ export const StartRun = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StartRun {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStartRun();
     while (reader.pos < end) {
@@ -243,7 +251,10 @@ function createBaseStartRun_Request(): StartRun_Request {
 }
 
 export const StartRun_Request = {
-  encode(message: StartRun_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: StartRun_Request,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.runConfig.length !== 0) {
       writer.uint32(10).bytes(message.runConfig);
     }
@@ -251,7 +262,8 @@ export const StartRun_Request = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StartRun_Request {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStartRun_Request();
     while (reader.pos < end) {
@@ -274,21 +286,31 @@ export const StartRun_Request = {
   },
 
   fromJSON(object: any): StartRun_Request {
-    return { runConfig: isSet(object.runConfig) ? bytesFromBase64(object.runConfig) : new Uint8Array() };
+    return {
+      runConfig: isSet(object.runConfig)
+        ? bytesFromBase64(object.runConfig)
+        : new Uint8Array(),
+    };
   },
 
   toJSON(message: StartRun_Request): unknown {
     const obj: any = {};
     message.runConfig !== undefined &&
-      (obj.runConfig = base64FromBytes(message.runConfig !== undefined ? message.runConfig : new Uint8Array()));
+    (obj.runConfig = base64FromBytes(
+      message.runConfig !== undefined ? message.runConfig : new Uint8Array()
+    ));
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<StartRun_Request>, I>>(base?: I): StartRun_Request {
+  create<I extends Exact<DeepPartial<StartRun_Request>, I>>(
+    base?: I
+  ): StartRun_Request {
     return StartRun_Request.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<StartRun_Request>, I>>(object: I): StartRun_Request {
+  fromPartial<I extends Exact<DeepPartial<StartRun_Request>, I>>(
+    object: I
+  ): StartRun_Request {
     const message = createBaseStartRun_Request();
     message.runConfig = object.runConfig ?? new Uint8Array();
     return message;
@@ -296,22 +318,26 @@ export const StartRun_Request = {
 };
 
 function createBaseStartRun_Response(): StartRun_Response {
-  return { diagnostics: [], runId: "" };
+  return {diagnostics: [], runId: ''};
 }
 
 export const StartRun_Response = {
-  encode(message: StartRun_Response, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: StartRun_Response,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.diagnostics) {
       Diagnostic.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    if (message.runId !== "") {
+    if (message.runId !== '') {
       writer.uint32(18).string(message.runId);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StartRun_Response {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStartRun_Response();
     while (reader.pos < end) {
@@ -342,15 +368,19 @@ export const StartRun_Response = {
 
   fromJSON(object: any): StartRun_Response {
     return {
-      diagnostics: Array.isArray(object?.diagnostics) ? object.diagnostics.map((e: any) => Diagnostic.fromJSON(e)) : [],
-      runId: isSet(object.runId) ? String(object.runId) : "",
+      diagnostics: Array.isArray(object?.diagnostics)
+        ? object.diagnostics.map((e: any) => Diagnostic.fromJSON(e))
+        : [],
+      runId: isSet(object.runId) ? String(object.runId) : '',
     };
   },
 
   toJSON(message: StartRun_Response): unknown {
     const obj: any = {};
     if (message.diagnostics) {
-      obj.diagnostics = message.diagnostics.map((e) => e ? Diagnostic.toJSON(e) : undefined);
+      obj.diagnostics = message.diagnostics.map((e) =>
+        e ? Diagnostic.toJSON(e) : undefined
+      );
     } else {
       obj.diagnostics = [];
     }
@@ -358,14 +388,19 @@ export const StartRun_Response = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<StartRun_Response>, I>>(base?: I): StartRun_Response {
+  create<I extends Exact<DeepPartial<StartRun_Response>, I>>(
+    base?: I
+  ): StartRun_Response {
     return StartRun_Response.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<StartRun_Response>, I>>(object: I): StartRun_Response {
+  fromPartial<I extends Exact<DeepPartial<StartRun_Response>, I>>(
+    object: I
+  ): StartRun_Response {
     const message = createBaseStartRun_Response();
-    message.diagnostics = object.diagnostics?.map((e) => Diagnostic.fromPartial(e)) || [];
-    message.runId = object.runId ?? "";
+    message.diagnostics =
+      object.diagnostics?.map((e) => Diagnostic.fromPartial(e)) || [];
+    message.runId = object.runId ?? '';
     return message;
   },
 };
@@ -375,12 +410,16 @@ function createBaseGetLogStream(): GetLogStream {
 }
 
 export const GetLogStream = {
-  encode(_: GetLogStream, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: GetLogStream,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetLogStream {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetLogStream();
     while (reader.pos < end) {
@@ -404,30 +443,41 @@ export const GetLogStream = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetLogStream>, I>>(base?: I): GetLogStream {
+  create<I extends Exact<DeepPartial<GetLogStream>, I>>(
+    base?: I
+  ): GetLogStream {
     return GetLogStream.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetLogStream>, I>>(_: I): GetLogStream {
+  fromPartial<I extends Exact<DeepPartial<GetLogStream>, I>>(
+    _: I
+  ): GetLogStream {
     const message = createBaseGetLogStream();
     return message;
   },
 };
 
 function createBaseGetLogStream_Request(): GetLogStream_Request {
-  return { runId: "" };
+  return {runId: ''};
 }
 
 export const GetLogStream_Request = {
-  encode(message: GetLogStream_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.runId !== "") {
+  encode(
+    message: GetLogStream_Request,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.runId !== '') {
       writer.uint32(10).string(message.runId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetLogStream_Request {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetLogStream_Request {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetLogStream_Request();
     while (reader.pos < end) {
@@ -450,7 +500,7 @@ export const GetLogStream_Request = {
   },
 
   fromJSON(object: any): GetLogStream_Request {
-    return { runId: isSet(object.runId) ? String(object.runId) : "" };
+    return {runId: isSet(object.runId) ? String(object.runId) : ''};
   },
 
   toJSON(message: GetLogStream_Request): unknown {
@@ -459,40 +509,45 @@ export const GetLogStream_Request = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetLogStream_Request>, I>>(base?: I): GetLogStream_Request {
+  create<I extends Exact<DeepPartial<GetLogStream_Request>, I>>(
+    base?: I
+  ): GetLogStream_Request {
     return GetLogStream_Request.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetLogStream_Request>, I>>(object: I): GetLogStream_Request {
+  fromPartial<I extends Exact<DeepPartial<GetLogStream_Request>, I>>(
+    object: I
+  ): GetLogStream_Request {
     const message = createBaseGetLogStream_Request();
-    message.runId = object.runId ?? "";
+    message.runId = object.runId ?? '';
     return message;
   },
 };
 
 function createBaseLog(): Log {
-  return { level: "", dateTime: "", name: "", message: "" };
+  return {level: '', dateTime: '', name: '', message: ''};
 }
 
 export const Log = {
   encode(message: Log, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.level !== "") {
+    if (message.level !== '') {
       writer.uint32(10).string(message.level);
     }
-    if (message.dateTime !== "") {
+    if (message.dateTime !== '') {
       writer.uint32(18).string(message.dateTime);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(26).string(message.name);
     }
-    if (message.message !== "") {
+    if (message.message !== '') {
       writer.uint32(34).string(message.message);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Log {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseLog();
     while (reader.pos < end) {
@@ -537,10 +592,10 @@ export const Log = {
 
   fromJSON(object: any): Log {
     return {
-      level: isSet(object.level) ? String(object.level) : "",
-      dateTime: isSet(object.dateTime) ? String(object.dateTime) : "",
-      name: isSet(object.name) ? String(object.name) : "",
-      message: isSet(object.message) ? String(object.message) : "",
+      level: isSet(object.level) ? String(object.level) : '',
+      dateTime: isSet(object.dateTime) ? String(object.dateTime) : '',
+      name: isSet(object.name) ? String(object.name) : '',
+      message: isSet(object.message) ? String(object.message) : '',
     };
   },
 
@@ -559,10 +614,10 @@ export const Log = {
 
   fromPartial<I extends Exact<DeepPartial<Log>, I>>(object: I): Log {
     const message = createBaseLog();
-    message.level = object.level ?? "";
-    message.dateTime = object.dateTime ?? "";
-    message.name = object.name ?? "";
-    message.message = object.message ?? "";
+    message.level = object.level ?? '';
+    message.dateTime = object.dateTime ?? '';
+    message.name = object.name ?? '';
+    message.message = object.message ?? '';
     return message;
   },
 };
@@ -572,12 +627,16 @@ function createBaseGetRunStatus(): GetRunStatus {
 }
 
 export const GetRunStatus = {
-  encode(_: GetRunStatus, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: GetRunStatus,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus();
     while (reader.pos < end) {
@@ -601,30 +660,41 @@ export const GetRunStatus = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetRunStatus>, I>>(base?: I): GetRunStatus {
+  create<I extends Exact<DeepPartial<GetRunStatus>, I>>(
+    base?: I
+  ): GetRunStatus {
     return GetRunStatus.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus>, I>>(_: I): GetRunStatus {
+  fromPartial<I extends Exact<DeepPartial<GetRunStatus>, I>>(
+    _: I
+  ): GetRunStatus {
     const message = createBaseGetRunStatus();
     return message;
   },
 };
 
 function createBaseGetRunStatus_Request(): GetRunStatus_Request {
-  return { runId: "" };
+  return {runId: ''};
 }
 
 export const GetRunStatus_Request = {
-  encode(message: GetRunStatus_Request, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.runId !== "") {
+  encode(
+    message: GetRunStatus_Request,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.runId !== '') {
       writer.uint32(10).string(message.runId);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus_Request {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRunStatus_Request {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus_Request();
     while (reader.pos < end) {
@@ -647,7 +717,7 @@ export const GetRunStatus_Request = {
   },
 
   fromJSON(object: any): GetRunStatus_Request {
-    return { runId: isSet(object.runId) ? String(object.runId) : "" };
+    return {runId: isSet(object.runId) ? String(object.runId) : ''};
   },
 
   toJSON(message: GetRunStatus_Request): unknown {
@@ -656,31 +726,39 @@ export const GetRunStatus_Request = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetRunStatus_Request>, I>>(base?: I): GetRunStatus_Request {
+  create<I extends Exact<DeepPartial<GetRunStatus_Request>, I>>(
+    base?: I
+  ): GetRunStatus_Request {
     return GetRunStatus_Request.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Request>, I>>(object: I): GetRunStatus_Request {
+  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Request>, I>>(
+    object: I
+  ): GetRunStatus_Request {
     const message = createBaseGetRunStatus_Request();
-    message.runId = object.runId ?? "";
+    message.runId = object.runId ?? '';
     return message;
   },
 };
 
 function createBaseGetRunStatus_Status(): GetRunStatus_Status {
-  return { name: "" };
+  return {name: ''};
 }
 
 export const GetRunStatus_Status = {
-  encode(message: GetRunStatus_Status, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.name !== "") {
+  encode(
+    message: GetRunStatus_Status,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== '') {
       writer.uint32(10).string(message.name);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus_Status {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus_Status();
     while (reader.pos < end) {
@@ -703,7 +781,7 @@ export const GetRunStatus_Status = {
   },
 
   fromJSON(object: any): GetRunStatus_Status {
-    return { name: isSet(object.name) ? String(object.name) : "" };
+    return {name: isSet(object.name) ? String(object.name) : ''};
   },
 
   toJSON(message: GetRunStatus_Status): unknown {
@@ -712,13 +790,17 @@ export const GetRunStatus_Status = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetRunStatus_Status>, I>>(base?: I): GetRunStatus_Status {
+  create<I extends Exact<DeepPartial<GetRunStatus_Status>, I>>(
+    base?: I
+  ): GetRunStatus_Status {
     return GetRunStatus_Status.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Status>, I>>(object: I): GetRunStatus_Status {
+  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Status>, I>>(
+    object: I
+  ): GetRunStatus_Status {
     const message = createBaseGetRunStatus_Status();
-    message.name = object.name ?? "";
+    message.name = object.name ?? '';
     return message;
   },
 };
@@ -728,15 +810,22 @@ function createBaseGetRunStatus_Dependence(): GetRunStatus_Dependence {
 }
 
 export const GetRunStatus_Dependence = {
-  encode(message: GetRunStatus_Dependence, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: GetRunStatus_Dependence,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     for (const v of message.dependencies) {
       writer.uint32(10).string(v!);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus_Dependence {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRunStatus_Dependence {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus_Dependence();
     while (reader.pos < end) {
@@ -759,7 +848,11 @@ export const GetRunStatus_Dependence = {
   },
 
   fromJSON(object: any): GetRunStatus_Dependence {
-    return { dependencies: Array.isArray(object?.dependencies) ? object.dependencies.map((e: any) => String(e)) : [] };
+    return {
+      dependencies: Array.isArray(object?.dependencies)
+        ? object.dependencies.map((e: any) => String(e))
+        : [],
+    };
   },
 
   toJSON(message: GetRunStatus_Dependence): unknown {
@@ -772,11 +865,15 @@ export const GetRunStatus_Dependence = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetRunStatus_Dependence>, I>>(base?: I): GetRunStatus_Dependence {
+  create<I extends Exact<DeepPartial<GetRunStatus_Dependence>, I>>(
+    base?: I
+  ): GetRunStatus_Dependence {
     return GetRunStatus_Dependence.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Dependence>, I>>(object: I): GetRunStatus_Dependence {
+  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Dependence>, I>>(
+    object: I
+  ): GetRunStatus_Dependence {
     const message = createBaseGetRunStatus_Dependence();
     message.dependencies = object.dependencies?.map((e) => e) || [];
     return message;
@@ -788,18 +885,31 @@ function createBaseGetRunStatus_Response(): GetRunStatus_Response {
 }
 
 export const GetRunStatus_Response = {
-  encode(message: GetRunStatus_Response, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: GetRunStatus_Response,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     Object.entries(message.state).forEach(([key, value]) => {
-      GetRunStatus_Response_StateEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+      GetRunStatus_Response_StateEntry.encode(
+        {key: key as any, value},
+        writer.uint32(10).fork()
+      ).ldelim();
     });
     Object.entries(message.dependencies).forEach(([key, value]) => {
-      GetRunStatus_Response_DependenciesEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
+      GetRunStatus_Response_DependenciesEntry.encode(
+        {key: key as any, value},
+        writer.uint32(18).fork()
+      ).ldelim();
     });
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus_Response {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRunStatus_Response {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus_Response();
     while (reader.pos < end) {
@@ -810,7 +920,10 @@ export const GetRunStatus_Response = {
             break;
           }
 
-          const entry1 = GetRunStatus_Response_StateEntry.decode(reader, reader.uint32());
+          const entry1 = GetRunStatus_Response_StateEntry.decode(
+            reader,
+            reader.uint32()
+          );
           if (entry1.value !== undefined) {
             message.state[entry1.key] = entry1.value;
           }
@@ -820,7 +933,10 @@ export const GetRunStatus_Response = {
             break;
           }
 
-          const entry2 = GetRunStatus_Response_DependenciesEntry.decode(reader, reader.uint32());
+          const entry2 = GetRunStatus_Response_DependenciesEntry.decode(
+            reader,
+            reader.uint32()
+          );
           if (entry2.value !== undefined) {
             message.dependencies[entry2.key] = entry2.value;
           }
@@ -837,19 +953,20 @@ export const GetRunStatus_Response = {
   fromJSON(object: any): GetRunStatus_Response {
     return {
       state: isObject(object.state)
-        ? Object.entries(object.state).reduce<{ [key: string]: GetRunStatus_Status }>((acc, [key, value]) => {
+        ? Object.entries(object.state).reduce<{
+          [key: string]: GetRunStatus_Status;
+        }>((acc, [key, value]) => {
           acc[key] = GetRunStatus_Status.fromJSON(value);
           return acc;
         }, {})
         : {},
       dependencies: isObject(object.dependencies)
-        ? Object.entries(object.dependencies).reduce<{ [key: string]: GetRunStatus_Dependence }>(
-          (acc, [key, value]) => {
-            acc[key] = GetRunStatus_Dependence.fromJSON(value);
-            return acc;
-          },
-          {},
-        )
+        ? Object.entries(object.dependencies).reduce<{
+          [key: string]: GetRunStatus_Dependence;
+        }>((acc, [key, value]) => {
+          acc[key] = GetRunStatus_Dependence.fromJSON(value);
+          return acc;
+        }, {})
         : {},
     };
   },
@@ -871,51 +988,63 @@ export const GetRunStatus_Response = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetRunStatus_Response>, I>>(base?: I): GetRunStatus_Response {
+  create<I extends Exact<DeepPartial<GetRunStatus_Response>, I>>(
+    base?: I
+  ): GetRunStatus_Response {
     return GetRunStatus_Response.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Response>, I>>(object: I): GetRunStatus_Response {
+  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Response>, I>>(
+    object: I
+  ): GetRunStatus_Response {
     const message = createBaseGetRunStatus_Response();
-    message.state = Object.entries(object.state ?? {}).reduce<{ [key: string]: GetRunStatus_Status }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = GetRunStatus_Status.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
-    message.dependencies = Object.entries(object.dependencies ?? {}).reduce<{ [key: string]: GetRunStatus_Dependence }>(
-      (acc, [key, value]) => {
-        if (value !== undefined) {
-          acc[key] = GetRunStatus_Dependence.fromPartial(value);
-        }
-        return acc;
-      },
-      {},
-    );
+    message.state = Object.entries(object.state ?? {}).reduce<{
+      [key: string]: GetRunStatus_Status;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = GetRunStatus_Status.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    message.dependencies = Object.entries(object.dependencies ?? {}).reduce<{
+      [key: string]: GetRunStatus_Dependence;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = GetRunStatus_Dependence.fromPartial(value);
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
 
 function createBaseGetRunStatus_Response_StateEntry(): GetRunStatus_Response_StateEntry {
-  return { key: "", value: undefined };
+  return {key: '', value: undefined};
 }
 
 export const GetRunStatus_Response_StateEntry = {
-  encode(message: GetRunStatus_Response_StateEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== "") {
+  encode(
+    message: GetRunStatus_Response_StateEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== '') {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      GetRunStatus_Status.encode(message.value, writer.uint32(18).fork()).ldelim();
+      GetRunStatus_Status.encode(
+        message.value,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus_Response_StateEntry {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRunStatus_Response_StateEntry {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus_Response_StateEntry();
     while (reader.pos < end) {
@@ -946,53 +1075,69 @@ export const GetRunStatus_Response_StateEntry = {
 
   fromJSON(object: any): GetRunStatus_Response_StateEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
-      value: isSet(object.value) ? GetRunStatus_Status.fromJSON(object.value) : undefined,
+      key: isSet(object.key) ? String(object.key) : '',
+      value: isSet(object.value)
+        ? GetRunStatus_Status.fromJSON(object.value)
+        : undefined,
     };
   },
 
   toJSON(message: GetRunStatus_Response_StateEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value ? GetRunStatus_Status.toJSON(message.value) : undefined);
+    message.value !== undefined &&
+    (obj.value = message.value
+      ? GetRunStatus_Status.toJSON(message.value)
+      : undefined);
     return obj;
   },
 
   create<I extends Exact<DeepPartial<GetRunStatus_Response_StateEntry>, I>>(
-    base?: I,
+    base?: I
   ): GetRunStatus_Response_StateEntry {
     return GetRunStatus_Response_StateEntry.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Response_StateEntry>, I>>(
-    object: I,
-  ): GetRunStatus_Response_StateEntry {
+  fromPartial<
+    I extends Exact<DeepPartial<GetRunStatus_Response_StateEntry>, I>
+  >(object: I): GetRunStatus_Response_StateEntry {
     const message = createBaseGetRunStatus_Response_StateEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? GetRunStatus_Status.fromPartial(object.value)
-      : undefined;
+    message.key = object.key ?? '';
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? GetRunStatus_Status.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
 
 function createBaseGetRunStatus_Response_DependenciesEntry(): GetRunStatus_Response_DependenciesEntry {
-  return { key: "", value: undefined };
+  return {key: '', value: undefined};
 }
 
 export const GetRunStatus_Response_DependenciesEntry = {
-  encode(message: GetRunStatus_Response_DependenciesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.key !== "") {
+  encode(
+    message: GetRunStatus_Response_DependenciesEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== '') {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      GetRunStatus_Dependence.encode(message.value, writer.uint32(18).fork()).ldelim();
+      GetRunStatus_Dependence.encode(
+        message.value,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GetRunStatus_Response_DependenciesEntry {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRunStatus_Response_DependenciesEntry {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseGetRunStatus_Response_DependenciesEntry();
     while (reader.pos < end) {
@@ -1010,7 +1155,10 @@ export const GetRunStatus_Response_DependenciesEntry = {
             break;
           }
 
-          message.value = GetRunStatus_Dependence.decode(reader, reader.uint32());
+          message.value = GetRunStatus_Dependence.decode(
+            reader,
+            reader.uint32()
+          );
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1023,8 +1171,10 @@ export const GetRunStatus_Response_DependenciesEntry = {
 
   fromJSON(object: any): GetRunStatus_Response_DependenciesEntry {
     return {
-      key: isSet(object.key) ? String(object.key) : "",
-      value: isSet(object.value) ? GetRunStatus_Dependence.fromJSON(object.value) : undefined,
+      key: isSet(object.key) ? String(object.key) : '',
+      value: isSet(object.value)
+        ? GetRunStatus_Dependence.fromJSON(object.value)
+        : undefined,
     };
   },
 
@@ -1032,24 +1182,27 @@ export const GetRunStatus_Response_DependenciesEntry = {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
-      (obj.value = message.value ? GetRunStatus_Dependence.toJSON(message.value) : undefined);
+    (obj.value = message.value
+      ? GetRunStatus_Dependence.toJSON(message.value)
+      : undefined);
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<GetRunStatus_Response_DependenciesEntry>, I>>(
-    base?: I,
-  ): GetRunStatus_Response_DependenciesEntry {
+  create<
+    I extends Exact<DeepPartial<GetRunStatus_Response_DependenciesEntry>, I>
+  >(base?: I): GetRunStatus_Response_DependenciesEntry {
     return GetRunStatus_Response_DependenciesEntry.fromPartial(base ?? {});
   },
 
-  fromPartial<I extends Exact<DeepPartial<GetRunStatus_Response_DependenciesEntry>, I>>(
-    object: I,
-  ): GetRunStatus_Response_DependenciesEntry {
+  fromPartial<
+    I extends Exact<DeepPartial<GetRunStatus_Response_DependenciesEntry>, I>
+  >(object: I): GetRunStatus_Response_DependenciesEntry {
     const message = createBaseGetRunStatus_Response_DependenciesEntry();
-    message.key = object.key ?? "";
-    message.value = (object.value !== undefined && object.value !== null)
-      ? GetRunStatus_Dependence.fromPartial(object.value)
-      : undefined;
+    message.key = object.key ?? '';
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? GetRunStatus_Dependence.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -1057,30 +1210,35 @@ export const GetRunStatus_Response_DependenciesEntry = {
 export type DaemonService = typeof DaemonService;
 export const DaemonService = {
   startRun: {
-    path: "/Daemon/StartRun",
+    path: '/Daemon/StartRun',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: StartRun_Request) => Buffer.from(StartRun_Request.encode(value).finish()),
+    requestSerialize: (value: StartRun_Request) =>
+      Buffer.from(StartRun_Request.encode(value).finish()),
     requestDeserialize: (value: Buffer) => StartRun_Request.decode(value),
-    responseSerialize: (value: StartRun_Response) => Buffer.from(StartRun_Response.encode(value).finish()),
+    responseSerialize: (value: StartRun_Response) =>
+      Buffer.from(StartRun_Response.encode(value).finish()),
     responseDeserialize: (value: Buffer) => StartRun_Response.decode(value),
   },
   getLogStream: {
-    path: "/Daemon/GetLogStream",
+    path: '/Daemon/GetLogStream',
     requestStream: false,
     responseStream: true,
-    requestSerialize: (value: GetLogStream_Request) => Buffer.from(GetLogStream_Request.encode(value).finish()),
+    requestSerialize: (value: GetLogStream_Request) =>
+      Buffer.from(GetLogStream_Request.encode(value).finish()),
     requestDeserialize: (value: Buffer) => GetLogStream_Request.decode(value),
     responseSerialize: (value: Log) => Buffer.from(Log.encode(value).finish()),
     responseDeserialize: (value: Buffer) => Log.decode(value),
   },
   getRunStatus: {
-    path: "/Daemon/GetRunStatus",
+    path: '/Daemon/GetRunStatus',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: GetRunStatus_Request) => Buffer.from(GetRunStatus_Request.encode(value).finish()),
+    requestSerialize: (value: GetRunStatus_Request) =>
+      Buffer.from(GetRunStatus_Request.encode(value).finish()),
     requestDeserialize: (value: Buffer) => GetRunStatus_Request.decode(value),
-    responseSerialize: (value: GetRunStatus_Response) => Buffer.from(GetRunStatus_Response.encode(value).finish()),
+    responseSerialize: (value: GetRunStatus_Response) =>
+      Buffer.from(GetRunStatus_Response.encode(value).finish()),
     responseDeserialize: (value: Buffer) => GetRunStatus_Response.decode(value),
   },
 } as const;
@@ -1094,44 +1252,67 @@ export interface DaemonServer extends UntypedServiceImplementation {
 export interface DaemonClient extends Client {
   startRun(
     request: StartRun_Request,
-    callback: (error: ServiceError | null, response: StartRun_Response) => void,
+    callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
   startRun(
     request: StartRun_Request,
     metadata: Metadata,
-    callback: (error: ServiceError | null, response: StartRun_Response) => void,
+    callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
+
   startRun(
     request: StartRun_Request,
     metadata: Metadata,
     options: Partial<CallOptions>,
-    callback: (error: ServiceError | null, response: StartRun_Response) => void,
+    callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
-  getLogStream(request: GetLogStream_Request, options?: Partial<CallOptions>): ClientReadableStream<Log>;
+
+  getLogStream(
+    request: GetLogStream_Request,
+    options?: Partial<CallOptions>
+  ): ClientReadableStream<Log>;
+
   getLogStream(
     request: GetLogStream_Request,
     metadata?: Metadata,
-    options?: Partial<CallOptions>,
+    options?: Partial<CallOptions>
   ): ClientReadableStream<Log>;
+
   getRunStatus(
     request: GetRunStatus_Request,
-    callback: (error: ServiceError | null, response: GetRunStatus_Response) => void,
+    callback: (
+      error: ServiceError | null,
+      response: GetRunStatus_Response
+    ) => void
   ): ClientUnaryCall;
   getRunStatus(
     request: GetRunStatus_Request,
     metadata: Metadata,
-    callback: (error: ServiceError | null, response: GetRunStatus_Response) => void,
+    callback: (
+      error: ServiceError | null,
+      response: GetRunStatus_Response
+    ) => void
   ): ClientUnaryCall;
   getRunStatus(
     request: GetRunStatus_Request,
     metadata: Metadata,
     options: Partial<CallOptions>,
-    callback: (error: ServiceError | null, response: GetRunStatus_Response) => void,
+    callback: (
+      error: ServiceError | null,
+      response: GetRunStatus_Response
+    ) => void
   ): ClientUnaryCall;
 }
 
-export const DaemonClient = makeGenericClientConstructor(DaemonService, "Daemon") as unknown as {
-  new (address: string, credentials: ChannelCredentials, options?: Partial<ClientOptions>): DaemonClient;
+export const DaemonClient = makeGenericClientConstructor(
+  DaemonService,
+  'Daemon'
+) as unknown as {
+  new(
+    address: string,
+    credentials: ChannelCredentials,
+    options?: Partial<ClientOptions>
+  ): DaemonClient;
   service: typeof DaemonService;
 };
 
@@ -1139,24 +1320,24 @@ declare var self: any | undefined;
 declare var window: any | undefined;
 declare var global: any | undefined;
 var tsProtoGlobalThis: any = (() => {
-  if (typeof globalThis !== "undefined") {
+  if (typeof globalThis !== 'undefined') {
     return globalThis;
   }
-  if (typeof self !== "undefined") {
+  if (typeof self !== 'undefined') {
     return self;
   }
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     return window;
   }
-  if (typeof global !== "undefined") {
+  if (typeof global !== 'undefined') {
     return global;
   }
-  throw "Unable to locate global object";
+  throw 'Unable to locate global object';
 })();
 
 function bytesFromBase64(b64: string): Uint8Array {
   if (tsProtoGlobalThis.Buffer) {
-    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, "base64"));
+    return Uint8Array.from(tsProtoGlobalThis.Buffer.from(b64, 'base64'));
   } else {
     const bin = tsProtoGlobalThis.atob(b64);
     const arr = new Uint8Array(bin.length);
@@ -1169,29 +1350,44 @@ function bytesFromBase64(b64: string): Uint8Array {
 
 function base64FromBytes(arr: Uint8Array): string {
   if (tsProtoGlobalThis.Buffer) {
-    return tsProtoGlobalThis.Buffer.from(arr).toString("base64");
+    return tsProtoGlobalThis.Buffer.from(arr).toString('base64');
   } else {
     const bin: string[] = [];
     arr.forEach((byte) => {
       bin.push(String.fromCharCode(byte));
     });
-    return tsProtoGlobalThis.btoa(bin.join(""));
+    return tsProtoGlobalThis.btoa(bin.join(''));
   }
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Array<infer U> ? Array<DeepPartial<U>> : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T extends ReadonlyArray<infer U>
+      ? ReadonlyArray<DeepPartial<U>>
+      : T extends {}
+        ? { [K in keyof T]?: DeepPartial<T[K]> }
+        : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+  [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+};
 
 function isObject(value: any): boolean {
-  return typeof value === "object" && value !== null;
+  return typeof value === 'object' && value !== null;
 }
 
 function isSet(value: any): boolean {

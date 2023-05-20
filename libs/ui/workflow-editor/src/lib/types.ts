@@ -1,18 +1,16 @@
-
-
 export interface WorkflowStepStatus {
-  code: number
-  name: string
-  isFinished: boolean
-  isCancellable: boolean
+  code: number;
+  name: string;
+  isFinished: boolean;
+  isCancellable: boolean;
 }
 
 export interface WorkflowStep {
-  id: string
-  status?: WorkflowStepStatus
-  needs: string[]
+  id: string;
+  status?: WorkflowStepStatus;
+  needs: string[];
   with: {
-    image: string
-    commands: string
-  }
+    image: string;
+    commands: string;
+  };
 }

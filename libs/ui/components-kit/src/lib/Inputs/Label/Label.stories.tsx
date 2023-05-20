@@ -9,6 +9,6 @@ export default Story;
 
 export const Primary = {
   args: {
-    children: 'Hello World !'
+    children: 'Hello World !',
   },
 };

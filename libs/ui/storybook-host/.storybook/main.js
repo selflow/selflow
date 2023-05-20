@@ -4,12 +4,12 @@ const config = {
     {
       directory: '../../components-kit',
       titlePrefix: 'ui-kit',
-      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)'
+      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)',
     },
     {
       directory: '../../workflow-editor',
       titlePrefix: 'workflow-editor',
-      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)'
+      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)',
     },
   ],
   addons: ['@storybook/addon-essentials'],

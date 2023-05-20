@@ -7,9 +7,7 @@ const Story: Meta<typeof CodeEditor> = {
 };
 export default Story;
 
-Story.decorators = [
-  story => <div className={"w-[600px]"}>{story()}</div>
-]
+Story.decorators = [(story) => <div className={'w-[600px]'}>{story()}</div>];
 
 export const Primary = {
   args: {
@@ -26,6 +24,6 @@ cowsay "Selflow is love, Selflow is Life ❤️"
 #            (__)\\       )\\/\\
 #                ||----w |
 #                ||     ||
-`
+`,
   },
 };

@@ -10,6 +10,6 @@ export default Story;
 export const Primary = {
   args: {
     label: 'Some label',
-    placeholder: 'Some placeholder'
+    placeholder: 'Some placeholder',
   },
 };
