@@ -12,8 +12,9 @@ import (
 )
 
 type Server struct {
-	logger     hclog.Logger
-	LogFactory selflow.LogFactory
+	logger         hclog.Logger
+	LogFactory     selflow.LogFactory
+	RunPersistence selflow.RunPersistence
 	proto.UnimplementedDaemonServer
 }
 
@@ -37,7 +38,7 @@ func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) 
 		},
 	}
 
-	self := selflow.NewSelflow(workflowBuilder, s.LogFactory)
+	self := selflow.NewSelflow(workflowBuilder, s.LogFactory, s.RunPersistence)
 
 	runId, err := self.StartRun(ctx, flow)
 	if err != nil {

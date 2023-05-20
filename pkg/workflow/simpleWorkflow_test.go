@@ -70,7 +70,7 @@ func TestMakeSimpleWorkflow(t *testing.T) {
 			name: "Create simple workflow",
 			want: &SimpleWorkflow{
 				steps:        []Step{},
-				dependencies: map[Step][]Step{},
+				Dependencies: map[Step][]Step{},
 			},
 		},
 	}
@@ -168,7 +168,7 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				dependencies: tt.fields.dependencies,
+				Dependencies: tt.fields.dependencies,
 			}
 			got, err := s.Execute(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
@@ -273,7 +273,7 @@ func TestSimpleWorkflow_Init(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				dependencies: tt.fields.dependencies,
+				Dependencies: tt.fields.dependencies,
 			}
 			if err := s.Init(); (err != nil) != tt.wantErr {
 				t.Errorf("Init() error = %v, wantErr %v", err, tt.wantErr)
@@ -323,7 +323,7 @@ func TestSimpleWorkflow_AddStep(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				dependencies: tt.fields.dependencies,
+				Dependencies: tt.fields.dependencies,
 			}
 			if err := s.AddStep(tt.args.step, tt.args.dependencies); (err != nil) != tt.wantErr {
 				t.Errorf("AddStep() error = %v, wantErr %v", err, tt.wantErr)
@@ -361,7 +361,7 @@ func TestSimpleWorkflow_debug(t *testing.T) {
 			}()
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
-				dependencies: tt.fields.dependencies,
+				Dependencies: tt.fields.dependencies,
 			}
 			s.debug()
 			if buf.String() != tt.expectedStdout {

@@ -42,7 +42,26 @@ message Log {
   string message = 4;
 }
 
+message GetRunStatus {
+  message Request {
+    string runId = 1;
+  }
+
+  message Status {
+    string name = 1;
+  }
+  message Dependence {
+    repeated string dependencies = 1;
+  }
+
+  message Response {
+    map<string, GetRunStatus.Status> state = 1;
+    map<string, Dependence> dependencies = 2;
+  }
+}
+
 service Daemon {
   rpc StartRun(StartRun.Request) returns (StartRun.Response);
   rpc GetLogStream(GetLogStream.Request) returns (stream Log);
+  rpc GetRunStatus(GetRunStatus.Request) returns (GetRunStatus.Response);
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/selflow/selflow/pkg/logger/systemfile"
+	"github.com/selflow/selflow/pkg/runPersistence/sqlite"
 	"github.com/selflow/selflow/pkg/sflog"
 	"google.golang.org/grpc"
 	"log"
@@ -26,9 +27,15 @@ func main() {
 		panic(err)
 	}
 
+	runPersistence, err := sqlite.NewSqliteRunPersistence(path.Join(sfenvironment.GetDaemonBaseDirectory(), "history.db"))
+	if err != nil {
+		panic(err)
+	}
+
 	s := grpc.NewServer()
 	proto.RegisterDaemonServer(s, &server.Server{
-		LogFactory: systemfile.NewLogFactory(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
+		LogFactory:     systemfile.NewLogFactory(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
+		RunPersistence: runPersistence,
 	})
 
 	log.Printf("[INFO] Start listening at %v\n", lis.Addr())
