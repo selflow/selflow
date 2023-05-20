@@ -1,7 +1,7 @@
 import React from 'react';
-import {WorkflowStepStatus} from '../types';
-import {Spinner} from '@selflow/ui/components-kit';
-import {FaBan, FaCheck, FaTimes} from 'react-icons/all';
+import { WorkflowStepStatus } from '../types';
+import { Spinner } from '@selflow/ui/components-kit';
+import { FaBan, FaCheck, FaTimes } from 'react-icons/all';
 
 export type WorkflowStepStatusIndicatorProps = {
   status: WorkflowStepStatus;

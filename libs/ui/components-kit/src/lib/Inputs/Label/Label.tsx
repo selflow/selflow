@@ -1,4 +1,4 @@
-import {ComponentPropsWithoutRef, forwardRef} from 'react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 
 export type LabelProps = Omit<ComponentPropsWithoutRef<'label'>, 'className'>;
 

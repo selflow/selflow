@@ -1,9 +1,22 @@
-import {createContext, FC, PropsWithChildren, useContext, useEffect, useState,} from 'react';
-import {WorkflowStep} from '../types';
-import {mapWorkflowStepToReactFlowNodeAndEdges} from './stepToNode';
-import {Node} from '@reactflow/core/dist/esm/types';
-import {WorkflowStepProps} from '../WorkflowStep/WorkflowStepNode';
-import {addEdge, applyEdgeChanges, Edge, OnConnect, OnEdgesChange,} from 'reactflow';
+import {
+  createContext,
+  FC,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { WorkflowStep } from '../types';
+import { mapWorkflowStepToReactFlowNodeAndEdges } from './stepToNode';
+import { Node } from '@reactflow/core/dist/esm/types';
+import { WorkflowStepProps } from '../WorkflowStep/WorkflowStepNode';
+import {
+  addEdge,
+  applyEdgeChanges,
+  Edge,
+  OnConnect,
+  OnEdgesChange,
+} from 'reactflow';
 
 export type WorkflowProviderState = {
   steps: WorkflowStep[];

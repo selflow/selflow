@@ -1,6 +1,6 @@
-import {z} from 'zod';
-import {procedure, router} from '../trpc';
-import {DaemonService} from '@selflow/selflow-node-client';
+import { z } from 'zod';
+import { procedure, router } from '../trpc';
+import { DaemonService } from '@selflow/selflow-node-client';
 
 const daemonService = new DaemonService(
   process.env.DAEMON_URL ?? '127.0.0.1:1001'

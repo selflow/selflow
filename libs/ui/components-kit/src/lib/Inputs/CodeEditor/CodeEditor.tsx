@@ -1,6 +1,6 @@
-import {IAceEditorProps} from 'react-ace/src/ace';
+import { IAceEditorProps } from 'react-ace/src/ace';
 import AceEditor from 'react-ace';
-import {Label} from '../Label/Label';
+import { Label } from '../Label/Label';
 import 'ace-builds/src-noconflict/mode-sh';
 import 'ace-builds/src-noconflict/theme-github';
 

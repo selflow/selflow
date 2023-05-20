@@ -1,4 +1,4 @@
-import {ComponentPropsWithoutRef, forwardRef} from 'react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 
 export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'className'>;
 

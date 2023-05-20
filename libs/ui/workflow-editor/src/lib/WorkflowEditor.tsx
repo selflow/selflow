@@ -1,10 +1,10 @@
 import 'reactflow/dist/style.css';
-import {useState} from 'react';
-import {WorkflowStep} from './types';
-import {WorkflowViewer} from './WorkflowViewer/WorkflowViewer';
-import {RightSidePanel} from './RightSidePanel/RightSidePanel';
-import {useWorkflow, WorkflowProvider} from './Providers/WorkflowProvider';
-import {EditStepForm} from './EditStepForm/EditStepForm';
+import { useState } from 'react';
+import { WorkflowStep } from './types';
+import { WorkflowViewer } from './WorkflowViewer/WorkflowViewer';
+import { RightSidePanel } from './RightSidePanel/RightSidePanel';
+import { useWorkflow, WorkflowProvider } from './Providers/WorkflowProvider';
+import { EditStepForm } from './EditStepForm/EditStepForm';
 
 export type WorkflowEditorProps = {
   steps: WorkflowStep[];

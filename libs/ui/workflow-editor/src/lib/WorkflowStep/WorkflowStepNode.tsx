@@ -1,7 +1,7 @@
 import React from 'react';
-import {Handle, NodeProps, Position} from 'reactflow';
-import {WorkflowStepStatus} from '../types';
-import {WorkflowStepNodeStatusIndicator} from './WorkflowStepNodeStatusIndicator';
+import { Handle, NodeProps, Position } from 'reactflow';
+import { WorkflowStepStatus } from '../types';
+import { WorkflowStepNodeStatusIndicator } from './WorkflowStepNodeStatusIndicator';
 
 export type WorkflowStepProps = {
   status?: WorkflowStepStatus;

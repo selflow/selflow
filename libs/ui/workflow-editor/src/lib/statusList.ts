@@ -1,4 +1,4 @@
-import {WorkflowStepStatus} from './types';
+import { WorkflowStepStatus } from './types';
 
 export const statusList = [
   {

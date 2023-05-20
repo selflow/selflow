@@ -1,8 +1,14 @@
-import ReactFlow, {Background, Controls, NodeMouseHandler, OnConnect, Panel,} from 'reactflow';
+import ReactFlow, {
+  Background,
+  Controls,
+  NodeMouseHandler,
+  OnConnect,
+  Panel,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
-import {WorkflowStepNode} from '../WorkflowStep/WorkflowStepNode';
-import {FaBars, FaTimes} from 'react-icons/all';
-import {useWorkflow} from '../Providers/WorkflowProvider';
+import { WorkflowStepNode } from '../WorkflowStep/WorkflowStepNode';
+import { FaBars, FaTimes } from 'react-icons/all';
+import { useWorkflow } from '../Providers/WorkflowProvider';
 
 export type WorkflowViewerProps = {
   isSideMenuOpen: boolean;

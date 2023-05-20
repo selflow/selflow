@@ -1,5 +1,5 @@
-import {ComponentPropsWithoutRef, forwardRef} from 'react';
-import {Label} from '../Label/Label';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
+import { Label } from '../Label/Label';
 
 export type InputProps = ComponentPropsWithoutRef<'input'> & {
   label: string;

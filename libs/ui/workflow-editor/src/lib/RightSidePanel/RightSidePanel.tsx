@@ -1,4 +1,4 @@
-import {PropsWithChildren} from 'react';
+import { PropsWithChildren } from 'react';
 
 export type RightSidePanelProps = PropsWithChildren & {
   isOpen: boolean;

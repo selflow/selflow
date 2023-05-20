@@ -1,5 +1,5 @@
-import {Meta, StoryFn} from '@storybook/react';
-import {Spinner, SpinnerSizes} from './Spinner';
+import { Meta, StoryFn } from '@storybook/react';
+import { Spinner, SpinnerSizes } from './Spinner';
 
 const Story: Meta<typeof Spinner> = {
   component: Spinner,

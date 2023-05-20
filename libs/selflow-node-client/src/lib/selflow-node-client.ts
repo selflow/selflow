@@ -1,7 +1,7 @@
-import {promisify} from 'util';
-import {DaemonClient} from '../generated/daemon';
+import { promisify } from 'util';
+import { DaemonClient } from '../generated/daemon';
 import * as grpc from '@grpc/grpc-js';
-import {mapObject} from './utils';
+import { mapObject } from './utils';
 
 export function selflowNodeClient(): string {
   return 'selflow-node-client';

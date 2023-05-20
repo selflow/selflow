@@ -1,5 +1,5 @@
-import type {Meta} from '@storybook/react';
-import {CodeEditor} from './CodeEditor';
+import type { Meta } from '@storybook/react';
+import { CodeEditor } from './CodeEditor';
 
 const Story: Meta<typeof CodeEditor> = {
   component: CodeEditor,

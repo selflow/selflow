@@ -1,7 +1,7 @@
-import {WorkflowStep} from '../types';
-import {Node} from '@reactflow/core/dist/esm/types';
-import {WorkflowStepProps} from '../WorkflowStep/WorkflowStepNode';
-import {Edge, MarkerType} from 'reactflow';
+import { WorkflowStep } from '../types';
+import { Node } from '@reactflow/core/dist/esm/types';
+import { WorkflowStepProps } from '../WorkflowStep/WorkflowStepNode';
+import { Edge, MarkerType } from 'reactflow';
 
 const ySpacing = 100;
 const xSpacing = 300;

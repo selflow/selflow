@@ -1,7 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
-import {WorkflowStepNode, WorkflowStepProps} from './WorkflowStepNode';
-import ReactFlow, {NodeProps} from 'reactflow';
-import {statusList, statusMap} from '../statusList';
+import { Meta, StoryFn } from '@storybook/react';
+import { WorkflowStepNode, WorkflowStepProps } from './WorkflowStepNode';
+import ReactFlow, { NodeProps } from 'reactflow';
+import { statusList, statusMap } from '../statusList';
 
 const Story: Meta<typeof WorkflowStepNode> = {
   component: WorkflowStepNode,

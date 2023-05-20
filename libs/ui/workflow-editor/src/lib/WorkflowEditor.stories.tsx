@@ -1,7 +1,7 @@
-import {Meta, StoryFn} from '@storybook/react';
-import {WorkflowEditor, WorkflowEditorProps} from './WorkflowEditor';
-import {statusMap} from './statusList';
-import {WorkflowStep} from './types';
+import { Meta, StoryFn } from '@storybook/react';
+import { WorkflowEditor, WorkflowEditorProps } from './WorkflowEditor';
+import { statusMap } from './statusList';
+import { WorkflowStep } from './types';
 
 const Story: Meta<typeof WorkflowEditor> = {
   component: WorkflowEditor,
