@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@headlessui/react": "^1.7.14",
+    "@radix-ui/react-select": "^1.2.1",
+    "reactflow": "^11.7.2"
+  },
+  "devDependencies": {
+    "react-icons": "^4.8.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@selflow/selflow-node-client",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.14"
+  }
+}

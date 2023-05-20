@@ -15,7 +15,26 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"]
+      "@selflow/libs/ui/storybook-host": [
+        "libs/libs/ui/storybook-host/src/index.ts"
+      ],
+      "@selflow/libs/ui/storybook-host/server": [
+        "libs/libs/ui/storybook-host/src/server.ts"
+      ],
+      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"],
+      "@selflow/selflow-node-client": ["libs/selflow-node-client/src/index.ts"],
+      "@selflow/ui/components-kit": ["libs/ui/components-kit/src/index.ts"],
+      "@selflow/ui/components-kit/server": [
+        "libs/ui/components-kit/src/server.ts"
+      ],
+      "@selflow/ui/storybook-host": ["libs/ui/storybook-host/src/index.ts"],
+      "@selflow/ui/storybook-host/server": [
+        "libs/ui/storybook-host/src/server.ts"
+      ],
+      "@selflow/ui/workflow-editor": ["libs/ui/workflow-editor/src/index.ts"],
+      "@selflow/ui/workflow-editor/server": [
+        "libs/ui/workflow-editor/src/server.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

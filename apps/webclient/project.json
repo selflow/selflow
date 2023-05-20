@@ -1,0 +1,55 @@
+{
+  "name": "webclient",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/webclient",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/webclient",
+        "outputPath": "dist/apps/webclient"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/webclient"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "webclient:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "webclient:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "webclient:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nx/next:export",
+      "options": {
+        "buildTarget": "webclient:build:production"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/webclient/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  },
+  "tags": []
+}
