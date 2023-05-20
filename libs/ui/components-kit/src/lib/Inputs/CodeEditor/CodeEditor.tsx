@@ -9,11 +9,7 @@ export type CodeEditorProps = Omit<IAceEditorProps, 'theme' | 'setOptions'> & {
   label: string;
 };
 
-export const CodeEditor = ({
-  lang,
-  label,
-  ...editorProps
-}: CodeEditorProps) => {
+const CodeEditor = ({ lang, label, ...editorProps }: CodeEditorProps) => {
   return (
     <div className={'my-2'}>
       <Label>
@@ -41,3 +37,5 @@ export const CodeEditor = ({
     </div>
   );
 };
+
+export default CodeEditor;
