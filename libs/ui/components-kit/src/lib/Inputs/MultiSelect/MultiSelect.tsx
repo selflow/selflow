@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import React, { FC, useEffect, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import { FaChevronDown, FaLink, FaTimes } from 'react-icons/all';

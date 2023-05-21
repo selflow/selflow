@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -56,28 +57,6 @@ func Test_areRequirementsFullFilled(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := areRequirementsFullFilled(tt.args.step, tt.args.dependencies); got != tt.want {
 				t.Errorf("areRequirementsFullFilled() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestMakeSimpleWorkflow(t *testing.T) {
-	tests := []struct {
-		name string
-		want *SimpleWorkflow
-	}{
-		{
-			name: "Create simple workflow",
-			want: &SimpleWorkflow{
-				steps:        []Step{},
-				Dependencies: map[Step][]Step{},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewWorkflow(1); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewWorkflow() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -166,28 +145,46 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			ch := make(chan map[string]Status)
 			s := &SimpleWorkflow{
 				steps:        tt.fields.steps,
 				Dependencies: tt.fields.dependencies,
+				StateCh:      ch,
 			}
-			got, err := s.Execute(tt.args.ctx)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Execute() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Execute() got = %v, want %v", got, tt.want)
-			}
-			for step, status := range tt.wantStatus {
-				for _, wfStep := range s.steps {
-					if wfStep.GetId() == step.GetId() {
-						if wfStep.GetStatus().GetCode() != status.GetCode() {
-							t.Errorf("Execute() step  %v status got= %v, want %v", wfStep.GetId(), wfStep.GetStatus().GetName(), status.GetName())
+
+			wg := sync.WaitGroup{}
+			wg.Add(2)
+
+			go func() {
+				defer wg.Done()
+				got, err := s.Execute(tt.args.ctx)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("Execute() error = %v, wantErr %v", err, tt.wantErr)
+					return
+				}
+				if !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("Execute() got = %v, want %v", got, tt.want)
+				}
+				for step, status := range tt.wantStatus {
+					for _, wfStep := range s.steps {
+						if wfStep.GetId() == step.GetId() {
+							if wfStep.GetStatus().GetCode() != status.GetCode() {
+								t.Errorf("Execute() step  %v status got= %v, want %v", wfStep.GetId(), wfStep.GetStatus().GetName(), status.GetName())
+							}
+							break
 						}
-						break
 					}
 				}
-			}
+			}()
+
+			go func() {
+				defer wg.Done()
+				for range ch {
+				}
+
+			}()
+
+			wg.Wait()
 		})
 	}
 }

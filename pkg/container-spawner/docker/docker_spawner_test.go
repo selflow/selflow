@@ -8,6 +8,7 @@ import (
 	"github.com/selflow/selflow/pkg/steps/container"
 	"io"
 	"reflect"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -103,7 +104,11 @@ func Test_buildEnvMap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := buildEnvMap(tt.args.environmentVariables); !reflect.DeepEqual(got, tt.want) {
+			got := buildEnvMap(tt.args.environmentVariables)
+			sort.Strings(got)
+			sort.Strings(tt.want)
+
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("buildEnvMap() = %v, want %v", got, tt.want)
 			}
 		})
