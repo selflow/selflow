@@ -1,0 +1,38 @@
+name: With Condition - Default
+description: |
+  Step A should execute
+  Step B, C and D should not execute because their condition is not truthy
+author: Anthony-Jhoiro
+workflow:
+  timeout: 5m
+  steps:
+    step-a:
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-a##"
+
+    step-b:
+      if: no
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-b##"
+
+    step-c:
+      if: false
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-c##"
+
+    step-d:
+      if: 0
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-d##"
