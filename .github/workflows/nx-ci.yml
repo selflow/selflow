@@ -19,9 +19,7 @@ jobs:
           node-version: 'lts/*'
       - name: Install dependencies
         run: |
-          yarn
-          find apps -name "package.json" | xargs -I % dirname % | xargs -I % yarn --cwd %
-          find libs -name "package.json" | xargs -I % dirname % | xargs -I % yarn --cwd %
+          yarn install --frozen-lockfile
 
       - uses: actions/setup-go@v3
         with:
