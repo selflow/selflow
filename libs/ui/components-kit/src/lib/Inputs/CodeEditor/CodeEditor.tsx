@@ -1,41 +1,40 @@
-import { IAceEditorProps } from 'react-ace/src/ace';
-import AceEditor from 'react-ace';
 import { Label } from '../Label/Label';
-import 'ace-builds/src-noconflict/mode-sh';
-import 'ace-builds/src-noconflict/theme-github';
+import CodeMirror, {ReactCodeMirrorProps} from '@uiw/react-codemirror';
+import { StreamLanguage } from '@codemirror/language';
+import {shell} from "@codemirror/legacy-modes/mode/shell"
 
-export type CodeEditorProps = Omit<IAceEditorProps, 'theme' | 'setOptions'> & {
+
+export type CodeEditorProps = Omit<ReactCodeMirrorProps, 'theme' | 'setOptions'> & {
   lang: 'sh';
   label: string;
 };
 
-const CodeEditor = ({ lang, label, ...editorProps }: CodeEditorProps) => {
+export const CodeEditor = ({ lang, label, ...editorProps }: CodeEditorProps) => {
   return (
     <div className={'my-2'}>
       <Label>
         <span>{label}</span>
-        <AceEditor
-          className={'rounded-lg w-full h-64'}
-          mode={lang}
-          theme="github"
-          editorProps={{ $blockScrolling: true }}
-          showPrintMargin={true}
-          showGutter={true}
-          highlightActiveLine={true}
-          height={'200px'}
-          width={'100%'}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-            showLineNumbers: true,
-            tabSize: 4,
-          }}
-          {...editorProps}
-        />
+        <CodeMirror height="200px" extensions={[StreamLanguage.define(shell)]} {...editorProps} />
+        {/*<AceEditor*/}
+        {/*  className={'rounded-lg w-full h-64'}*/}
+        {/*  mode={lang}*/}
+        {/*  theme="github"*/}
+        {/*  editorProps={{ $blockScrolling: true }}*/}
+        {/*  showPrintMargin={true}*/}
+        {/*  showGutter={true}*/}
+        {/*  highlightActiveLine={true}*/}
+        {/*  height={'200px'}*/}
+        {/*  width={'100%'}*/}
+        {/*  setOptions={{*/}
+        {/*    enableBasicAutocompletion: true,*/}
+        {/*    enableLiveAutocompletion: true,*/}
+        {/*    enableSnippets: true,*/}
+        {/*    showLineNumbers: true,*/}
+        {/*    tabSize: 4,*/}
+        {/*  }}*/}
+        {/*  {...editorProps}*/}
+        {/*/>*/}
       </Label>
     </div>
   );
 };
-
-export default CodeEditor;
