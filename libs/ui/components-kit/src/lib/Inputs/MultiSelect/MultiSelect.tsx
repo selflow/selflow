@@ -2,7 +2,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import React, { FC, useEffect, useState } from 'react';
 import { Combobox } from '@headlessui/react';
-import { FaChevronDown, FaLink, FaTimes } from 'react-icons/all';
+import { FaChevronDown, FaLink, FaTimes } from 'react-icons/fa';
 import { Label } from '../Label/Label';
 
 export type MultiSelectItem = string;

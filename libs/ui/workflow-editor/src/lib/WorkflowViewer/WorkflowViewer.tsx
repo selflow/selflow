@@ -7,7 +7,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { WorkflowStepNode } from '../WorkflowStep/WorkflowStepNode';
-import { FaBars, FaTimes } from 'react-icons/all';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import { useWorkflow } from '../Providers/WorkflowProvider';
 
 export type WorkflowViewerProps = {
