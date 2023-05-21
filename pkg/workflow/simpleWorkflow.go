@@ -23,7 +23,7 @@ type Workflow interface {
 	Equals(s2 Workflow) bool
 }
 
-var stepOutputContextKey struct{}
+var StepOutputContextKey struct{}
 
 // hasCycle check if the workflow has cycle starting from currentStep.
 // visited contains the list of already visited steps.
@@ -94,7 +94,7 @@ func (s *SimpleWorkflow) getNextSteps() []Step {
 func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
 	logger := sflog.LoggerFromContext(ctx)
 	requirementsOutputs := s.getRequirementsOutputs(step)
-	stepContext := context.WithValue(ctx, stepOutputContextKey, requirementsOutputs)
+	stepContext := context.WithValue(ctx, StepOutputContextKey, requirementsOutputs)
 	_, err := step.Execute(stepContext)
 	if err != nil {
 		logger.Warn("step ended with an error", "step-id", step.GetId(), "error", err)

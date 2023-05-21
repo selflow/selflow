@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/hashicorp/go-hclog"
-	"github.com/mitchellh/mapstructure"
-	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/sflog"
 	"github.com/selflow/selflow/pkg/workflow"
 )
@@ -16,27 +14,11 @@ type Step struct {
 	workflow.SimpleStep
 	containerSpawner ContainerSpawner
 	config           *ContainerConfig
+	output           map[string]string
 }
 
-type StepMapper struct {
-	ContainerSpawner ContainerSpawner
-}
-
-func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
-	dockerStepConfig := ContainerConfig{}
-
-	delete(definition.With, "environment")
-
-	err := mapstructure.Decode(definition.With, &dockerStepConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Step{
-		containerSpawner: c.ContainerSpawner,
-		SimpleStep:       workflow.SimpleStep{Id: stepId, Status: workflow.CREATED},
-		config:           &dockerStepConfig,
-	}, nil
+func (step *Step) GetOutput() map[string]string {
+	return step.output
 }
 
 func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
@@ -45,14 +27,43 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 	logger := sflog.LoggerFromContext(ctx)
 	stepLogger := logger.Named(step.GetId())
 
-	containerId, err := step.containerSpawner.StartContainerDetached(ctx, step.config)
+	needs := ctx.Value(workflow.StepOutputContextKey).(map[string]map[string]string)
+
+	var err error
+	var image string
+	var commands string
+
+	if image, err = withTemplate(step.config.Image, needs); err != nil {
+		return nil, err
+	}
+
+	if commands, err = withTemplate(step.config.Commands, needs); err != nil {
+		return nil, err
+	}
+
+	containerId, err := step.containerSpawner.StartContainerDetached(ctx, &ContainerConfig{
+		Image:               image,
+		Commands:            commands,
+		ContainerName:       step.config.ContainerName,
+		ContainerLogsWriter: step.config.ContainerLogsWriter,
+		Environment:         step.config.Environment,
+		Entrypoint:          step.config.Entrypoint,
+		Mounts:              step.config.Mounts,
+		OpenPorts:           step.config.OpenPorts,
+		Networks:            step.config.Networks,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	err = step.containerSpawner.TransferContainerLogs(ctx, containerId, stepLogger.StandardWriter(&hclog.StandardLoggerOptions{
-		ForceLevel: hclog.Debug,
-	}))
+	logWriter := &writerWithOutput{
+		Writer: stepLogger.StandardWriter(&hclog.StandardLoggerOptions{
+			ForceLevel: hclog.Debug,
+		}),
+		output: map[string]string{},
+	}
+
+	err = step.containerSpawner.TransferContainerLogs(ctx, containerId, logWriter)
 	if err != nil {
 
 		logger.Warn("fail to transfer container logs", "error", err)
@@ -67,6 +78,7 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		stepLogger.Error("container exited with status", "ExitCode", exitCode)
 		return nil, ContainerExitedNon0StatusCodeError
 	}
+	step.output = logWriter.output
 
-	return map[string]string{}, nil
+	return logWriter.output, nil
 }

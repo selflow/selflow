@@ -1,0 +1,32 @@
+# Metadata of the flow, accessible with the "metadata" key
+name: With Outputs
+description: 'step B depends on steps A and C. Step A outputs foo=bar and Step B displays bar'
+author: Anthony-Jhoiro
+
+workflow:
+  timeout: 5m
+  steps:
+    step-a:
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-a##"
+          echo "::output::foo::bar"
+
+    step-b:
+      kind: docker
+      needs:
+        - step-a
+        - step-c
+      with:
+        image: node:lts
+        commands: |
+          echo "{{ index .Needs "step-a" "foo" }}"
+
+    step-c:
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-c##"
