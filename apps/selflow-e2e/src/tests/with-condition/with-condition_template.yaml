@@ -1,0 +1,35 @@
+name: With Outputs - With Templates
+description: |
+  Step A output foo=no
+  Step B should execute if A.foo is truthy
+  Step C should execute only if A outputs foo=no
+author: Anthony-Jhoiro
+workflow:
+  timeout: 5m
+  steps:
+    step-a:
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "::output::foo::no"
+
+    step-b:
+      if: '{{ index .Needs "step-a" "foo" }}'
+      needs:
+        - step-a
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-b##"
+
+    step-c:
+      if: '{{ eq "no" (index .Needs "step-a" "foo") }}'
+      needs:
+        - step-a
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "##step-c##"
