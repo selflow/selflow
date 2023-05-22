@@ -11,8 +11,14 @@ type StepMapper struct {
 	ContainerSpawner ContainerSpawner
 }
 
+type DockerStepConfig struct {
+	Image       string
+	Commands    string
+	Persistence map[string]string
+}
+
 func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
-	dockerStepConfig := ContainerConfig{}
+	dockerStepConfig := DockerStepConfig{}
 
 	delete(definition.With, "environment")
 
