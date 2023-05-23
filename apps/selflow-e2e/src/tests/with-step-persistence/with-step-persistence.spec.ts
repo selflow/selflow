@@ -6,7 +6,7 @@ import { matchers } from '../../tools/trace';
 
 expect.extend(matchers);
 
-describe('Workflow with step output', function () {
+describe('Workflow with step persistence', function () {
   // it('Step B should access the output of Step a', async function () {
   //   const logs = await startRun(join(__dirname, 'with-step-persistence.yaml'));
   //   const trace = parseLogs(logs);
