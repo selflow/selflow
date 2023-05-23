@@ -11,8 +11,6 @@ describe('Custom Images', function () {
     const logs = await startRun(join(__dirname, 'custom-image.yaml'));
     const trace = parseLogs(logs);
 
-    console.log(logs)
-
     expect(logs).not.toEqual('');
 
     expect(trace).toHaveStep('step-python');

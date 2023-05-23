@@ -11,7 +11,7 @@ describe('Workflow with step conditions', function () {
     const logs = await startRun(join(__dirname, 'with-condition.yaml'));
     const trace = parseLogs(logs);
 
-    console.log(logs)
+    console.log(logs);
 
     expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
     expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'CANCELLED']);
@@ -24,8 +24,6 @@ describe('Workflow with step conditions', function () {
       join(__dirname, 'with-condition_template.yaml')
     );
     const trace = parseLogs(logs);
-
-    console.log(logs)
 
     expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
     expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'CANCELLED']);

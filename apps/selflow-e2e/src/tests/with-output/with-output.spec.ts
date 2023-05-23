@@ -11,8 +11,6 @@ describe('Workflow with step output', function () {
     const logs = await startRun(join(__dirname, 'with-output.yaml'));
     const trace = parseLogs(logs);
 
-    console.log(logs)
-
     expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
     expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
     expect(trace).toHaveStepTerminatedWithStatus(['step-c', 'SUCCESS']);

@@ -11,8 +11,6 @@ describe('Workflow with dependencies', function () {
     const logs = await startRun(join(__dirname, 'simple-case.yaml'));
     const trace = parseLogs(logs);
 
-    console.log(logs)
-
     expect(trace).toHaveStep('step-a');
     expect(trace).toHaveStep('step-b');
     expect(trace).toHaveStep('step-c');
