@@ -63,6 +63,7 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 	logger := sflog.LoggerWithWriter(ctxLogger.Name(), w).Named(runId)
 
 	runCtx := sflog.ContextWithLogger(context.Background(), logger)
+	runCtx = context.WithValue(runCtx, workflow.RunIdContextKey{}, runId)
 
 	simpleWf := wf.(*workflow.SimpleWorkflow)
 

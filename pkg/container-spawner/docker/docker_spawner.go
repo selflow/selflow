@@ -14,12 +14,16 @@ import (
 	"github.com/docker/go-connections/nat"
 	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/selflow/selflow/pkg/steps/container"
+	"github.com/selflow/selflow/pkg/workflow"
 	"io"
 	"log"
 	"os"
 	"path"
 	"strings"
 )
+
+const SelflowLabel = "selflow"
+const SelflowRunIdLabel = "selflow.runId"
 
 type spawner struct {
 	dockerClient client.APIClient
@@ -92,6 +96,31 @@ func (d *spawner) createContainer(ctx context.Context, config *container.Contain
 			ReadOnly: true,
 			Target:   "/entrypoint.sh",
 		},
+	}
+
+	defaultMountLabels := map[string]string{
+		SelflowLabel: "true",
+	}
+
+	if runId, ok := ctx.Value(workflow.RunIdContextKey{}).(string); ok {
+		defaultMountLabels[SelflowRunIdLabel] = runId
+	}
+
+	for _, mountable := range config.Mounts {
+		m, err := mountable.ToMount()
+		if err != nil {
+			return "", err
+		}
+
+		hostConfig.Mounts = append(hostConfig.Mounts, mount.Mount{
+			Type:     mount.TypeVolume,
+			Source:   m.ArtifactName,
+			Target:   m.Destination,
+			ReadOnly: false,
+			VolumeOptions: &mount.VolumeOptions{
+				Labels: defaultMountLabels,
+			},
+		})
 	}
 
 	networkConfig := &network.NetworkingConfig{}

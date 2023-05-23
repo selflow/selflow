@@ -28,6 +28,10 @@ type Mount struct {
 	Destination string
 }
 
+func (m Mount) ToMount() (Mount, error) {
+	return m, nil
+}
+
 type Mountable interface {
 	ToMount() (Mount, error)
 }

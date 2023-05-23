@@ -1,0 +1,27 @@
+# Metadata of the flow, accessible with the "metadata" key
+name: With Step persistence
+description: 'step B depends on steps A and should access the file created by step-a'
+author: Anthony-Jhoiro
+
+workflow:
+  timeout: 5m
+  steps:
+    step-a:
+      kind: docker
+      with:
+        persistence:
+          my-volume: /workdir
+        image: node:lts
+        commands: |
+          echo "Hello!" > /workdir/someFile.txt
+
+    step-b:
+      kind: docker
+      needs:
+        - step-a
+      with:
+        persistence:
+          my-volume: /workdir
+        image: node:lts
+        commands: |
+          cat /workdir/someFile.txt
