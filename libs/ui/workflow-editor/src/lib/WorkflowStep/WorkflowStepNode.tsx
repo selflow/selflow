@@ -17,10 +17,12 @@ export const WorkflowStepNode = ({
       {status ? (
         <div
           className={
-            'h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded flex items-center gap-2 font-mono'
+            'h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded flex items-center gap-2 font-mono relative'
           }
         >
-          <WorkflowStepNodeStatusIndicator status={status} />
+          <div className={'absolute -top-2 -right-2'}>
+            <WorkflowStepNodeStatusIndicator status={status} />
+          </div>
           <span>{id}</span>
         </div>
       ) : null}
