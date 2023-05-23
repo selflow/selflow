@@ -16,6 +16,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 'lts/*'
+
+      - name: Install yarn
+        run: npm install -g yarn
+
       - uses: nrwl/nx-set-shas@v2
       - name: Install dependencies
         run: |
@@ -25,10 +29,10 @@ jobs:
         with:
           go-version: '>=1.20.0'
 
-      - run: npx nx workspace-lint
-      - run: npx nx affected --target=test --parallel=3
+      - run: yarn nx workspace-lint
+      - run: yarn nx affected --target=test --parallel=3
       - run: mkdir tmp
-      - run: SELFLOW_DAEMON_HOST_BASED_DIRECTORY="$PWD/tmp" npx nx affected --target=e2e --parallel=3
-      - run: npx nx format:check
-      - run: npx nx affected --target=lint --parallel=3
-      - run: npx nx affected --target=build --parallel=3
+      - run: SELFLOW_DAEMON_HOST_BASED_DIRECTORY="$PWD/tmp" yarn nx affected --target=e2e --parallel=3
+      - run: yarn nx format:check
+      - run: yarn nx affected --target=lint --parallel=3
+      - run: yarn nx affected --target=build --parallel=3
