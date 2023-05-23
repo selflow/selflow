@@ -22,6 +22,5 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     singleThread: true,
     globalSetup: join(__dirname, 'src/setup.ts'),
-    maxConcurrency: 1,
   },
 });
