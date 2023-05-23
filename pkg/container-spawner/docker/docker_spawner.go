@@ -88,7 +88,6 @@ func (d *spawner) createContainer(ctx context.Context, config *container.Contain
 	containerConfig.ExposedPorts = nat.PortSet{}
 
 	hostConfig := &dockerContainer.HostConfig{}
-	hostConfig.AutoRemove = true
 	hostConfig.PortBindings = nat.PortMap{}
 	hostConfig.Mounts = []mount.Mount{
 		{
