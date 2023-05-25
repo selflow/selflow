@@ -6,19 +6,28 @@ import { RightSidePanel } from './RightSidePanel/RightSidePanel';
 import { useWorkflow, WorkflowProvider } from './Providers/WorkflowProvider';
 import { EditStepForm } from './EditStepForm/EditStepForm';
 
-export type WorkflowEditorProps = {
-  steps: WorkflowStep[];
+type WorkflowEditorViewProps = {
+  viewOnly?: boolean;
 };
 
-export const WorkflowEditor = ({ steps }: WorkflowEditorProps) => {
+export type WorkflowEditorProps = WorkflowEditorViewProps & {
+  steps: WorkflowStep[];
+  onChange?: (steps: WorkflowStep[]) => void;
+};
+
+export const WorkflowEditor = ({
+  steps,
+  onChange,
+  ...viewProps
+}: WorkflowEditorProps) => {
   return (
-    <WorkflowProvider initialSteps={steps}>
-      <WorkflowEditor$ />
+    <WorkflowProvider initialSteps={steps} onChange={onChange ?? (() => null)}>
+      <WorkflowEditor$ {...viewProps} />
     </WorkflowProvider>
   );
 };
 
-export const WorkflowEditor$ = () => {
+export const WorkflowEditor$ = ({ viewOnly }: WorkflowEditorViewProps) => {
   const [isRightSidePanelOpen, setIsRightSidePanelOpen] = useState(true);
   const [editedStep, setEditedStep] = useState<WorkflowStep | undefined>(
     undefined
@@ -35,7 +44,7 @@ export const WorkflowEditor$ = () => {
     <div className={'w-full h-full flex overflow-hidden'}>
       <WorkflowViewer
         setSideMenuOpen={setIsRightSidePanelOpen}
-        viewOnly={false}
+        viewOnly={!!viewOnly}
         isSideMenuOpen={isRightSidePanelOpen}
         onStepClick={onStepClick}
       />

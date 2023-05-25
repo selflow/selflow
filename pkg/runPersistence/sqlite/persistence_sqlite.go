@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/selflow/selflow/pkg/workflow"
-	"log"
 )
 
 type StepDbRecord struct {
@@ -169,7 +168,6 @@ func (rp *RunPersistence) GetRunState(runId string) (map[string]workflow.Status,
 			Finished:    statusIsFinished != 0,
 			Cancellable: statusIsCancellable != 0,
 		}
-		log.Println(id, statusName)
 	}
 
 	return state, nil
