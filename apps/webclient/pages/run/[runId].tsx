@@ -23,7 +23,7 @@ export default function FollowRun() {
   const [isRunTerminated, setIsRunTerminated] = useState(true);
 
   const { data } = trpc.status.useQuery(runId, {
-    refetchInterval: 1000,
+    refetchInterval: isRunTerminated ? undefined : 1000,
   });
 
   useEffect(() => {
@@ -39,7 +39,11 @@ export default function FollowRun() {
   const steps = useMemo(() => (data ? mapDataToSteps(data) : []), [data]);
 
   if (!data) {
-    return <p>Loading...</p>;
+    return (
+      <div className={'grid place-items-center h-screen'}>
+        <Spinner size={'lg'} />
+      </div>
+    );
   }
 
   return (

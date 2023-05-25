@@ -99,6 +99,9 @@ export interface GetRunStatus_Request {
 
 export interface GetRunStatus_Status {
   name: string;
+  code: number;
+  isFinished: boolean;
+  isCancellable: boolean;
 }
 
 export interface GetRunStatus_Dependence {
@@ -739,7 +742,7 @@ export const GetRunStatus_Request = {
 };
 
 function createBaseGetRunStatus_Status(): GetRunStatus_Status {
-  return { name: '' };
+  return { name: '', code: 0, isFinished: false, isCancellable: false };
 }
 
 export const GetRunStatus_Status = {
@@ -749,6 +752,15 @@ export const GetRunStatus_Status = {
   ): _m0.Writer {
     if (message.name !== '') {
       writer.uint32(10).string(message.name);
+    }
+    if (message.code !== 0) {
+      writer.uint32(16).int32(message.code);
+    }
+    if (message.isFinished === true) {
+      writer.uint32(24).bool(message.isFinished);
+    }
+    if (message.isCancellable === true) {
+      writer.uint32(32).bool(message.isCancellable);
     }
     return writer;
   },
@@ -768,6 +780,27 @@ export const GetRunStatus_Status = {
 
           message.name = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.code = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isFinished = reader.bool();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isCancellable = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -778,12 +811,23 @@ export const GetRunStatus_Status = {
   },
 
   fromJSON(object: any): GetRunStatus_Status {
-    return { name: isSet(object.name) ? String(object.name) : '' };
+    return {
+      name: isSet(object.name) ? String(object.name) : '',
+      code: isSet(object.code) ? Number(object.code) : 0,
+      isFinished: isSet(object.isFinished) ? Boolean(object.isFinished) : false,
+      isCancellable: isSet(object.isCancellable)
+        ? Boolean(object.isCancellable)
+        : false,
+    };
   },
 
   toJSON(message: GetRunStatus_Status): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
+    message.code !== undefined && (obj.code = Math.round(message.code));
+    message.isFinished !== undefined && (obj.isFinished = message.isFinished);
+    message.isCancellable !== undefined &&
+      (obj.isCancellable = message.isCancellable);
     return obj;
   },
 
@@ -798,6 +842,9 @@ export const GetRunStatus_Status = {
   ): GetRunStatus_Status {
     const message = createBaseGetRunStatus_Status();
     message.name = object.name ?? '';
+    message.code = object.code ?? 0;
+    message.isFinished = object.isFinished ?? false;
+    message.isCancellable = object.isCancellable ?? false;
     return message;
   },
 };
@@ -1256,25 +1303,21 @@ export interface DaemonClient extends Client {
     metadata: Metadata,
     callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
-
   startRun(
     request: StartRun_Request,
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
-
   getLogStream(
     request: GetLogStream_Request,
     options?: Partial<CallOptions>
   ): ClientReadableStream<Log>;
-
   getLogStream(
     request: GetLogStream_Request,
     metadata?: Metadata,
     options?: Partial<CallOptions>
   ): ClientReadableStream<Log>;
-
   getRunStatus(
     request: GetRunStatus_Request,
     callback: (

@@ -49,6 +49,9 @@ message GetRunStatus {
 
   message Status {
     string name = 1;
+    int32 code = 2;
+    bool isFinished = 3;
+    bool isCancellable = 4;
   }
   message Dependence {
     repeated string dependencies = 1;

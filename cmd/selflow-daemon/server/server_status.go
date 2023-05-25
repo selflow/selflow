@@ -11,7 +11,10 @@ func runStateToProtoState(state map[string]workflow.Status) map[string]*proto.Ge
 
 	for stepId, status := range state {
 		responseState[stepId] = &proto.GetRunStatus_Status{
-			Name: status.GetName(),
+			Name:          status.GetName(),
+			Code:          int32(status.GetCode()),
+			IsFinished:    status.IsFinished(),
+			IsCancellable: status.IsCancellable(),
 		}
 	}
 	return responseState
