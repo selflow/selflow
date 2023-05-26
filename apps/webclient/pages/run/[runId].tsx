@@ -7,11 +7,12 @@ import { Spinner } from '@selflow/ui/components-kit';
 
 const mapDataToSteps = (data: any) =>
   Object.keys(data.state).map((stepId) => ({
+    if: data.steps[stepId].If,
+    kind: data.steps[stepId].Kind,
     id: stepId,
     status: data.state[stepId],
     with: {
-      image: '',
-      commands: '',
+      ...data.steps[stepId].With,
     },
     needs: data.dependencies[stepId] ?? [],
   }));
@@ -54,6 +55,8 @@ export default function FollowRun() {
         </button>
 
         {!isRunTerminated && <Spinner size={'xs'} />}
+
+        {JSON.stringify(data.steps)}
       </div>
       <div className={'grow w-full'}>
         <WorkflowEditor steps={steps} viewOnly={true} />

@@ -29,6 +29,7 @@
     "@uiw/codemirror-theme-github": "^4.20.2",
     "@uiw/react-codemirror": "^4.20.2",
     "axios": "^1.0.0",
+    "camelcase": "^7.0.1",
     "change-case": "^4.1.2",
     "clsx": "^1.2.1",
     "next": "13.3.0",

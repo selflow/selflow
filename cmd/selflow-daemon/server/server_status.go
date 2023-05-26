@@ -37,9 +37,18 @@ func (s *Server) GetRunStatus(_ context.Context, req *proto.GetRunStatus_Request
 	}
 
 	dependencies, err := s.RunPersistence.GetRunDependencies(req.GetRunId())
+	if err != nil {
+		return nil, err
+	}
+
+	stepDefinitions, err := s.RunPersistence.GetRunStepDefinitions(req.GetRunId())
+	if err != nil {
+		return nil, err
+	}
 
 	return &proto.GetRunStatus_Response{
-		State:        runStateToProtoState(state),
-		Dependencies: runDependenciesToProtoDependencies(dependencies),
+		State:           runStateToProtoState(state),
+		Dependencies:    runDependenciesToProtoDependencies(dependencies),
+		StepDefinitions: stepDefinitions,
 	}, nil
 }

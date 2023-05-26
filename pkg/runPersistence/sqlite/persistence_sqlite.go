@@ -2,7 +2,9 @@ package sqlite
 
 import (
 	"database/sql"
+	"encoding/json"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/workflow"
 )
 
@@ -11,6 +13,15 @@ type StepDbRecord struct {
 	runId      string
 	statusName string
 }
+
+const CreateRunTableQuery = `
+CREATE TABLE IF NOT EXISTS t_run
+(
+    id         varchar primary key,
+    start_time text,
+    end_time   text
+);
+`
 
 const CreateStatusTableQuery = `
   CREATE TABLE IF NOT EXISTS t_status (
@@ -22,21 +33,24 @@ const CreateStatusTableQuery = `
 `
 
 const CreateStepTableQuery = `
-  CREATE TABLE IF NOT EXISTS t_step (
-      id varchar,
-      run_id varchar,
-      status int references t_status(code),
+  CREATE TABLE IF NOT EXISTS t_step
+  (
+      id          varchar,
+      run_id      varchar references t_run (id),
+      status      int references t_status (code),
+      json_schema text,
       primary key (id, run_id)
-  )
+  );
 `
 
 const CreateDependenceTableQuery = `
-  CREATE TABLE IF NOT EXISTS t_dependence (
-      run_id varchar,
-      step_id varchar,
+  CREATE TABLE IF NOT EXISTS t_dependence
+  (
+      run_id     varchar,
+      step_id    varchar,
       depends_on varchar,
       primary key (run_id, step_id, depends_on)
-  )
+  );
 `
 
 const UpsertDependenceQuery = `
@@ -44,9 +58,13 @@ const UpsertDependenceQuery = `
     on conflict do nothing;
 `
 
-const UpsertStepQuery = `
+const SetStepStatus = `
   INSERT INTO t_step (id, status, run_id) VALUES ($1, $2, $3)
     on conflict do update set status = $2;
+`
+
+const InsertStepQuery = `
+ INSERT INTO t_step (run_id, id, json_schema) VALUES ($1, $2, $3);
 `
 
 const UpsertStatusQuery = `
@@ -64,6 +82,13 @@ const GetRunStateQuery = `
   FROM t_step step left join t_status status on status.code = step.status WHERE run_id = $1;
 `
 
+const GetRunStepDefinitionsQuery = `
+  SELECT
+      id,
+      json_schema
+  FROM t_step step WHERE run_id = $1;
+`
+
 const GetDependenciesQuery = `
   SELECT
       STEP_ID, DEPENDS_ON
@@ -76,6 +101,11 @@ type RunPersistence struct {
 
 func NewSqliteRunPersistence(fileName string) (*RunPersistence, error) {
 	db, err := sql.Open("sqlite3", fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec(CreateRunTableQuery)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +145,7 @@ func (rp *RunPersistence) upsertStep(runId string, stepId string, status workflo
 		return nil
 	}
 
-	_, err = rp.db.Exec(UpsertStepQuery, stepId, status.GetCode(), runId)
+	_, err = rp.db.Exec(SetStepStatus, stepId, status.GetCode(), runId)
 	return err
 }
 
@@ -137,6 +167,24 @@ func (rp *RunPersistence) SetDependenciesState(runId string, dependencies map[wo
 			if err != nil {
 				return err
 			}
+		}
+	}
+
+	return nil
+}
+
+func (rp *RunPersistence) SetRunStepDefinitions(runId string, stepDefinitions map[string]config.StepDefinition) error {
+
+	for stepId, stepDefinition := range stepDefinitions {
+
+		definitionAsJson, err := json.Marshal(stepDefinition)
+		if err != nil {
+			return err
+		}
+
+		_, err = rp.db.Exec(InsertStepQuery, runId, stepId, string(definitionAsJson))
+		if err != nil {
+			return nil
 		}
 	}
 
@@ -193,4 +241,26 @@ func (rp *RunPersistence) GetRunDependencies(runId string) (map[string][]string,
 	}
 
 	return dependencies, nil
+}
+
+func (rp *RunPersistence) GetRunStepDefinitions(runId string) (map[string][]byte, error) {
+	rows, err := rp.db.Query(GetRunStepDefinitionsQuery, runId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	stepDefinitions := map[string][]byte{}
+
+	for rows.Next() {
+		var stepId string
+		var definitionAsString string
+		if err := rows.Scan(&stepId, &definitionAsString); err != nil {
+			return nil, err
+		}
+
+		stepDefinitions[stepId] = []byte(definitionAsString)
+	}
+
+	return stepDefinitions, nil
 }

@@ -60,6 +60,9 @@ message GetRunStatus {
   message Response {
     map<string, GetRunStatus.Status> state = 1;
     map<string, Dependence> dependencies = 2;
+    map<string, bytes> stepDefinitions = 3;
+    string startTime = 4;
+    string stopTime = 5;
   }
 }
 

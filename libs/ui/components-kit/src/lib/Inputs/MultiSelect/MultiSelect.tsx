@@ -13,6 +13,7 @@ export type MultiSelectProps = {
   label: string;
   initialSelectedItems?: MultiSelectItem[];
   onChange?: (selectedItems: MultiSelectItem[]) => void;
+  disabled?: boolean;
 };
 
 export const MultiSelect: FC<MultiSelectProps> = ({
@@ -21,6 +22,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
   placeholder,
   initialSelectedItems = [],
   onChange,
+  disabled,
 }) => {
   const [selectedItems, setSelectedItems] = useState<MultiSelectItem[]>(
     initialSelectedItems ?? []
@@ -31,6 +33,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
   }, [selectedItems, onChange]);
 
   const removeItem = (itemId: MultiSelectItem) => {
+    if (disabled) return;
     const index = selectedItems.findIndex((item) => item === itemId);
     setSelectedItems([
       ...selectedItems.slice(0, index),
@@ -43,6 +46,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
       <Combobox
         value={initialSelectedItems}
         onChange={setSelectedItems}
+        disabled={disabled}
         /* @ts-ignore */
         multiple
       >
@@ -61,7 +65,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
                 onClick={() => removeItem(selectedItem)}
               >
                 <span>{selectedItem}</span>
-                <FaTimes />
+                {!disabled && <FaTimes />}
               </li>
             ))}
           </ul>

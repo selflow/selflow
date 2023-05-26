@@ -1,6 +1,8 @@
 import { promisify } from 'util';
 import {
   DaemonClient,
+  GetRunStatus_Request,
+  GetRunStatus_Response,
   StartRun_Request,
   StartRun_Response,
 } from '../generated/daemon';
@@ -45,11 +47,13 @@ export class DaemonService extends DaemonClient {
   }
 
   public async doGetRunStatus(runId: string) {
-    return promisify(this.getRunStatus)
+    return promisify<GetRunStatus_Request, GetRunStatus_Response>(
+      this.getRunStatus
+    )
       .bind(this)({ runId })
-      .then<DaemonState>((response: any) => {
+      .then((response) => {
         if (!response) {
-          return { state: {}, dependencies: {} };
+          return { state: {}, dependencies: {}, steps: {} };
         }
 
         const responseState = response.state ?? {};
@@ -61,6 +65,9 @@ export class DaemonService extends DaemonClient {
           dependencies: mapObject<{ dependencies: string[] }, string[]>(
             responseDependencies,
             (v) => v.dependencies
+          ),
+          steps: mapObject(response.stepDefinitions, (v) =>
+            JSON.parse(Buffer.from(v).toString('utf-8'))
           ),
         };
       });

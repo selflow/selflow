@@ -29,7 +29,7 @@ export const WorkflowEditor = ({
 
 export const WorkflowEditor$ = ({ viewOnly }: WorkflowEditorViewProps) => {
   const [isRightSidePanelOpen, setIsRightSidePanelOpen] = useState(true);
-  const [editedStep, setEditedStep] = useState<WorkflowStep | undefined>(
+  const [selectedStep, setSelectedStep] = useState<WorkflowStep | undefined>(
     undefined
   );
 
@@ -37,7 +37,13 @@ export const WorkflowEditor$ = ({ viewOnly }: WorkflowEditorViewProps) => {
 
   const onStepClick = (stepId: string) => {
     const step = steps.find((step) => step.id === stepId) ?? undefined;
-    setEditedStep(step);
+    setSelectedStep(step);
+    setIsRightSidePanelOpen(true);
+  };
+
+  const onAddClick = () => {
+    setSelectedStep(undefined);
+    setIsRightSidePanelOpen(true);
   };
 
   return (
@@ -47,9 +53,14 @@ export const WorkflowEditor$ = ({ viewOnly }: WorkflowEditorViewProps) => {
         viewOnly={!!viewOnly}
         isSideMenuOpen={isRightSidePanelOpen}
         onStepClick={onStepClick}
+        onAddClick={onAddClick}
       />
       <RightSidePanel isOpen={isRightSidePanelOpen}>
-        <EditStepForm initialStep={editedStep} />
+        <EditStepForm
+          initialStep={selectedStep}
+          viewOnly={viewOnly}
+          close={() => setIsRightSidePanelOpen(false)}
+        />
       </RightSidePanel>
     </div>
   );

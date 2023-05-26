@@ -17,7 +17,7 @@ export const WorkflowStepNode = ({
 
       <div
         className={
-          'h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded-sm flex items-center gap-2 font-mono relative'
+          'h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded-sm flex items-center gap-2 font-mono relative cursor-pointer hover:scale-105 transition-transform'
         }
       >
         {status ? (
