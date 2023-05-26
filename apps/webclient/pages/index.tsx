@@ -3,6 +3,7 @@ import { WorkflowEditor, WorkflowStep } from '@selflow/ui/workflow-editor';
 import { FaPlay } from 'react-icons/fa';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { Navbar } from '@selflow/ui/components-kit';
 
 export function Index() {
   const [newSteps, setNewSteps] = useState<WorkflowStep[]>([]);
@@ -35,15 +36,17 @@ export function Index() {
 
   return (
     <div className={'h-screen w-screen overflow-hidden flex flex-col'}>
-      <div className={'bg-blue-300 h-16 flex items-center p-5 gap-2'}>
+      <Navbar>
+        <h1 className={'text-xl'}>Build your workflow</h1>
+
         <button
-          className={'rounded-full border-2 border-white p-3'}
+          className={'rounded-full border-4 border-blue-600 p-3'}
           onClick={onPlay}
         >
-          <FaPlay className={'fill-white '} />
+          <FaPlay className={'fill-blue-600'} />
         </button>
-        <p>{JSON.stringify(newSteps)}</p>
-      </div>
+      </Navbar>
+
       <div className={'grow w-full'}>
         <WorkflowEditor
           steps={newSteps}

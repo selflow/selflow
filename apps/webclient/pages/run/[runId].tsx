@@ -3,7 +3,7 @@ import { trpc } from '../../utils/trpc';
 import { FaPlay } from 'react-icons/fa';
 import { WorkflowEditor, WorkflowStep } from '@selflow/ui/workflow-editor';
 import { useEffect, useMemo, useState } from 'react';
-import { Spinner } from '@selflow/ui/components-kit';
+import { Navbar, Spinner } from '@selflow/ui/components-kit';
 
 const mapDataToSteps = (data: any) =>
   Object.keys(data.state).map((stepId) => ({
@@ -49,15 +49,11 @@ export default function FollowRun() {
 
   return (
     <div className={'h-screen w-screen overflow-hidden flex flex-col'}>
-      <div className={'bg-blue-300 h-16 flex items-center p-5 gap-2'}>
-        <button className={'rounded-full border-2 border-white p-3'}>
-          <FaPlay className={'fill-white '} />
-        </button>
-
+      <Navbar>
+        <h1 className={' text-xl'}>Run results</h1>
         {!isRunTerminated && <Spinner size={'xs'} />}
+      </Navbar>
 
-        {JSON.stringify(data.steps)}
-      </div>
       <div className={'grow w-full'}>
         <WorkflowEditor steps={steps} viewOnly={true} />
       </div>
