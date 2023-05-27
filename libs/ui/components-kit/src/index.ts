@@ -2,4 +2,5 @@
 
 export * from './lib/Button/Button';
 export * from './lib/Spinner/Spinner';
+export * from './lib/Navbar/Navbar';
 export * from './lib/Inputs';

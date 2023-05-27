@@ -13,17 +13,37 @@ type EditStepFormFields = WorkflowStep;
 
 export type EditStepFormProps = {
   initialStep?: EditStepFormFields;
+  viewOnly?: boolean;
+  close?: () => void;
 };
-export const EditStepForm = ({ initialStep }: EditStepFormProps) => {
+export const EditStepForm = ({
+  initialStep,
+  viewOnly,
+  close,
+}: EditStepFormProps) => {
   const { steps, setStep, addStep } = useWorkflow();
 
-  const { register, handleSubmit, control, reset } =
+  const { register, handleSubmit, control, reset, formState } =
     useForm<EditStepFormFields>({
       defaultValues: initialStep,
     });
 
+  const resetForm = (values?: Partial<WorkflowStep>) => {
+    if (!values) {
+      reset({
+        id: '',
+        needs: [],
+        with: {
+          image: '',
+          commands: '',
+        },
+      });
+    }
+    reset(values);
+  };
+
   useEffect(() => {
-    reset(initialStep);
+    resetForm(initialStep);
   }, [initialStep, reset]);
 
   const onSubmit = handleSubmit((data) => {
@@ -32,17 +52,27 @@ export const EditStepForm = ({ initialStep }: EditStepFormProps) => {
     } else {
       addStep(data);
     }
+    resetForm();
+    close && close();
   });
+
+  const title =
+    viewOnly && initialStep
+      ? `Viewing ${initialStep.id}`
+      : initialStep
+      ? `Editing ${initialStep.id}`
+      : 'New Step';
 
   return (
     <>
-      <h1 className={'text-2xl'}>New Step</h1>
+      <h1 className={'text-2xl'}>{title}</h1>
 
       <form className={'mt-5'} onSubmit={onSubmit}>
         <Input
           type="text"
           label={'Step Id'}
           {...register('id', { required: true })}
+          disabled={viewOnly}
         />
 
         <Controller
@@ -56,6 +86,7 @@ export const EditStepForm = ({ initialStep }: EditStepFormProps) => {
               label={'Dependencies'}
               onChange={field.onChange}
               initialSelectedItems={field.value}
+              disabled={viewOnly}
             />
           )}
         />
@@ -66,6 +97,7 @@ export const EditStepForm = ({ initialStep }: EditStepFormProps) => {
           type="text"
           label={'Docker Image'}
           {...register('with.image', { required: true })}
+          disabled={viewOnly}
         />
 
         <Controller
@@ -78,13 +110,16 @@ export const EditStepForm = ({ initialStep }: EditStepFormProps) => {
               label={'Commands'}
               value={field.value}
               onChange={field.onChange}
+              contentEditable={!!viewOnly}
             />
           )}
         />
 
-        <div className={'w-full text-right my-5'}>
-          <Button>Create</Button>
-        </div>
+        {!viewOnly && (
+          <div className={'w-full text-right my-5'}>
+            <Button>Create</Button>
+          </div>
+        )}
       </form>
     </>
   );

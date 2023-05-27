@@ -6,21 +6,30 @@ import { RightSidePanel } from './RightSidePanel/RightSidePanel';
 import { useWorkflow, WorkflowProvider } from './Providers/WorkflowProvider';
 import { EditStepForm } from './EditStepForm/EditStepForm';
 
-export type WorkflowEditorProps = {
-  steps: WorkflowStep[];
+type WorkflowEditorViewProps = {
+  viewOnly?: boolean;
 };
 
-export const WorkflowEditor = ({ steps }: WorkflowEditorProps) => {
+export type WorkflowEditorProps = WorkflowEditorViewProps & {
+  steps: WorkflowStep[];
+  onChange?: (steps: WorkflowStep[]) => void;
+};
+
+export const WorkflowEditor = ({
+  steps,
+  onChange,
+  ...viewProps
+}: WorkflowEditorProps) => {
   return (
-    <WorkflowProvider initialSteps={steps}>
-      <WorkflowEditor$ />
+    <WorkflowProvider initialSteps={steps} onChange={onChange ?? (() => null)}>
+      <WorkflowEditor$ {...viewProps} />
     </WorkflowProvider>
   );
 };
 
-export const WorkflowEditor$ = () => {
+export const WorkflowEditor$ = ({ viewOnly }: WorkflowEditorViewProps) => {
   const [isRightSidePanelOpen, setIsRightSidePanelOpen] = useState(true);
-  const [editedStep, setEditedStep] = useState<WorkflowStep | undefined>(
+  const [selectedStep, setSelectedStep] = useState<WorkflowStep | undefined>(
     undefined
   );
 
@@ -28,19 +37,30 @@ export const WorkflowEditor$ = () => {
 
   const onStepClick = (stepId: string) => {
     const step = steps.find((step) => step.id === stepId) ?? undefined;
-    setEditedStep(step);
+    setSelectedStep(step);
+    setIsRightSidePanelOpen(true);
+  };
+
+  const onAddClick = () => {
+    setSelectedStep(undefined);
+    setIsRightSidePanelOpen(true);
   };
 
   return (
     <div className={'w-full h-full flex overflow-hidden'}>
       <WorkflowViewer
         setSideMenuOpen={setIsRightSidePanelOpen}
-        viewOnly={false}
+        viewOnly={!!viewOnly}
         isSideMenuOpen={isRightSidePanelOpen}
         onStepClick={onStepClick}
+        onAddClick={onAddClick}
       />
       <RightSidePanel isOpen={isRightSidePanelOpen}>
-        <EditStepForm initialStep={editedStep} />
+        <EditStepForm
+          initialStep={selectedStep}
+          viewOnly={viewOnly}
+          close={() => setIsRightSidePanelOpen(false)}
+        />
       </RightSidePanel>
     </div>
   );

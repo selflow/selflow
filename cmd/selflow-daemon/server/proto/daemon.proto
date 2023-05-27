@@ -49,6 +49,9 @@ message GetRunStatus {
 
   message Status {
     string name = 1;
+    int32 code = 2;
+    bool isFinished = 3;
+    bool isCancellable = 4;
   }
   message Dependence {
     repeated string dependencies = 1;
@@ -57,6 +60,9 @@ message GetRunStatus {
   message Response {
     map<string, GetRunStatus.Status> state = 1;
     map<string, Dependence> dependencies = 2;
+    map<string, bytes> stepDefinitions = 3;
+    string startTime = 4;
+    string stopTime = 5;
   }
 }
 

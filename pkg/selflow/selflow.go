@@ -20,9 +20,12 @@ type Selflow interface {
 
 type RunPersistence interface {
 	SetRunState(runId string, state map[string]workflow.Status) error
+	SetDependenciesState(runId string, dependencies map[workflow.Step][]workflow.Step) error
+	SetRunStepDefinitions(runId string, stepDefinitions map[string]config.StepDefinition) error
+
 	GetRunState(runId string) (map[string]workflow.Status, error)
 	GetRunDependencies(runId string) (map[string][]string, error)
-	SetDependenciesState(runId string, dependencies map[workflow.Step][]workflow.Step) error
+	GetRunStepDefinitions(runId string) (map[string][]byte, error)
 }
 
 type LogFactory interface {
@@ -66,6 +69,11 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 	runCtx = context.WithValue(runCtx, workflow.RunIdContextKey{}, runId)
 
 	simpleWf := wf.(*workflow.SimpleWorkflow)
+
+	err = s.runPersistence.SetRunStepDefinitions(runId, flow.Workflow.Steps)
+	if err != nil {
+		return "", err
+	}
 
 	err = s.runPersistence.SetDependenciesState(runId, simpleWf.Dependencies)
 	if err != nil {

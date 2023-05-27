@@ -34,8 +34,8 @@ const stepStatusNodes = statusList.map((status, index) => ({
   id: `status-${status.name.toLowerCase()}`,
   type: 'workflowStep',
   position: {
-    x: (index % colCount) * 300,
-    y: Math.floor(index / colCount) * 100,
+    x: (index % colCount) * 300 + 50,
+    y: Math.floor(index / colCount) * 100 + 50,
   },
   data: { status },
 }));

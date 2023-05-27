@@ -7,7 +7,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { WorkflowStepNode } from '../WorkflowStep/WorkflowStepNode';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaPlus, FaTimes } from 'react-icons/fa';
 import { useWorkflow } from '../Providers/WorkflowProvider';
 
 export type WorkflowViewerProps = {
@@ -15,6 +15,7 @@ export type WorkflowViewerProps = {
   setSideMenuOpen: (open: boolean) => void;
   viewOnly: boolean;
   onStepClick?: (nodeId: string) => void;
+  onAddClick?: () => void;
 };
 
 const nodeTypes = { workflowStep: WorkflowStepNode };
@@ -24,6 +25,7 @@ export const WorkflowViewer = ({
   setSideMenuOpen,
   viewOnly,
   onStepClick,
+  onAddClick,
 }: WorkflowViewerProps) => {
   const { nodes, edges, onEdgesChange, addDependency } = useWorkflow();
 
@@ -47,8 +49,8 @@ export const WorkflowViewer = ({
         nodeTypes={nodeTypes}
         onNodeClick={nodeClick}
       >
-        {viewOnly ? null : (
-          <Panel position={'top-right'}>
+        <Panel position={'top-right'}>
+          <div className={'flex flex-col gap-2'}>
             <button
               onClick={() => setSideMenuOpen(!isSideMenuOpen)}
               className={
@@ -61,8 +63,18 @@ export const WorkflowViewer = ({
                 <FaBars className={'fill-white'} size={24} />
               )}
             </button>
-          </Panel>
-        )}
+            {!viewOnly && onAddClick ? (
+              <button
+                onClick={onAddClick}
+                className={
+                  'bg-blue-400 p-3 grid place-items-center rounded-full'
+                }
+              >
+                <FaPlus className={'fill-white'} size={24} />
+              </button>
+            ) : null}
+          </div>
+        </Panel>
         <Background />
         <Controls />
       </ReactFlow>

@@ -45,11 +45,13 @@ const WorkflowContext = createContext<WorkflowProviderState>({
 
 export type WorkflowProviderProps = PropsWithChildren & {
   initialSteps: WorkflowStep[];
+  onChange: (newSteps: WorkflowStep[]) => void;
 };
 
 export const WorkflowProvider: FC<WorkflowProviderProps> = ({
   children,
   initialSteps,
+  onChange,
 }) => {
   const [initialNodes, initialEdges] =
     mapWorkflowStepToReactFlowNodeAndEdges(initialSteps);
@@ -61,9 +63,14 @@ export const WorkflowProvider: FC<WorkflowProviderProps> = ({
   useEffect(() => {
     const [newNodes, newEdges] = mapWorkflowStepToReactFlowNodeAndEdges(steps);
 
+    onChange(steps);
     setNodes(newNodes);
     setEdges(newEdges);
   }, [steps, setNodes, setEdges]);
+
+  useEffect(() => {
+    setSteps(initialSteps);
+  }, [initialSteps]);
 
   const onEdgesChange: OnEdgesChange = (changes) =>
     setEdges((eds) => applyEdgeChanges(changes, eds));

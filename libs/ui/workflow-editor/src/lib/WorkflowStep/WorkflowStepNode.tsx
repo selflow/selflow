@@ -14,16 +14,20 @@ export const WorkflowStepNode = ({
   return (
     <>
       <Handle type="target" position={Position.Left} />
-      {status ? (
-        <div
-          className={
-            'h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded flex items-center gap-2 font-mono'
-          }
-        >
-          <WorkflowStepNodeStatusIndicator status={status} />
-          <span>{id}</span>
-        </div>
-      ) : null}
+
+      <div
+        className={
+          'h-[70px] w-[200px] bg-white p-5 border-2 border-gray-400 rounded-sm flex items-center gap-2 font-mono relative cursor-pointer hover:scale-105 transition-transform'
+        }
+      >
+        {status ? (
+          <div className={'absolute -top-2 -right-2'}>
+            <WorkflowStepNodeStatusIndicator status={status} />
+          </div>
+        ) : null}
+
+        <span>{id}</span>
+      </div>
       <Handle type="source" position={Position.Right} />
     </>
   );

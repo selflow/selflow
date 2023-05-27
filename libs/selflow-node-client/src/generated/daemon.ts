@@ -99,6 +99,9 @@ export interface GetRunStatus_Request {
 
 export interface GetRunStatus_Status {
   name: string;
+  code: number;
+  isFinished: boolean;
+  isCancellable: boolean;
 }
 
 export interface GetRunStatus_Dependence {
@@ -108,6 +111,9 @@ export interface GetRunStatus_Dependence {
 export interface GetRunStatus_Response {
   state: { [key: string]: GetRunStatus_Status };
   dependencies: { [key: string]: GetRunStatus_Dependence };
+  stepDefinitions: { [key: string]: Uint8Array };
+  startTime: string;
+  stopTime: string;
 }
 
 export interface GetRunStatus_Response_StateEntry {
@@ -118,6 +124,11 @@ export interface GetRunStatus_Response_StateEntry {
 export interface GetRunStatus_Response_DependenciesEntry {
   key: string;
   value: GetRunStatus_Dependence | undefined;
+}
+
+export interface GetRunStatus_Response_StepDefinitionsEntry {
+  key: string;
+  value: Uint8Array;
 }
 
 function createBaseDiagnostic(): Diagnostic {
@@ -739,7 +750,7 @@ export const GetRunStatus_Request = {
 };
 
 function createBaseGetRunStatus_Status(): GetRunStatus_Status {
-  return { name: '' };
+  return { name: '', code: 0, isFinished: false, isCancellable: false };
 }
 
 export const GetRunStatus_Status = {
@@ -749,6 +760,15 @@ export const GetRunStatus_Status = {
   ): _m0.Writer {
     if (message.name !== '') {
       writer.uint32(10).string(message.name);
+    }
+    if (message.code !== 0) {
+      writer.uint32(16).int32(message.code);
+    }
+    if (message.isFinished === true) {
+      writer.uint32(24).bool(message.isFinished);
+    }
+    if (message.isCancellable === true) {
+      writer.uint32(32).bool(message.isCancellable);
     }
     return writer;
   },
@@ -768,6 +788,27 @@ export const GetRunStatus_Status = {
 
           message.name = reader.string();
           continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.code = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.isFinished = reader.bool();
+          continue;
+        case 4:
+          if (tag !== 32) {
+            break;
+          }
+
+          message.isCancellable = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -778,12 +819,23 @@ export const GetRunStatus_Status = {
   },
 
   fromJSON(object: any): GetRunStatus_Status {
-    return { name: isSet(object.name) ? String(object.name) : '' };
+    return {
+      name: isSet(object.name) ? String(object.name) : '',
+      code: isSet(object.code) ? Number(object.code) : 0,
+      isFinished: isSet(object.isFinished) ? Boolean(object.isFinished) : false,
+      isCancellable: isSet(object.isCancellable)
+        ? Boolean(object.isCancellable)
+        : false,
+    };
   },
 
   toJSON(message: GetRunStatus_Status): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
+    message.code !== undefined && (obj.code = Math.round(message.code));
+    message.isFinished !== undefined && (obj.isFinished = message.isFinished);
+    message.isCancellable !== undefined &&
+      (obj.isCancellable = message.isCancellable);
     return obj;
   },
 
@@ -798,6 +850,9 @@ export const GetRunStatus_Status = {
   ): GetRunStatus_Status {
     const message = createBaseGetRunStatus_Status();
     message.name = object.name ?? '';
+    message.code = object.code ?? 0;
+    message.isFinished = object.isFinished ?? false;
+    message.isCancellable = object.isCancellable ?? false;
     return message;
   },
 };
@@ -878,7 +933,13 @@ export const GetRunStatus_Dependence = {
 };
 
 function createBaseGetRunStatus_Response(): GetRunStatus_Response {
-  return { state: {}, dependencies: {} };
+  return {
+    state: {},
+    dependencies: {},
+    stepDefinitions: {},
+    startTime: '',
+    stopTime: '',
+  };
 }
 
 export const GetRunStatus_Response = {
@@ -898,6 +959,18 @@ export const GetRunStatus_Response = {
         writer.uint32(18).fork()
       ).ldelim();
     });
+    Object.entries(message.stepDefinitions).forEach(([key, value]) => {
+      GetRunStatus_Response_StepDefinitionsEntry.encode(
+        { key: key as any, value },
+        writer.uint32(26).fork()
+      ).ldelim();
+    });
+    if (message.startTime !== '') {
+      writer.uint32(34).string(message.startTime);
+    }
+    if (message.stopTime !== '') {
+      writer.uint32(42).string(message.stopTime);
+    }
     return writer;
   },
 
@@ -938,6 +1011,33 @@ export const GetRunStatus_Response = {
             message.dependencies[entry2.key] = entry2.value;
           }
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = GetRunStatus_Response_StepDefinitionsEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry3.value !== undefined) {
+            message.stepDefinitions[entry3.key] = entry3.value;
+          }
+          continue;
+        case 4:
+          if (tag !== 34) {
+            break;
+          }
+
+          message.startTime = reader.string();
+          continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.stopTime = reader.string();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -965,6 +1065,16 @@ export const GetRunStatus_Response = {
             return acc;
           }, {})
         : {},
+      stepDefinitions: isObject(object.stepDefinitions)
+        ? Object.entries(object.stepDefinitions).reduce<{
+            [key: string]: Uint8Array;
+          }>((acc, [key, value]) => {
+            acc[key] = bytesFromBase64(value as string);
+            return acc;
+          }, {})
+        : {},
+      startTime: isSet(object.startTime) ? String(object.startTime) : '',
+      stopTime: isSet(object.stopTime) ? String(object.stopTime) : '',
     };
   },
 
@@ -982,6 +1092,14 @@ export const GetRunStatus_Response = {
         obj.dependencies[k] = GetRunStatus_Dependence.toJSON(v);
       });
     }
+    obj.stepDefinitions = {};
+    if (message.stepDefinitions) {
+      Object.entries(message.stepDefinitions).forEach(([k, v]) => {
+        obj.stepDefinitions[k] = base64FromBytes(v);
+      });
+    }
+    message.startTime !== undefined && (obj.startTime = message.startTime);
+    message.stopTime !== undefined && (obj.stopTime = message.stopTime);
     return obj;
   },
 
@@ -1011,6 +1129,16 @@ export const GetRunStatus_Response = {
       }
       return acc;
     }, {});
+    message.stepDefinitions = Object.entries(
+      object.stepDefinitions ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    message.startTime = object.startTime ?? '';
+    message.stopTime = object.stopTime ?? '';
     return message;
   },
 };
@@ -1204,6 +1332,93 @@ export const GetRunStatus_Response_DependenciesEntry = {
   },
 };
 
+function createBaseGetRunStatus_Response_StepDefinitionsEntry(): GetRunStatus_Response_StepDefinitionsEntry {
+  return { key: '', value: new Uint8Array() };
+}
+
+export const GetRunStatus_Response_StepDefinitionsEntry = {
+  encode(
+    message: GetRunStatus_Response_StepDefinitionsEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== '') {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value.length !== 0) {
+      writer.uint32(18).bytes(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GetRunStatus_Response_StepDefinitionsEntry {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetRunStatus_Response_StepDefinitionsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.bytes();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetRunStatus_Response_StepDefinitionsEntry {
+    return {
+      key: isSet(object.key) ? String(object.key) : '',
+      value: isSet(object.value)
+        ? bytesFromBase64(object.value)
+        : new Uint8Array(),
+    };
+  },
+
+  toJSON(message: GetRunStatus_Response_StepDefinitionsEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined &&
+      (obj.value = base64FromBytes(
+        message.value !== undefined ? message.value : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  create<
+    I extends Exact<DeepPartial<GetRunStatus_Response_StepDefinitionsEntry>, I>
+  >(base?: I): GetRunStatus_Response_StepDefinitionsEntry {
+    return GetRunStatus_Response_StepDefinitionsEntry.fromPartial(base ?? {});
+  },
+
+  fromPartial<
+    I extends Exact<DeepPartial<GetRunStatus_Response_StepDefinitionsEntry>, I>
+  >(object: I): GetRunStatus_Response_StepDefinitionsEntry {
+    const message = createBaseGetRunStatus_Response_StepDefinitionsEntry();
+    message.key = object.key ?? '';
+    message.value = object.value ?? new Uint8Array();
+    return message;
+  },
+};
+
 export type DaemonService = typeof DaemonService;
 export const DaemonService = {
   startRun: {
@@ -1256,25 +1471,21 @@ export interface DaemonClient extends Client {
     metadata: Metadata,
     callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
-
   startRun(
     request: StartRun_Request,
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: StartRun_Response) => void
   ): ClientUnaryCall;
-
   getLogStream(
     request: GetLogStream_Request,
     options?: Partial<CallOptions>
   ): ClientReadableStream<Log>;
-
   getLogStream(
     request: GetLogStream_Request,
     metadata?: Metadata,
     options?: Partial<CallOptions>
   ): ClientReadableStream<Log>;
-
   getRunStatus(
     request: GetRunStatus_Request,
     callback: (
