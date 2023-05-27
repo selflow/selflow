@@ -1,0 +1,59 @@
+---
+title: 🕹️ CLI
+---
+
+:::info
+Selflow Cli depends on [Selflow-Daemon](./selflow-daemon) if it doesn't run on your system, it will create it for you using Docker.
+A Docker environment is also needed.
+:::
+
+## Installation
+
+Since Selflow is not ready for production yet, you will need to build the CLI yourself.
+**Don't worry**, it only need to have [Go](https://go.dev/doc/install) setup on your machine in version `1.20` or up and run this command :
+
+```bash
+go install github.com/selflow/selflow/cmd/selflow-cli
+```
+
+The executable will be added into your `$GOBIN` location. Make sure to add it in your `$PATH`.
+
+Check that the executable works with
+
+```
+selflow-cli help
+```
+
+If the CLI can not reach the Selflow-Daemon, it will create it using Docker.
+
+## Commands
+
+### `recreate-daemon`
+
+#### Usage
+
+```bash
+selflow-cli recreate-daemon
+```
+
+Kill and start a new [Selflow Daemon](./selflow-daemon)
+
+### `run`
+
+#### Usage
+
+```bash
+selflow-cli run ./path/to/your/workflow/file.json
+```
+
+Start a run from the workflow of the given file. the file can be in json or yaml format. See Configuration reference for more details.
+
+It currently shows logs in a debug format
+
+### `status`
+
+```bash
+selflow-cli status my-run-id
+```
+
+Displays the status of each step of a run. The run id can be read from the `run` command logs.

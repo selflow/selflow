@@ -1,0 +1,108 @@
+---
+title: ✏️ Workflow Syntax
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+The workflow syntax is very simple :
+
+<Tabs>
+<TabItem value="yaml" label="Yaml">
+
+```yaml
+name: 'Simple case'
+description: 'Steps a and b should log their names'
+author: 'Selflow Community'
+
+workflow:
+  timeout: '5m'
+  steps:
+    step-a:
+      kind: 'docker'
+      with:
+        image: 'node:lts'
+        commands: |
+          echo "##step-a##"
+
+    step-b:
+      kind: 'docker'
+      with:
+        image: 'node:lts'
+        commands: |
+          echo "##step-b##"
+```
+
+</TabItem>
+<TabItem value="json" label="Json">
+
+```json
+{
+  "name": "Simple case",
+  "description": "Steps a and b should log their names",
+  "author": "Selflow Community",
+  "workflow": {
+    "timeout": "5m",
+    "steps": {
+      "step-a": {
+        "kind": "docker",
+        "with": {
+          "image": "node:lts",
+          "commands": "echo \"##step-a##\"\n"
+        }
+      },
+      "step-b": {
+        "kind": "docker",
+        "with": {
+          "image": "node:lts",
+          "commands": "echo \"##step-b##\"\n"
+        }
+      }
+    }
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Metadata
+
+First, the workflow starts with the metadata attributes :
+
+```yaml
+name: 'Simple case'
+description: 'Steps a and b should log their names'
+author: 'Selflow Community'
+```
+
+These fields are ignore by Selflow, you can use them if you want to specify things about your workflow like why you are using them.
+
+In the future, the idea is to be able to access these fields in the steps definitions and to be able to put names on workflow executions.
+
+### The workflow definition
+
+```yaml
+workflow:
+  timeout: '5m'
+  steps:
+    step-a:
+      kind: 'docker'
+      with:
+        image: 'node:lts'
+        commands: |
+          echo "##step-a##"
+
+    step-b:
+      kind: 'docker'
+      with:
+        image: 'node:lts'
+        commands: |
+          echo "##step-b##"
+```
+
+This part contains all the workflow definition.
+First, the `timeout` attribute specifies the maximum duration of the workflow, **it is required**.
+
+Then, the `steps` attributes contains a map of all steps.
+You can have more details about this part in the [step documentation](./steps)

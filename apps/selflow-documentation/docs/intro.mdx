@@ -1,0 +1,37 @@
+---
+sidebar_position: 1
+title: Introduction
+---
+
+import WorkflowExample from './assets/excalidraw/workflow_example.svg';
+
+## What is Selflow ?
+
+Selflow Is a Workflow Orchestration Framework designed to be self-hosted.
+
+### What is a Workflow ?
+
+A Workflow is composed of a group of steps.
+Each step executes in its dedicated environment.
+Steps can depend on other steps if needed so that they can be executed after them.
+Each step has a state to declare the execution state of a step, for example _RUNNING_, _ERROR_ or _SUCCESS_.
+
+In this documentations, workflows are represented like this :
+
+<WorkflowExample className="excalidraw-svg" />
+
+In this example, we have 3 steps :
+
+- Step 🐈 as status "Success"
+- Step 🐕 as status "Running"
+- Step 😊 as status "Created"
+
+We also know that Step 😊 depends on the 2 other steps.
+Since Step 🐕 is not finished, it won't start and stay in a _Created_ state as long has its requirements are not all in a _Success_ state.
+
+### A workflow orchestration framework
+
+Selflow itself behaves like a go library. It doesn't even know the existence of Docker and does not communicate with the outside world.
+It is commonly refers as the **Selflow Core**. It only handles the workflow execution side.
+
+The power of the tool comes from its ecosystem !
