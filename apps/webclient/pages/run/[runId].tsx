@@ -41,7 +41,10 @@ export default function FollowRun() {
 
   if (!data) {
     return (
-      <div className={'grid place-items-center h-screen'}>
+      <div
+        className={'grid place-items-center h-screen'}
+        id={'full-screen-loader'}
+      >
         <Spinner size={'lg'} />
       </div>
     );
