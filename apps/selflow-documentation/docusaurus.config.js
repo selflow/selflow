@@ -4,17 +4,21 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const repositoryUrl = 'https://github.com/selflow/selflow';
+const repositoryDocumentationPath = 'apps/selflow-documentation';
+const documentationEditUrl = `${repositoryUrl}/edit/main/${repositoryDocumentationPath}/`;
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Selflow - Documentation',
-  tagline: 'Orchestrate workflows anywhere you want',
-  url: 'http://localhost:3000',
+  tagline: 'A Workflow Orchestration Framework designed to be self-hosted',
+  url: 'https://selflow.github.io',
   baseUrl: '/selflow/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'selflow', // Usually your GitHub org/user name.
-  projectName: 'selflow', // Usually your repo name.
+  organizationName: 'selflow',
+  projectName: 'selflow',
 
   presets: [
     [
@@ -23,14 +27,11 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
+          editUrl: documentationEditUrl,
         },
         blog: {
           showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/main/website/blog/',
+          editUrl: documentationEditUrl,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -57,7 +58,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/seflow/selflow',
+            href: repositoryUrl,
             label: 'GitHub',
             position: 'right',
           },
@@ -80,15 +81,11 @@ const config = {
             items: [
               {
                 label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                href: 'https://stackoverflow.com/questions/tagged/selflow',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/AnthonyJhoiro',
               },
             ],
           },
@@ -101,12 +98,12 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: repositoryUrl,
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Selflow, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Selflow community. Built with Docusaurus ❤️`,
       },
       prism: {
         theme: lightCodeTheme,

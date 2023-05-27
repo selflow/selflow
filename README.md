@@ -7,11 +7,9 @@
   <img src="https://raw.githubusercontent.com/selflow/selflow/main/assets/selflow-logo.png" align="right" height="200">
 </p>
 
-> Create simple and efficient workflows that can run anywhere
+> A Workflow Orchestration Framework designed to be self-hosted
 
-This project has the best Gopher logo. It is the perfect mix between a developer and a pug. It was generated with [gopherize.me](https://gopherize.me/)
-
-> :exclamation: Documentation is still a Work in Progress :exclamation:
+[:blue_book: Documentation here !](https://selflow.github.io/selflow/)
 
 ## Contributors
 
@@ -60,3 +58,7 @@ yarn nx graph
 ## Show your support
 
 Give a ⭐️ if this project helped you!
+
+---
+
+Logo generated with [gopherize.me](https://gopherize.me/)

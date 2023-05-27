@@ -10,32 +10,26 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Learn how Selflow works',
+    Svg: require('@site/static/img/undraw_lost.svg').default,
     description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
+      <>Want to try Selflow but got lost ? Let's get you back on rails !</>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Start building your own workflows today',
+    Svg: require('@site/static/img/undraw_start_building.svg').default,
     description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
+      <>Follow the Getting Started Guide and you will be setup in no time !</>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Join us !',
+    Svg: require('@site/static/img/undraw_join.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Join the Selflow community and help us improve our tooling layer by
+        providing ideas, feedbacks or even integrate your own modules !
       </>
     ),
   },
