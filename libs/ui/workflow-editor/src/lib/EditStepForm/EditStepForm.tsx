@@ -73,6 +73,7 @@ export const EditStepForm = ({
           label={'Step Id'}
           {...register('id', { required: true })}
           disabled={viewOnly}
+          id={'id-input'}
         />
 
         <Controller
@@ -98,6 +99,7 @@ export const EditStepForm = ({
           label={'Docker Image'}
           {...register('with.image', { required: true })}
           disabled={viewOnly}
+          id={'docker-image-input'}
         />
 
         <Controller
@@ -111,6 +113,7 @@ export const EditStepForm = ({
               value={field.value}
               onChange={field.onChange}
               contentEditable={!!viewOnly}
+              id={'docker-commands-input'}
             />
           )}
         />

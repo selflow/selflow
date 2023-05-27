@@ -56,11 +56,7 @@ export const WorkflowEditor$ = ({ viewOnly }: WorkflowEditorViewProps) => {
         onAddClick={onAddClick}
       />
       <RightSidePanel isOpen={isRightSidePanelOpen}>
-        <EditStepForm
-          initialStep={selectedStep}
-          viewOnly={viewOnly}
-          close={() => setIsRightSidePanelOpen(false)}
-        />
+        <EditStepForm initialStep={selectedStep} viewOnly={viewOnly} />
       </RightSidePanel>
     </div>
   );

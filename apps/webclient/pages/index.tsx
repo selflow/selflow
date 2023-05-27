@@ -40,6 +40,7 @@ export function Index() {
         <h1 className={'text-xl'}>Build your workflow</h1>
 
         <button
+          id={'start-run-btn'}
           className={'rounded-full border-4 border-blue-600 p-3'}
           onClick={onPlay}
         >
