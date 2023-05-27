@@ -1,0 +1,42 @@
+---
+title: 🐱 Selflow-Daemon
+---
+
+## Added features
+
+- GRPC API
+- Support for Docker Steps
+
+Selflow-Daemon is, as of today, the primary implementation of Selflow.
+It adds capabilities for docker steps and can communicate with a GRPC API.
+
+It runs on port `10011` in a docker container to allows you to remove it easily.
+It still needs to access a folder on your machine.
+Usually the `/etc/selflow` folder but you can customize it using environment variables
+
+## Requirements
+
+- a machine running Linux or MacOS (It works on windows but is not stable enough for now)
+- [docker installed and setup](https://docs.docker.com/engine/install/)
+
+## Getting started
+
+The easiest way to start the Selflow-Daemon is to use the [CLI](./cli)
+
+```bash
+selflow recreate-daemon
+```
+
+The Deamon will be running on port 10011 on your system and run logs will be stored in the `/etc/selflow` directory on your system.
+
+## Customisation
+
+You can customize the Selflow Daemon behavior using environment variables that you can directly add to the Selflow CLI
+
+| Variable                              | Default Value                 | Role                                                                                    |
+| ------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------- |
+| `SELFLOW_DAEMON_PORT`                 | `10011`                       | Port where the Selflow Daemon will run                                                  |
+| `SELFLOW_DAEMON_NAME`                 | `selflow-daemon`              | Name of the container                                                                   |
+| `SELFLOW_DAEMON_NETWORK`              | Same as `SELFLOW_DAEMON_NAME` | Name of the network                                                                     |
+| `SELFLOW_DAEMON_IMAGE`                | `selflow-daemon:latest`       | Name of the docker image                                                                |
+| `SELFLOW_DAEMON_HOST_BASED_DIRECTORY` | `/etc/selflow`                | Name of the directory on host where files will be stored. It will be mapped as a volume |
