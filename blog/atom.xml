@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>http://localhost:3000/selflow/blog</id>
+    <id>https://selflow.github.io/selflow/blog</id>
     <title>Selflow - Documentation Blog</title>
     <updated>2022-01-31T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="http://localhost:3000/selflow/blog"/>
+    <link rel="alternate" href="https://selflow.github.io/selflow/blog"/>
     <subtitle>Selflow - Documentation Blog</subtitle>
-    <icon>http://localhost:3000/selflow/img/favicon.ico</icon>
+    <icon>https://selflow.github.io/selflow/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[The State of Selflow]]></title>
         <id>state-of-selflow</id>
-        <link href="http://localhost:3000/selflow/blog/state-of-selflow"/>
+        <link href="https://selflow.github.io/selflow/blog/state-of-selflow"/>
         <updated>2022-01-31T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Selflow was created as a school project should have a consistent development over the next months.]]></summary>
         <content type="html"><![CDATA[<p>Selflow was created as a school project should have a consistent development over the next months.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="objectives-for-may-14th">Objectives for May 14th<a class="hash-link" href="#objectives-for-may-14th" title="Direct link to heading">​</a></h2><ul class="contains-task-list containsTaskList_mC6p"><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Run a workflow from the <code>selflow-core</code> to the <code>selflow-runner</code> with plugins</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Be able to parallelize steps</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Build custom plugins for custom workflow steps</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Build custom plugins to trigger workflows</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Be able to run commands inside containers with the specified image</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Execute commands on a remote machine with SSH</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Strong integration with GitHub for CI/CD workflows (if possible in self-hosted)</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Visualize steps using a UI</li></ul><h2 class="anchor anchorWithStickyNavbar_LWe7" id="if-i-got-the-time">If I got the time<a class="hash-link" href="#if-i-got-the-time" title="Direct link to heading">​</a></h2><ul class="contains-task-list containsTaskList_mC6p"><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Build a Sass platform to manage multiple run configurations (might be required for the full GitHub integration)</li><li class="task-list-item"><input type="checkbox" disabled=""> <!-- -->Run workflows on public selflow instances</li></ul>]]></content>
@@ -22,7 +22,7 @@
     <entry>
         <title type="html"><![CDATA[What is Selflow ?]]></title>
         <id>what-is-selflow</id>
-        <link href="http://localhost:3000/selflow/blog/what-is-selflow"/>
+        <link href="https://selflow.github.io/selflow/blog/what-is-selflow"/>
         <updated>2022-01-31T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Selflow is a simple workflow orchestrator.]]></summary>
         <content type="html"><![CDATA[<p>Selflow is a simple workflow orchestrator.</p><p>Workflows in Selflow are a set of tasks with requirements or none that will run asynchronously in a Docker container</p><p>It is currently a school project but I have the ambition to make it grow even after.</p><p>It was designed to be runnable on any linux machine in your servers, homelab or in the cloud.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="easy-to-use">Easy to use<a class="hash-link" href="#easy-to-use" title="Direct link to heading">​</a></h2><ul><li>Build workflows using Yaml</li><li>Write your own plugins with <a href="https://grpc.io/docs/languages/" target="_blank" rel="noopener noreferrer">the language you want</a></li><li>Supports Docker and SSH steps</li><li>See your workflow execution using a simple ui (<a href="/selflow/blog/state-of-selflow">wip</a>)</li></ul>]]></content>

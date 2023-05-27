@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Selflow - Documentation Blog</title>
-        <link>http://localhost:3000/selflow/blog</link>
+        <link>https://selflow.github.io/selflow/blog</link>
         <description>Selflow - Documentation Blog</description>
         <lastBuildDate>Mon, 31 Jan 2022 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,7 +10,7 @@
         <language>en</language>
         <item>
             <title><![CDATA[The State of Selflow]]></title>
-            <link>http://localhost:3000/selflow/blog/state-of-selflow</link>
+            <link>https://selflow.github.io/selflow/blog/state-of-selflow</link>
             <guid>state-of-selflow</guid>
             <pubDate>Mon, 31 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Selflow was created as a school project should have a consistent development over the next months.]]></description>
@@ -18,7 +18,7 @@
         </item>
         <item>
             <title><![CDATA[What is Selflow ?]]></title>
-            <link>http://localhost:3000/selflow/blog/what-is-selflow</link>
+            <link>https://selflow.github.io/selflow/blog/what-is-selflow</link>
             <guid>what-is-selflow</guid>
             <pubDate>Mon, 31 Jan 2022 00:00:00 GMT</pubDate>
             <description><![CDATA[Selflow is a simple workflow orchestrator.]]></description>
