@@ -21,3 +21,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.buttonList {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}

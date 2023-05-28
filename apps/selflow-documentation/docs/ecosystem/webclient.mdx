@@ -12,7 +12,8 @@ It allows the creation and execution of workflows in a visual interface.
 ## Installation
 
 Like [Selflow CLI](./cli), the Webclient is not deployed because it is still in early stages and is not production ready.
-To use it you can build it ! You only need to have a [node.js](https://nodejs.org/en) environment, [yarn](https://yarnpkg.com/getting-started/install) installed, [git](https://git-scm.com/downloads) and [docker](https://docs.docker.com/engine/install/).
+To use it you can run it locally !
+You only need to have a [node.js](https://nodejs.org/en) environment, [yarn](https://yarnpkg.com/getting-started/install) installed, [git](https://git-scm.com/downloads) and the [selflow daemon](/docs/ecosystem/selflow-daemon) running.
 
 ```bash
 # Clone the repository
@@ -22,11 +23,10 @@ cd selflow
 # Install dependencies
 yarn
 
-## Build the docker image
-yarn nx run webclient:docker
-
-## Run the docker image
-docker run -d -p 3000:3000 -e "DAEMON_URL=selflow-daemon:10011" --network selflow-daemon selflow-webclient
+## Build the dev server
+yarn nx run webclient:build
+cd dist/apps/webclient
+yarn start
 ```
 
 :::warning
