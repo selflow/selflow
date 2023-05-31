@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-var logRegex = regexp.MustCompile("^(?P<time>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\[(?P<type>[A-Z]+)]\\s+(?P<name>\\S+): (?P<message>[^\\n]+)")
+var logRegex = regexp.MustCompile("^(?P<time>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\[(?P<type>[A-Z]+)]\\s+(?P<name>\\S+): (?P<message>[^\\n]*)")
 
 func parseLogLine(logLine string) *proto.Log {
 	match := logRegex.FindStringSubmatch(logLine)

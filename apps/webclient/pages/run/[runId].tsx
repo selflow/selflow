@@ -21,7 +21,7 @@ export default function FollowRun() {
   const router = useRouter();
   const runId = router.query.runId as string;
 
-  const [isRunTerminated, setIsRunTerminated] = useState(true);
+  const [isRunTerminated, setIsRunTerminated] = useState(false);
 
   const { data } = trpc.status.useQuery(runId, {
     refetchInterval: isRunTerminated ? undefined : 1000,
@@ -33,7 +33,7 @@ export default function FollowRun() {
     }
 
     setIsRunTerminated(
-      Object.keys(data.state).every((stepId) => data.state[stepId].name)
+      Object.keys(data.state).every((stepId) => data.state[stepId].isFinished)
     );
   }, [data, setIsRunTerminated]);
 
