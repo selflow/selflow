@@ -4,6 +4,16 @@
   "projectType": "application",
   "sourceRoot": "cmd/selflow-daemon",
   "targets": {
+    "recreate-daemon": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "go run github.com/selflow/selflow/cmd/selflow-cli recreate-daemon"
+        ],
+        "parallel": false
+      },
+      "dependsOn": ["docker"]
+    },
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {

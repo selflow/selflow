@@ -4,16 +4,6 @@
   "sourceRoot": "apps/webclient-e2e/src",
   "projectType": "application",
   "targets": {
-    "recreate-daemon": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "go run github.com/selflow/selflow/cmd/selflow-cli recreate-daemon"
-        ],
-        "parallel": false
-      },
-      "dependsOn": ["^docker"]
-    },
     "e2e": {
       "executor": "@nx/cypress:cypress",
       "options": {
@@ -26,7 +16,7 @@
           "devServerTarget": "webclient:serve:production"
         }
       },
-      "dependsOn": ["recreate-daemon"]
+      "dependsOn": ["^recreate-daemon"]
     },
     "lint": {
       "executor": "@nx/linter:eslint",

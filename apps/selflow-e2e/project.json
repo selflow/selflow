@@ -16,7 +16,7 @@
           "codeCoverage": true
         }
       },
-      "dependsOn": ["^docker"]
+      "dependsOn": ["^recreate-daemon"]
     }
   },
   "tags": [],
