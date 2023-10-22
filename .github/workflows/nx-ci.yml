@@ -74,11 +74,9 @@ jobs:
           pids=()
           # list of commands to be run on main has env flag NX_CLOUD_DISTRIBUTED_EXECUTION set to false
           NX_CLOUD_DISTRIBUTED_EXECUTION=false npx nx-cloud record -- npx nx format:check & pids+=($!)
+          NX_CLOUD_DISTRIBUTED_EXECUTION=false npx nx-cloud record -- npx nx affected -t e2e --parallel=3 & pids+=($!)
 
           # list of commands to be run on agents
-          npx nx affected -t e2e --parallel=3 &
-          pids+=($!)
-
           npx nx affected -t test --parallel=3 &
           pids+=($!)
 
