@@ -26,7 +26,7 @@ jobs:
         npx nx affected --target=build --parallel=3
       init-commands: |
         wget https://go.dev/dl/go1.21.3.linux-amd64.tar.gz
-        rm -rf ./go && tar -C ./go -xzf go1.21.3.linux-amd64.tar.gz
+        rm -rf ./go && tar -C . -xzf go1.21.3.linux-amd64.tar.gz
         echo ::add-path $PWD/go
 
   agents:
