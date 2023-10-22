@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/selflow/selflow/pkg/sflog"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -20,6 +21,8 @@ Built with Love by Anthony-Jhoiro (https://github.com/Anthony-Jhoiro)`,
 }
 
 func init() {
+	sflog.Init()
+
 	sc := newSelflowClient()
 
 	rootCmd.PersistentFlags().Bool(ForceDaemonRecreationFlag, false, "Kill and recreate the daemon if it already exists")

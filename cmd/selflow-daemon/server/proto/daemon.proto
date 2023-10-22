@@ -40,6 +40,7 @@ message Log {
   string dateTime = 2;
   string name = 3;
   string message = 4;
+  bytes metadata = 5;
 }
 
 message GetRunStatus {

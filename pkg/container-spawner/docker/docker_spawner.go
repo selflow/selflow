@@ -177,7 +177,6 @@ func (d *spawner) startContainer(ctx context.Context, containerId string) error 
 }
 
 func (d *spawner) StartContainerDetached(ctx context.Context, config *container.ContainerConfig) (string, error) {
-
 	containerId, err := d.createContainer(ctx, config)
 	if err != nil {
 		return "", err

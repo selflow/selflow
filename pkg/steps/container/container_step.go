@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/hashicorp/go-hclog"
 	"github.com/selflow/selflow/pkg/sflog"
 	"github.com/selflow/selflow/pkg/workflow"
+	"log/slog"
 )
 
 var ContainerExitedNon0StatusCodeError = errors.New("container exited with a non-zero status code")
@@ -25,9 +25,15 @@ func (step *Step) GetOutput() map[string]string {
 func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 	step.SetStatus(workflow.RUNNING)
 
-	runId := ctx.Value(workflow.RunIdContextKey{}).(string)
-	logger := sflog.LoggerFromContext(ctx)
-	stepLogger := logger.Named(step.GetId())
+	var runId string
+	runIdFromCtx := ctx.Value(workflow.RunIdContextKey{})
+	if runIdFromCtx == nil {
+		runId = "unknown"
+	} else {
+		runId = runIdFromCtx.(string)
+	}
+
+	ctx = sflog.AddArgsToContextLogger(ctx, slog.String("stepId", step.GetId()))
 
 	needs := ctx.Value(workflow.StepOutputContextKey).(map[string]map[string]string)
 
@@ -56,22 +62,23 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		containerConfig.Mounts = mounts
 	}
 
+	slog.DebugContext(ctx, "Start container")
 	containerId, err := step.containerSpawner.StartContainerDetached(ctx, containerConfig)
 	if err != nil {
 		return nil, err
 	}
 
+	sflog.WriterFromLogger(sflog.GetLoggerFromContext(ctx), slog.LevelDebug, "containerId", containerId)
+
 	logWriter := &writerWithOutput{
-		Writer: stepLogger.StandardWriter(&hclog.StandardLoggerOptions{
-			ForceLevel: hclog.Debug,
-		}),
+		Writer: sflog.WriterFromLogger(sflog.GetLoggerFromContext(ctx), slog.LevelDebug, "containerId", containerId),
 		output: map[string]string{},
 	}
 
 	err = step.containerSpawner.TransferContainerLogs(ctx, containerId, logWriter)
 	if err != nil {
 
-		logger.Warn("fail to transfer container logs", "error", err)
+		slog.WarnContext(ctx, "Fail to transfer container logs", "error", err)
 	}
 
 	exitCode, err := step.containerSpawner.WaitContainer(ctx, containerId)
@@ -80,7 +87,7 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 	}
 
 	if exitCode != 0 {
-		stepLogger.Error("container exited with status", "ExitCode", exitCode)
+		slog.ErrorContext(ctx, "Container exited with non-0 status", "exitStatus", exitCode)
 		return nil, ContainerExitedNon0StatusCodeError
 	}
 	step.output = logWriter.output

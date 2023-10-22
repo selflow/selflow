@@ -5,6 +5,7 @@ export interface LogLine {
   type: string;
   name: string;
   message: string;
+  metadata: any;
   order: number;
 }
 
@@ -20,24 +21,20 @@ const logRegex =
   /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \[([A-Z]+)]\s+(\S+): ([^\n]+)/;
 
 function parseLogLine(log: string, index: number): LogLine | null {
-  const match = log.match(logRegex);
-  if (!match) {
+  try {
+    const logDetails = JSON.parse(log);
+    return {
+      timeStamp: new Date(logDetails['time']),
+      type: logDetails['level'],
+      name: logDetails['stepId'],
+      message: logDetails['msg'],
+      metadata: logDetails['metadata'] ?? {},
+      order: index,
+    };
+  } catch (e) {
     return null;
   }
-  return {
-    timeStamp: new Date(match[1]),
-    type: match[2],
-    name: match[3],
-    message: match[4],
-    order: index,
-  };
 }
-
-const stepIdRegex = /step-id=(\S+)/;
-const statusRegex = /status=(\S+)/;
-
-const getStepId = (log: string) => log.match(stepIdRegex)?.[1];
-const getStatus = (log: string) => log.match(statusRegex)?.[1];
 
 export function parseLogs(logs: string): WorkflowExecutionTrace {
   const parsedLogs = logs
@@ -48,22 +45,22 @@ export function parseLogs(logs: string): WorkflowExecutionTrace {
   const events: Event[] = parsedLogs
     .filter((log) => log.type === 'INFO')
     .map((log) => {
-      if (log.message.includes('step started')) {
+      if (log.message.includes('Step started')) {
         return {
           timeStamp: log.timeStamp,
           eventType: 'start',
-          stepId: getStepId(log.message),
+          stepId: log.name,
           status: '',
           order: log.order,
         } as Event;
       }
 
-      if (log.message.includes('step terminated')) {
+      if (log.message.includes('Step terminated')) {
         return {
           timeStamp: log.timeStamp,
           eventType: 'stop',
-          stepId: getStepId(log.message),
-          status: getStatus(log.message),
+          stepId: log.name,
+          status: log.metadata['stepStatus'],
           order: log.order,
         } as Event;
       }
@@ -72,15 +69,13 @@ export function parseLogs(logs: string): WorkflowExecutionTrace {
     })
     .filter((log) => !!log);
 
-  const stepLogs = parsedLogs
-    .filter((log) => log.type === 'DEBUG')
-    .reduce<Record<string, string[]>>((acc, log) => {
-      const name = log.name.split('.').pop();
-      return {
-        ...acc,
-        [name]: [...(acc[name] ?? []), log.message],
-      };
-    }, {});
+  const stepLogs = parsedLogs.reduce<Record<string, string[]>>((acc, log) => {
+    if (log.name.length === 0) return acc;
+    return {
+      ...acc,
+      [log.name]: [...(acc[log.name] ?? []), log.message],
+    };
+  }, {});
 
   return {
     stepLogs,

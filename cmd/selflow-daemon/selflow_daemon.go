@@ -9,19 +9,16 @@ import (
 	"github.com/selflow/selflow/pkg/runPersistence/sqlite"
 	"github.com/selflow/selflow/pkg/sflog"
 	"google.golang.org/grpc"
-	"log"
+	"log/slog"
 	"net"
 	"path"
 )
 
-func setupLogger() {
-	logger := sflog.LoggerFromEnv("selflow-daemon")
-	sflog.SetDefaultLogger(logger)
+func init() {
+	sflog.Init(slog.String("process", "selflow-daemon"))
 }
 
 func main() {
-	setupLogger()
-
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", sfenvironment.GetDaemonPort()))
 	if err != nil {
 		panic(err)
@@ -38,7 +35,7 @@ func main() {
 		RunPersistence: runPersistence,
 	})
 
-	log.Printf("[INFO] Start listening at %v\n", lis.Addr())
+	slog.Info("Start GRPC server", "address", lis.Addr())
 	if err = s.Serve(lis); err != nil {
 		panic(err)
 	}

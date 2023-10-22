@@ -1,11 +1,13 @@
 package systemfile
 
 import (
+	"context"
 	"fmt"
 	"github.com/hpcloud/tail"
 	"github.com/selflow/selflow/pkg/selflow"
 	"io"
 	"log"
+	"log/slog"
 	"os"
 	"path"
 )
@@ -52,6 +54,7 @@ func (l *LogFactory) GetRunReader(runId string) (chan string, error) {
 	go func() {
 		for line := range tf.Lines {
 			if err := line.Err; err != nil {
+				slog.WarnContext(context.Background(), "fail to fetch logs", "error", err)
 				log.Printf("[WARN]: fail to fetch logs %v", err)
 				close(ch)
 				break

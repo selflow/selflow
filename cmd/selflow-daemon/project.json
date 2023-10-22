@@ -4,6 +4,17 @@
   "projectType": "application",
   "sourceRoot": "cmd/selflow-daemon",
   "targets": {
+    "recreate-daemon": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "mkdir -p tmp",
+          "SELFLOW_DAEMON_HOST_BASED_DIRECTORY=\"$PWD/tmp\" go run github.com/selflow/selflow/cmd/selflow-cli recreate-daemon"
+        ],
+        "parallel": false
+      },
+      "dependsOn": ["docker"]
+    },
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
