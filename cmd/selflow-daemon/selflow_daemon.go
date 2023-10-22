@@ -24,6 +24,7 @@ func main() {
 		panic(err)
 	}
 
+	slog.Debug("Connecting to SQLITE database", "database", "history.db")
 	runPersistence, err := sqlite.NewSqliteRunPersistence(path.Join(sfenvironment.GetDaemonBaseDirectory(), "history.db"))
 	if err != nil {
 		panic(err)
