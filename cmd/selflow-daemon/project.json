@@ -8,7 +8,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "go run github.com/selflow/selflow/cmd/selflow-cli recreate-daemon"
+          "mkdir -p tmp",
+          "SELFLOW_DAEMON_HOST_BASED_DIRECTORY=\"$PWD/tmp\" go run github.com/selflow/selflow/cmd/selflow-cli recreate-daemon"
         ],
         "parallel": false
       },
