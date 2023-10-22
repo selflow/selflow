@@ -8,6 +8,7 @@ import (
 	"github.com/selflow/selflow/pkg/sflog"
 	"github.com/selflow/selflow/pkg/workflow"
 	"io"
+	"log/slog"
 )
 
 const TerminationLogText = "===EOF==="
@@ -50,23 +51,22 @@ func NewSelflow(workflowBuilder WorkflowBuilder, logFactory LogFactory, runPersi
 func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, error) {
 	runId := uuid.New().String()
 
-	wf, err := s.workflowBuilder.BuildWorkflow(flow)
-	if err != nil {
-		return "", err
-	}
-
-	ctxLogger := sflog.LoggerFromContext(ctx)
+	slog.DebugContext(ctx, "Building workflow")
 
 	_, w, err := s.logFactory.GetRunLogger(runId)
 	if err != nil {
-		ctxLogger.Error("fail to create logger", "error", err)
+		slog.ErrorContext(ctx, "Fail to get run logger", "error", err)
 		return "", err
 	}
 
-	logger := sflog.LoggerWithWriter(ctxLogger.Name(), w).Named(runId)
+	logger := sflog.NewLoggerWithWriter(w)
+	ctx = sflog.ResetContextLogHandler(ctx, logger.Handler(), slog.String("workflowRun", runId))
 
-	runCtx := sflog.ContextWithLogger(context.Background(), logger)
-	runCtx = context.WithValue(runCtx, workflow.RunIdContextKey{}, runId)
+	wf, err := s.workflowBuilder.BuildWorkflow(flow)
+	if err != nil {
+		slog.ErrorContext(ctx, "Fail to build workflow", "error", err)
+		return "", err
+	}
 
 	simpleWf := wf.(*workflow.SimpleWorkflow)
 
@@ -80,18 +80,23 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 		return "", err
 	}
 
+	logger.InfoContext(ctx, "here")
+	slog.DebugContext(ctx, "Start workflow execution")
+	slog.InfoContext(ctx, "Start workflow execution")
+
 	go func(wf workflow.Workflow) {
-		_, err := wf.Execute(runCtx)
+		slog.InfoContext(ctx, "Start workflow execution")
+		_, err := wf.Execute(ctx)
 		if err != nil {
-			logger.Error("workflow execution failed", "error", err)
+			slog.ErrorContext(ctx, "workflow execution failed", "error", err)
 		} else {
-			logger.Info("workflow execution succeeded")
+			slog.InfoContext(ctx, "workflow execution succeeded")
 		}
 		if _, err = w.Write(TerminationLogBytes); err != nil {
-			ctxLogger.Error("fail to write closing log", "error", err)
+			slog.ErrorContext(ctx, "fail to write closing log", "error", err)
 		}
 		if err = w.Close(); err != nil {
-			ctxLogger.Error("fail to close logger", "error", err)
+			slog.ErrorContext(ctx, "fail to close logger", "error", err)
 		}
 	}(wf)
 
@@ -99,7 +104,7 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 		for state := range simpleWf.StateCh {
 			err := s.runPersistence.SetRunState(runId, state)
 			if err != nil {
-				ctxLogger.Warn("state persistence fail", "runId", runId, "err", err)
+				slog.WarnContext(ctx, "fail to save run state", "error", err)
 			}
 		}
 	}(simpleWf)

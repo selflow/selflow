@@ -1,19 +1,32 @@
 package server
 
 import (
+	"encoding/json"
 	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
-	"regexp"
+	"strings"
 )
 
-var logRegex = regexp.MustCompile("^(?P<time>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\[(?P<type>[A-Z]+)]\\s+(?P<name>\\S+): (?P<message>[^\\n]*)")
+type logMessage struct {
+	Message  string `json:"msg"`
+	Level    string `json:"level"`
+	DateTime string `json:"time"`
+	Name     string `json:"stepId"`
+}
 
 func parseLogLine(logLine string) *proto.Log {
-	match := logRegex.FindStringSubmatch(logLine)
+	logAsBytes := []byte(logLine)
+	lm := logMessage{}
+	err := json.Unmarshal(logAsBytes, &lm)
+	if err != nil {
+		return nil
+	}
+
 	return &proto.Log{
-		DateTime: match[1],
-		Level:    match[2],
-		Name:     match[3],
-		Message:  match[4],
+		DateTime: lm.DateTime,
+		Level:    strings.ToUpper(lm.Level),
+		Name:     lm.Name,
+		Message:  lm.Message,
+		Metadata: logAsBytes,
 	}
 
 }

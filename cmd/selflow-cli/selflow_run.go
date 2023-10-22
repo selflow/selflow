@@ -2,13 +2,18 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"hash/fnv"
 	"io"
+	"log/slog"
 	"os"
+	"time"
 )
 
 func NewRunCommand(selflowClient *selflowClient) *cobra.Command {
@@ -25,6 +30,22 @@ func NewRunCommand(selflowClient *selflowClient) *cobra.Command {
 			}
 		},
 	}
+}
+
+func GetAnsiColor(s string) string {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	hash := h.Sum32()
+
+	return fmt.Sprintf("\033[3%dm", (hash%6)+1)
+}
+
+func CastTimeLog(logTimeAsString string) string {
+	t, err := time.Parse(time.RFC3339Nano, logTimeAsString)
+	if err != nil {
+		return "invalid-date"
+	}
+	return t.Format(time.RFC3339)
 }
 
 func startRun(selflowClient *selflowClient, fileName string) error {
@@ -71,6 +92,7 @@ func startRun(selflowClient *selflowClient, fileName string) error {
 	if err != nil {
 		return err
 	}
+
 	for {
 		l, err := stream.Recv()
 		if err == io.EOF {
@@ -79,7 +101,22 @@ func startRun(selflowClient *selflowClient, fileName string) error {
 		if err != nil {
 			return fmt.Errorf("fail to read from stream: %v", err)
 		}
-		fmt.Printf("%v [%4v] %v: %v\n", l.GetDateTime(), l.GetLevel(), l.GetName(), l.GetMessage())
+
+		if sfenvironment.UseJsonLogs {
+			metadata := map[string]interface{}{}
+			if err = json.Unmarshal(l.GetMetadata(), &metadata); err != nil {
+				metadata = nil
+			}
+
+			delete(metadata, "msg")
+			delete(metadata, "level")
+			delete(metadata, "source")
+			delete(metadata, "time")
+
+			slog.Log(ctx, slog.LevelInfo, l.GetMessage(), slog.String("stepId", l.GetName()), slog.Any("metadata", metadata))
+		} else {
+			fmt.Printf("%s%v\t[%4v]\t%v:\t%v\033[0m\n", GetAnsiColor(l.GetName()), CastTimeLog(l.GetDateTime()), l.GetLevel(), l.GetName(), l.GetMessage())
+		}
 	}
 
 	return nil

@@ -4,8 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/selflow/selflow/pkg/sflog"
-	"log"
+	"log/slog"
 	"reflect"
 	"sync"
 )
@@ -92,12 +91,11 @@ func (s *SimpleWorkflow) getNextSteps() []Step {
 }
 
 func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
-	logger := sflog.LoggerFromContext(ctx)
 	requirementsOutputs := s.getRequirementsOutputs(step)
 	stepContext := context.WithValue(ctx, StepOutputContextKey, requirementsOutputs)
 	_, err := step.Execute(stepContext)
 	if err != nil {
-		logger.Warn("step ended with an error", "step-id", step.GetId(), "error", err)
+		slog.WarnContext(ctx, "Step ended with an error", "stepId", step.GetId(), "error", err)
 	}
 }
 
@@ -160,7 +158,6 @@ func shouldCancelNextSteps(stepStatus Status) bool {
 }
 
 func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]string, error) {
-	logger := sflog.LoggerFromContext(ctx)
 	closingSteps := make(chan Step, len(s.steps))
 	activeSteps := &sync.WaitGroup{}
 
@@ -172,10 +169,11 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 		select {
 		case <-ctx.Done():
 			// The context has been closed
+			slog.Debug("Context has expired")
 
 			err := s.cancelRemainingSteps()
 			if err != nil {
-				logger.Error("cancel error", "error", err)
+				slog.ErrorContext(ctx, "Cancel error", "error", err)
 			}
 			close(closingSteps)
 
@@ -183,11 +181,11 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			// A step as ended
 
 			s.updateState()
-			logger.Info("step terminated", "step-id", step.GetId(), "status", step.GetStatus().GetName())
+			slog.InfoContext(ctx, "Step terminated", "stepId", step.GetId(), "stepStatus", step.GetStatus().GetName())
 			if shouldCancelNextSteps(step.GetStatus()) {
 				err := s.cancelNextSteps(step, closingSteps)
 				if err != nil {
-					logger.Error("cancel error", "error", err)
+					slog.ErrorContext(ctx, "Cancel error", "error", err)
 				}
 			}
 		}
@@ -209,23 +207,16 @@ func (s *SimpleWorkflow) cancelRemainingSteps() error {
 }
 
 func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.WaitGroup, closingSteps chan Step) {
-	logger := sflog.LoggerFromContext(ctx)
 	nextSteps := s.getNextSteps()
 	for _, step := range nextSteps {
 		activeSteps.Add(1)
 
 		go func(step Step) {
-			logger.Info("step started", "step-id", step.GetId())
+			slog.InfoContext(ctx, "Step started", "stepId", step.GetId())
 			s.executeStep(ctx, step)
 			closingSteps <- step
 			activeSteps.Done()
 		}(step)
-	}
-}
-
-func (s *SimpleWorkflow) debug() {
-	for _, step := range s.steps {
-		log.Printf("[DEBUG]: %v : %v", step.GetId(), step.GetStatus().GetName())
 	}
 }
 

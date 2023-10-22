@@ -3,16 +3,15 @@ package server
 import (
 	"context"
 	"github.com/docker/docker/client"
-	"github.com/hashicorp/go-hclog"
 	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/container-spawner/docker"
 	"github.com/selflow/selflow/pkg/selflow"
 	"github.com/selflow/selflow/pkg/steps/container"
+	"log/slog"
 )
 
 type Server struct {
-	logger         hclog.Logger
 	LogFactory     selflow.LogFactory
 	RunPersistence selflow.RunPersistence
 	proto.UnimplementedDaemonServer
@@ -20,13 +19,16 @@ type Server struct {
 
 func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) (*proto.StartRun_Response, error) {
 
+	ctx = context.Background()
 	flow, err := config.Parse(request.RunConfig)
 	if err != nil {
 		return nil, err
 	}
 
+	slog.DebugContext(ctx, "Connecting to Docker daemon")
 	dockerClient, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
+		slog.ErrorContext(ctx, "Fail to connect to Docker Daemon")
 		return nil, err
 	}
 

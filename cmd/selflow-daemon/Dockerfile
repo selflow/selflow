@@ -1,11 +1,11 @@
 ###############################
 # DOCKER START STAGE
 ###############################
-FROM golang:1.20-buster
+FROM golang:1.21-bookworm
 WORKDIR /usr/src/goapp/
 USER ${USER}
 COPY ./go.mod .
-COPY . .
+COPY ./go.sum .
 
 ###############################
 # DOCKER ENVIRONMENT STAGE
@@ -24,12 +24,17 @@ RUN apt-get autoremove \
   build-essential -y
 
 ###############################
-# DOCKER INSTALL & BUILD STAGE
+# DOCKER INSTALL
 ###############################
 RUN go mod download \
   && go mod tidy \
-  && go mod verify \
-  && go build -o main ./cmd/selflow-daemon
+  && go mod verify
+
+###############################
+# DOCKER BUILD STAGE
+###############################
+COPY . .
+RUN go build -o main ./cmd/selflow-daemon
 
 ###############################
 # DOCKER FINAL STAGE

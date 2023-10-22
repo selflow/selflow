@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye AS build-env
+FROM golang:1.21-bookworm AS build-env
 
 # Build Delve
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
@@ -6,7 +6,7 @@ RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
 
 # Final stage
-FROM debian:bullseye
+FROM debian:bookworm
 
 ENV GO111MODULE="on" \
   CGO_ENABLED="0" \

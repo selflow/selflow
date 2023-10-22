@@ -1,6 +1,10 @@
 package sfenvironment
 
-import "os"
+import (
+	"github.com/selflow/selflow/pkg/envutils"
+	"os"
+	"strings"
+)
 
 const (
 	DaemonPortEnvKey          = "SELFLOW_DAEMON_PORT"
@@ -21,6 +25,17 @@ const (
 	DaemonImageEnvDefaultValue = "selflow-daemon:latest"
 
 	DaemonHostBaseDirectoryEnvKey = "SELFLOW_DAEMON_HOST_BASED_DIRECTORY"
+
+	UseJsonLogEnvKey        = "JSON_LOGS"
+	UseJsonLogsDefaultValue = "FALSE"
+
+	LogLevelEnvKey       = "LOG_LEVEL"
+	LogLevelDefaultValue = "INFO"
+)
+
+var (
+	UseJsonLogs = strings.ToUpper(envutils.GetEnv(UseJsonLogEnvKey, UseJsonLogsDefaultValue)) == "TRUE"
+	LogLevel    = envutils.GetEnv(LogLevelEnvKey, LogLevelDefaultValue)
 )
 
 func EnvOrDefault(key string, defaultValue string) string {

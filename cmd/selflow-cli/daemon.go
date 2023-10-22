@@ -116,6 +116,8 @@ func (sc *selflowClient) createDaemon(ctx context.Context) (string, error) {
 			sfenvironment.DaemonBaseDirectoryEnvKey:     sc.daemonBaseDirectory,
 			sfenvironment.DaemonNetworkEnvKey:           sc.daemonNetworkName,
 			sfenvironment.DaemonHostBaseDirectoryEnvKey: sc.daemonHostBaseDirectory,
+			sfenvironment.UseJsonLogEnvKey:              "TRUE",
+			sfenvironment.LogLevelEnvKey:                "DEBUG",
 		},
 		Mounts: []cs.Mountable{
 			cs.FileMount{
