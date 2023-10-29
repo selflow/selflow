@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/selflow/selflow/internal/sfenvironment"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
@@ -33,7 +34,7 @@ func (sc *selflowClient) createNetworkIfNotExists(ctx context.Context, networkNa
 
 func (sc *selflowClient) clearDaemon(ctx context.Context) error {
 
-	err := sc.dockerClient.ContainerStop(ctx, sc.daemonName, nil)
+	err := sc.dockerClient.ContainerStop(ctx, sc.daemonName, container.StopOptions{})
 	if err != nil {
 		if client.IsErrNotFound(err) {
 			return nil
