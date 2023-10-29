@@ -3,12 +3,14 @@ on:
   pull_request:
     types: ['opened', 'edited', 'reopened', 'synchronize']
 
+
 env:
   GITMOJI_URL: https://raw.githubusercontent.com/carloscuesta/gitmoji/master/packages/gitmojis/src/gitmojis.json
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Setup Node.js
