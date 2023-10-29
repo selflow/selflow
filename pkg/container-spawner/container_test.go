@@ -19,13 +19,13 @@ import (
 type mockDockerClient struct {
 	client.APIClient
 	createFunctionCallCount uint
-	createFunction          func(count uint) (container.ContainerCreateCreatedBody, error)
+	createFunction          func(count uint) (container.CreateResponse, error)
 	pullFunction            func() (io.ReadCloser, error)
 	startFunction           func() error
 	logsFunction            func() (io.ReadCloser, error)
 }
 
-func (mdc *mockDockerClient) ContainerCreate(ctx context.Context, config *container.Config, hostConfig *container.HostConfig, networkingConfig *network.NetworkingConfig, platform *specs.Platform, containerName string) (container.ContainerCreateCreatedBody, error) {
+func (mdc *mockDockerClient) ContainerCreate(_ context.Context, _ *container.Config, _ *container.HostConfig, _ *network.NetworkingConfig, _ *specs.Platform, _ string) (container.CreateResponse, error) {
 	defer func() {
 		mdc.createFunctionCallCount++
 	}()
@@ -86,8 +86,8 @@ func Test_createContainer(t *testing.T) {
 			args: args{
 				ctx: context.TODO(),
 				cli: &mockDockerClient{
-					createFunction: func(count uint) (container.ContainerCreateCreatedBody, error) {
-						return container.ContainerCreateCreatedBody{
+					createFunction: func(count uint) (container.CreateResponse, error) {
+						return container.CreateResponse{
 							ID:       "12345",
 							Warnings: nil,
 						}, nil
@@ -110,8 +110,8 @@ func Test_createContainer(t *testing.T) {
 			args: args{
 				ctx: context.TODO(),
 				cli: &mockDockerClient{
-					createFunction: func(count uint) (container.ContainerCreateCreatedBody, error) {
-						return container.ContainerCreateCreatedBody{}, mockNotFoundErr{}
+					createFunction: func(count uint) (container.CreateResponse, error) {
+						return container.CreateResponse{}, mockNotFoundErr{}
 					},
 					pullFunction: func() (io.ReadCloser, error) {
 						return nil, mockNotFoundErr{}
@@ -131,8 +131,8 @@ func Test_createContainer(t *testing.T) {
 			args: args{
 				ctx: context.TODO(),
 				cli: &mockDockerClient{
-					createFunction: func(count uint) (container.ContainerCreateCreatedBody, error) {
-						return container.ContainerCreateCreatedBody{}, errors.New("fail to create the container")
+					createFunction: func(count uint) (container.CreateResponse, error) {
+						return container.CreateResponse{}, errors.New("fail to create the container")
 					},
 				},
 				config: &SpawnConfig{
@@ -149,11 +149,11 @@ func Test_createContainer(t *testing.T) {
 			args: args{
 				ctx: context.TODO(),
 				cli: &mockDockerClient{
-					createFunction: func(count uint) (container.ContainerCreateCreatedBody, error) {
+					createFunction: func(count uint) (container.CreateResponse, error) {
 						if count == 0 {
-							return container.ContainerCreateCreatedBody{}, mockNotFoundErr{}
+							return container.CreateResponse{}, mockNotFoundErr{}
 						}
-						return container.ContainerCreateCreatedBody{
+						return container.CreateResponse{
 							ID:       "12345",
 							Warnings: nil,
 						}, nil

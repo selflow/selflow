@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	cs "github.com/selflow/selflow/pkg/container-spawner"
 	"testing"
-	"time"
 )
 
 type fields struct {
@@ -52,7 +52,7 @@ func (m mockDockerClient) NetworkCreate(_ context.Context, _ string, _ types.Net
 	return m.NetworkCreateNet, m.NetworkCreateErr
 }
 
-func (m mockDockerClient) ContainerStop(_ context.Context, _ string, _ *time.Duration) error {
+func (m mockDockerClient) ContainerStop(_ context.Context, _ string, _ container.StopOptions) error {
 	return m.ContainerStopErr
 }
 
