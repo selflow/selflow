@@ -4,6 +4,9 @@
   "affected": {
     "defaultBase": "main"
   },
+  "implicitDependencies": {
+    "go.sum": ["*"]
+  },
   "tasksRunnerOptions": {
     "default": {
       "runner": "@nrwl/nx-cloud",

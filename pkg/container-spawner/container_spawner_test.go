@@ -14,8 +14,8 @@ type mockClient struct {
 	client.APIClient
 }
 
-func (m *mockClient) ContainerCreate(ctx context.Context, config *container.Config, hostConfig *container.HostConfig, networkConfig *network.NetworkingConfig, platform *specs.Platform, containerName string) (container.ContainerCreateCreatedBody, error) {
-	return container.ContainerCreateCreatedBody{ID: "abcdefg"}, nil
+func (m *mockClient) ContainerCreate(ctx context.Context, config *container.Config, hostConfig *container.HostConfig, networkConfig *network.NetworkingConfig, platform *specs.Platform, containerName string) (container.CreateResponse, error) {
+	return container.CreateResponse{ID: "abcdefg"}, nil
 }
 
 func (m *mockClient) IsErrNotFound(err error) bool {
