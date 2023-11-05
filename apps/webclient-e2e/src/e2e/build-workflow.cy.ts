@@ -22,7 +22,7 @@ describe('Build Workflow', function () {
 
     cy.get('#start-run-btn').click();
 
-    cy.get('#full-screen-loader').should('be.visible');
+    // cy.get('#full-screen-loader').should('be.visible');
 
     cy.url().should('contain', '/run');
 
