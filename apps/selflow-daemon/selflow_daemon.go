@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/selflow/selflow/cmd/selflow-daemon/server"
-	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	"github.com/selflow/selflow/apps/selflow-daemon/server"
+	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/selflow/selflow/pkg/logger/systemfile"
 	"github.com/selflow/selflow/pkg/runPersistence/sqlite"

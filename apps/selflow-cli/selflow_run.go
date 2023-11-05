@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	proto2 "github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/sfenvironment"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -78,9 +78,9 @@ func startRun(selflowClient *selflowClient, fileName string) error {
 		_ = conn.Close()
 	}()
 
-	c := proto.NewDaemonClient(conn)
+	c := proto2.NewDaemonClient(conn)
 
-	runId, err := c.StartRun(ctx, &proto.StartRun_Request{RunConfig: bytes})
+	runId, err := c.StartRun(ctx, &proto2.StartRun_Request{RunConfig: bytes})
 
 	if err != nil {
 		return fmt.Errorf("fail to start run: %v", err)
@@ -88,7 +88,7 @@ func startRun(selflowClient *selflowClient, fileName string) error {
 
 	fmt.Printf("Run started with Id: %v\n", runId)
 
-	stream, err := c.GetLogStream(ctx, &proto.GetLogStream_Request{RunId: runId.GetRunId()})
+	stream, err := c.GetLogStream(ctx, &proto2.GetLogStream_Request{RunId: runId.GetRunId()})
 	if err != nil {
 		return err
 	}

@@ -47,7 +47,7 @@ For that we are using [NX](https://nx.dev/) which is an amazing tool !
 
 The main directories are :
 
-- Go executable : `/cmd`
+- Go executable : `/apps`
 - Go public libraries : `/pkg`
 - Go private libraries : `/internal`
 - Applications : `/apps`

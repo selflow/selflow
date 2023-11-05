@@ -2,19 +2,19 @@
   "name": "selflow-cli",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "sourceRoot": "cmd/selflow-cli",
+  "sourceRoot": "",
   "targets": {
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
         "outputPath": "dist/selflow-cli",
-        "main": "./cmd/selflow-cli"
+        "main": "./apps/selflow-cli"
       }
     },
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "github.com/selflow/selflow/cmd/selflow-cli"
+        "main": "github.com/selflow/selflow/apps/selflow-cli"
       }
     },
     "test": {

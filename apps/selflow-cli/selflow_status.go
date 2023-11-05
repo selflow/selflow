@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	proto2 "github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -52,9 +52,9 @@ func startStatus(selflowClient *selflowClient, runId string) error {
 		_ = conn.Close()
 	}()
 
-	c := proto.NewDaemonClient(conn)
+	c := proto2.NewDaemonClient(conn)
 
-	response, err := c.GetRunStatus(ctx, &proto.GetRunStatus_Request{RunId: runId})
+	response, err := c.GetRunStatus(ctx, &proto2.GetRunStatus_Request{RunId: runId})
 
 	log.Println(response)
 

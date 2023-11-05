@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"github.com/docker/docker/client"
-	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	proto2 "github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/internal/config"
 	"github.com/selflow/selflow/pkg/container-spawner/docker"
 	"github.com/selflow/selflow/pkg/selflow"
@@ -14,10 +14,10 @@ import (
 type Server struct {
 	LogFactory     selflow.LogFactory
 	RunPersistence selflow.RunPersistence
-	proto.UnimplementedDaemonServer
+	proto2.UnimplementedDaemonServer
 }
 
-func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) (*proto.StartRun_Response, error) {
+func (s *Server) StartRun(ctx context.Context, request *proto2.StartRun_Request) (*proto2.StartRun_Response, error) {
 
 	ctx = context.Background()
 	flow, err := config.Parse(request.RunConfig)
@@ -47,7 +47,7 @@ func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) 
 		return nil, err
 	}
 
-	return &proto.StartRun_Response{
+	return &proto2.StartRun_Response{
 		RunId: runId,
 	}, nil
 

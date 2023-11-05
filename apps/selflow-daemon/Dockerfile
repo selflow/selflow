@@ -34,7 +34,7 @@ RUN go mod download \
 # DOCKER BUILD STAGE
 ###############################
 COPY . .
-RUN go build -o main ./cmd/selflow-daemon
+RUN go build -o main ./apps/selflow-daemon
 
 ###############################
 # DOCKER FINAL STAGE

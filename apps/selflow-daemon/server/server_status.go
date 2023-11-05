@@ -2,7 +2,7 @@ package server
 
 import (
 	"context"
-	"github.com/selflow/selflow/cmd/selflow-daemon/server/proto"
+	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"github.com/selflow/selflow/pkg/workflow"
 )
 

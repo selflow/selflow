@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "cmd/selflow-daemon/server/proto";
+option go_package = "apps/selflow-daemon/server/proto";
 
 
 // ---------- GLOBAL UTILITIES ----------
