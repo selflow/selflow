@@ -89,6 +89,7 @@ export interface Log {
   dateTime: string;
   name: string;
   message: string;
+  metadata: Uint8Array;
 }
 
 export interface GetRunStatus {}
@@ -533,7 +534,13 @@ export const GetLogStream_Request = {
 };
 
 function createBaseLog(): Log {
-  return { level: '', dateTime: '', name: '', message: '' };
+  return {
+    level: '',
+    dateTime: '',
+    name: '',
+    message: '',
+    metadata: new Uint8Array(),
+  };
 }
 
 export const Log = {
@@ -549,6 +556,9 @@ export const Log = {
     }
     if (message.message !== '') {
       writer.uint32(34).string(message.message);
+    }
+    if (message.metadata.length !== 0) {
+      writer.uint32(42).bytes(message.metadata);
     }
     return writer;
   },
@@ -589,6 +599,13 @@ export const Log = {
 
           message.message = reader.string();
           continue;
+        case 5:
+          if (tag !== 42) {
+            break;
+          }
+
+          message.metadata = reader.bytes();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -604,6 +621,9 @@ export const Log = {
       dateTime: isSet(object.dateTime) ? String(object.dateTime) : '',
       name: isSet(object.name) ? String(object.name) : '',
       message: isSet(object.message) ? String(object.message) : '',
+      metadata: isSet(object.metadata)
+        ? bytesFromBase64(object.metadata)
+        : new Uint8Array(),
     };
   },
 
@@ -613,6 +633,10 @@ export const Log = {
     message.dateTime !== undefined && (obj.dateTime = message.dateTime);
     message.name !== undefined && (obj.name = message.name);
     message.message !== undefined && (obj.message = message.message);
+    message.metadata !== undefined &&
+      (obj.metadata = base64FromBytes(
+        message.metadata !== undefined ? message.metadata : new Uint8Array()
+      ));
     return obj;
   },
 
@@ -626,6 +650,7 @@ export const Log = {
     message.dateTime = object.dateTime ?? '';
     message.name = object.name ?? '';
     message.message = object.message ?? '';
+    message.metadata = object.metadata ?? new Uint8Array();
     return message;
   },
 };

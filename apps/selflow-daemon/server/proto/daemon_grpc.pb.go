@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.18.1
-// source: cmd/selflow-daemon/server/proto/daemon.proto
+// source: apps/selflow-daemon/server/proto/daemon.proto
 
 package proto
 
@@ -201,5 +201,5 @@ var Daemon_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "cmd/selflow-daemon/server/proto/daemon.proto",
+	Metadata: "apps/selflow-daemon/server/proto/daemon.proto",
 }

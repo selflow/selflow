@@ -30,8 +30,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=libs/selflow-node-client/src/generated ./cmd/selflow-daemon/server/proto/daemon.proto --ts_proto_opt=outputServices=grpc-js",
-          "mv libs/selflow-node-client/src/generated/cmd/selflow-daemon/server/proto/*.ts libs/selflow-node-client/src/generated"
+          "protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=libs/selflow-node-client/src/generated ./apps/selflow-daemon/server/proto/daemon.proto --ts_proto_opt=outputServices=grpc-js",
+          "mv libs/selflow-node-client/src/generated/apps/selflow-daemon/server/proto/*.ts libs/selflow-node-client/src/generated"
         ],
         "parallel": false
       }

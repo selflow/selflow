@@ -2,7 +2,7 @@ package server
 
 import (
 	"encoding/json"
-	proto2 "github.com/selflow/selflow/apps/selflow-daemon/server/proto"
+	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"strings"
 )
 
@@ -13,7 +13,7 @@ type logMessage struct {
 	Name     string `json:"stepId"`
 }
 
-func parseLogLine(logLine string) *proto2.Log {
+func parseLogLine(logLine string) *proto.Log {
 	logAsBytes := []byte(logLine)
 	lm := logMessage{}
 	err := json.Unmarshal(logAsBytes, &lm)
@@ -21,7 +21,7 @@ func parseLogLine(logLine string) *proto2.Log {
 		return nil
 	}
 
-	return &proto2.Log{
+	return &proto.Log{
 		DateTime: lm.DateTime,
 		Level:    strings.ToUpper(lm.Level),
 		Name:     lm.Name,
@@ -31,7 +31,7 @@ func parseLogLine(logLine string) *proto2.Log {
 
 }
 
-func (s *Server) GetLogStream(request *proto2.GetLogStream_Request, stream proto2.Daemon_GetLogStreamServer) error {
+func (s *Server) GetLogStream(request *proto.GetLogStream_Request, stream proto.Daemon_GetLogStreamServer) error {
 	ch, err := s.LogFactory.GetRunReader(request.GetRunId())
 	if err != nil {
 		return err
