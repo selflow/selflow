@@ -3,12 +3,12 @@ package conditional
 import (
 	"bytes"
 	"context"
-	workflow2 "github.com/selflow/selflow/libs/core/workflow"
+	"github.com/selflow/selflow/libs/core/workflow"
 	"text/template"
 )
 
 type Step struct {
-	workflow2.Step
+	workflow.Step
 	condition string
 }
 
@@ -29,7 +29,7 @@ func isTruthy(seq string) bool {
 	return true
 }
 
-func NewConditionalStep(wrappedStep workflow2.Step, condition string) workflow2.Step {
+func NewConditionalStep(wrappedStep workflow.Step, condition string) workflow.Step {
 	return &Step{
 		Step:      wrappedStep,
 		condition: condition,
@@ -42,7 +42,7 @@ type TemplateValues struct {
 
 func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 
-	needs := ctx.Value(workflow2.StepOutputContextKey).(map[string]map[string]string)
+	needs := ctx.Value(workflow.StepOutputContextKey).(map[string]map[string]string)
 
 	tpl, err := template.New("").Parse(step.condition)
 	if err != nil {
@@ -60,7 +60,7 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		return step.Step.Execute(ctx)
 	}
 
-	step.SetStatus(workflow2.CANCELLED)
+	step.SetStatus(workflow.CANCELLED)
 
 	return map[string]string{}, nil
 }

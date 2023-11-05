@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/selflow/selflow/libs/core/sflog"
-	workflow2 "github.com/selflow/selflow/libs/core/workflow"
+	"github.com/selflow/selflow/libs/core/workflow"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
 	"io"
 	"log/slog"
@@ -20,11 +20,11 @@ type Selflow interface {
 }
 
 type RunPersistence interface {
-	SetRunState(runId string, state map[string]workflow2.Status) error
-	SetDependenciesState(runId string, dependencies map[workflow2.Step][]workflow2.Step) error
+	SetRunState(runId string, state map[string]workflow.Status) error
+	SetDependenciesState(runId string, dependencies map[workflow.Step][]workflow.Step) error
 	SetRunStepDefinitions(runId string, stepDefinitions map[string]config.StepDefinition) error
 
-	GetRunState(runId string) (map[string]workflow2.Status, error)
+	GetRunState(runId string) (map[string]workflow.Status, error)
 	GetRunDependencies(runId string) (map[string][]string, error)
 	GetRunStepDefinitions(runId string) (map[string][]byte, error)
 }
@@ -68,7 +68,7 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 		return "", err
 	}
 
-	simpleWf := wf.(*workflow2.SimpleWorkflow)
+	simpleWf := wf.(*workflow.SimpleWorkflow)
 
 	err = s.runPersistence.SetRunStepDefinitions(runId, flow.Workflow.Steps)
 	if err != nil {
@@ -84,7 +84,7 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 	slog.DebugContext(ctx, "Start workflow execution")
 	slog.InfoContext(ctx, "Start workflow execution")
 
-	go func(wf workflow2.Workflow) {
+	go func(wf workflow.Workflow) {
 		slog.InfoContext(ctx, "Start workflow execution")
 		_, err := wf.Execute(ctx)
 		if err != nil {
@@ -100,7 +100,7 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 		}
 	}(wf)
 
-	go func(simpleWf *workflow2.SimpleWorkflow) {
+	go func(simpleWf *workflow.SimpleWorkflow) {
 		for state := range simpleWf.StateCh {
 			err := s.runPersistence.SetRunState(runId, state)
 			if err != nil {

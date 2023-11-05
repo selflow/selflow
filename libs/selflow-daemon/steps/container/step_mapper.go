@@ -2,7 +2,7 @@ package container
 
 import (
 	"github.com/mitchellh/mapstructure"
-	workflow2 "github.com/selflow/selflow/libs/core/workflow"
+	"github.com/selflow/selflow/libs/core/workflow"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
 	"github.com/selflow/selflow/libs/selflow-daemon/steps/conditional"
 )
@@ -17,7 +17,7 @@ type DockerStepConfig struct {
 	Persistence map[string]string
 }
 
-func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (workflow2.Step, error) {
+func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
 	dockerStepConfig := DockerStepConfig{}
 
 	delete(definition.With, "environment")
@@ -29,12 +29,12 @@ func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (w
 
 	return &Step{
 		containerSpawner: c.ContainerSpawner,
-		SimpleStep:       workflow2.SimpleStep{Id: stepId, Status: workflow2.CREATED},
+		SimpleStep:       workflow.SimpleStep{Id: stepId, Status: workflow.CREATED},
 		config:           &dockerStepConfig,
 	}, nil
 }
 
-func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow2.Step, error) {
+func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
 	step, err := c.mapStep(stepId, definition)
 	if err != nil {
 		return nil, err

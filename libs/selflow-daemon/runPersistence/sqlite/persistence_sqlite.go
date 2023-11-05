@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	_ "github.com/mattn/go-sqlite3"
-	workflow2 "github.com/selflow/selflow/libs/core/workflow"
+	"github.com/selflow/selflow/libs/core/workflow"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
 )
 
@@ -128,7 +128,7 @@ func NewSqliteRunPersistence(fileName string) (*RunPersistence, error) {
 	return &RunPersistence{db}, nil
 }
 
-func (rp *RunPersistence) upsertStatus(status workflow2.Status) error {
+func (rp *RunPersistence) upsertStatus(status workflow.Status) error {
 	_, err := rp.db.Exec(UpsertStatusQuery, status.GetCode(), status.GetName(), status.IsCancellable(), status.IsFinished())
 	return err
 }
@@ -138,7 +138,7 @@ func (rp *RunPersistence) upsertDependence(runId string, stepId string, dependen
 	return err
 }
 
-func (rp *RunPersistence) upsertStep(runId string, stepId string, status workflow2.Status) error {
+func (rp *RunPersistence) upsertStep(runId string, stepId string, status workflow.Status) error {
 
 	err := rp.upsertStatus(status)
 	if err != nil {
@@ -149,7 +149,7 @@ func (rp *RunPersistence) upsertStep(runId string, stepId string, status workflo
 	return err
 }
 
-func (rp *RunPersistence) SetRunState(runId string, state map[string]workflow2.Status) error {
+func (rp *RunPersistence) SetRunState(runId string, state map[string]workflow.Status) error {
 	for stepId, status := range state {
 		err := rp.upsertStep(runId, stepId, status)
 		if err != nil {
@@ -160,7 +160,7 @@ func (rp *RunPersistence) SetRunState(runId string, state map[string]workflow2.S
 	return nil
 }
 
-func (rp *RunPersistence) SetDependenciesState(runId string, dependencies map[workflow2.Step][]workflow2.Step) error {
+func (rp *RunPersistence) SetDependenciesState(runId string, dependencies map[workflow.Step][]workflow.Step) error {
 	for step, stepDependencies := range dependencies {
 		for _, dependency := range stepDependencies {
 			err := rp.upsertDependence(runId, step.GetId(), dependency.GetId())
@@ -191,14 +191,14 @@ func (rp *RunPersistence) SetRunStepDefinitions(runId string, stepDefinitions ma
 	return nil
 }
 
-func (rp *RunPersistence) GetRunState(runId string) (map[string]workflow2.Status, error) {
+func (rp *RunPersistence) GetRunState(runId string) (map[string]workflow.Status, error) {
 	rows, err := rp.db.Query(GetRunStateQuery, runId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	state := map[string]workflow2.Status{}
+	state := map[string]workflow.Status{}
 
 	for rows.Next() {
 		var id string
@@ -210,7 +210,7 @@ func (rp *RunPersistence) GetRunState(runId string) (map[string]workflow2.Status
 			return nil, err
 		}
 
-		state[id] = workflow2.SimpleStatus{
+		state[id] = workflow.SimpleStatus{
 			Code:        statusCode,
 			Name:        statusName,
 			Finished:    statusIsFinished != 0,

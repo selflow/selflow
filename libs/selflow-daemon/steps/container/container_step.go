@@ -5,14 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/selflow/selflow/libs/core/sflog"
-	workflow2 "github.com/selflow/selflow/libs/core/workflow"
+	"github.com/selflow/selflow/libs/core/workflow"
 	"log/slog"
 )
 
 var ContainerExitedNon0StatusCodeError = errors.New("container exited with a non-zero status code")
 
 type Step struct {
-	workflow2.SimpleStep
+	workflow.SimpleStep
 	containerSpawner ContainerSpawner
 	config           *DockerStepConfig
 	output           map[string]string
@@ -23,10 +23,10 @@ func (step *Step) GetOutput() map[string]string {
 }
 
 func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
-	step.SetStatus(workflow2.RUNNING)
+	step.SetStatus(workflow.RUNNING)
 
 	var runId string
-	runIdFromCtx := ctx.Value(workflow2.RunIdContextKey{})
+	runIdFromCtx := ctx.Value(workflow.RunIdContextKey{})
 	if runIdFromCtx == nil {
 		runId = "unknown"
 	} else {
@@ -35,7 +35,7 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 
 	ctx = sflog.AddArgsToContextLogger(ctx, slog.String("stepId", step.GetId()))
 
-	needs := ctx.Value(workflow2.StepOutputContextKey).(map[string]map[string]string)
+	needs := ctx.Value(workflow.StepOutputContextKey).(map[string]map[string]string)
 
 	var err error
 
