@@ -28,6 +28,7 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: documentationEditUrl,
+          path: '../../docs',
         },
         blog: {
           showReadingTime: true,
