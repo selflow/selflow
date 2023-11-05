@@ -2,6 +2,7 @@ describe('Build Workflow', function () {
   Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from
     // failing the test
+    console.log('[WARN] Uncaught exception', err);
     return false;
   });
 
@@ -20,9 +21,11 @@ describe('Build Workflow', function () {
 
     cy.contains(stepId).should('be.visible');
 
+    cy.wait(500);
+
     cy.get('#start-run-btn').click();
 
-    // cy.get('#full-screen-loader').should('be.visible');
+    cy.get('#full-screen-loader').should('be.visible');
 
     cy.url().should('contain', '/run');
 
