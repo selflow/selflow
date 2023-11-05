@@ -6,7 +6,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
-	cs "github.com/selflow/selflow/pkg/container-spawner"
+	cs "github.com/selflow/selflow/libs/selflow-daemon/container-spawner"
 	"testing"
 )
 

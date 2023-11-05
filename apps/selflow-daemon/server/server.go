@@ -4,10 +4,10 @@ import (
 	"context"
 	"github.com/docker/docker/client"
 	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
-	"github.com/selflow/selflow/internal/config"
-	"github.com/selflow/selflow/pkg/container-spawner/docker"
-	"github.com/selflow/selflow/pkg/selflow"
-	"github.com/selflow/selflow/pkg/steps/container"
+	"github.com/selflow/selflow/libs/core/selflow"
+	"github.com/selflow/selflow/libs/selflow-daemon/config"
+	"github.com/selflow/selflow/libs/selflow-daemon/container-spawner/docker"
+	"github.com/selflow/selflow/libs/selflow-daemon/steps/container"
 	"log/slog"
 )
 

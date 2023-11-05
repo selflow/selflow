@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
-	"github.com/selflow/selflow/internal/sfenvironment"
+	"github.com/selflow/selflow/libs/selflow-daemon/sfenvironment"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

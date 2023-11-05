@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
-	"github.com/selflow/selflow/pkg/workflow"
+	"github.com/selflow/selflow/libs/core/workflow"
 )
 
 func runStateToProtoState(state map[string]workflow.Status) map[string]*proto.GetRunStatus_Status {

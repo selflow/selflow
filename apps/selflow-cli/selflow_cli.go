@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/selflow/selflow/pkg/sflog"
+	"github.com/selflow/selflow/libs/core/sflog"
 	"github.com/spf13/cobra"
 	"log"
 )

@@ -5,8 +5,8 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
-	"github.com/selflow/selflow/internal/sfenvironment"
-	cs "github.com/selflow/selflow/pkg/container-spawner"
+	"github.com/selflow/selflow/libs/selflow-daemon/container-spawner"
+	"github.com/selflow/selflow/libs/selflow-daemon/sfenvironment"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"net/url"
@@ -93,7 +93,7 @@ func (sc *selflowClient) createDaemon(ctx context.Context) (string, error) {
 
 	dockerHostUrl, _ := url.Parse(sc.dockerClient.DaemonHost())
 
-	portForwardConfig := []cs.PortForwardConfig{
+	portForwardConfig := []container_spawner.PortForwardConfig{
 		{
 			Host:      sc.daemonPort,
 			Container: "10011",
@@ -101,12 +101,12 @@ func (sc *selflowClient) createDaemon(ctx context.Context) (string, error) {
 	}
 
 	if sc.daemonIsDebug {
-		portForwardConfig = append(portForwardConfig, cs.PortForwardConfig{
+		portForwardConfig = append(portForwardConfig, container_spawner.PortForwardConfig{
 			Host:      sc.daemonDebugPort,
 			Container: sc.daemonDebugPort,
 		})
 	}
-	return sc.dockerClient.SpawnAsync(ctx, &cs.SpawnConfig{
+	return sc.dockerClient.SpawnAsync(ctx, &container_spawner.SpawnConfig{
 		Image:         "selflow-daemon",
 		ContainerName: sc.daemonName,
 		Entrypoint:    nil,
@@ -120,13 +120,13 @@ func (sc *selflowClient) createDaemon(ctx context.Context) (string, error) {
 			sfenvironment.UseJsonLogEnvKey:              "TRUE",
 			sfenvironment.LogLevelEnvKey:                "DEBUG",
 		},
-		Mounts: []cs.Mountable{
-			cs.FileMount{
+		Mounts: []container_spawner.Mountable{
+			container_spawner.FileMount{
 				SourceFileName: dockerHostUrl.Path,
 				Destination:    "/var/run/docker.sock",
 				ReadOnly:       false,
 			},
-			cs.FileMount{
+			container_spawner.FileMount{
 				SourceFileName: sc.daemonHostBaseDirectory,
 				Destination:    sc.daemonBaseDirectory,
 			},

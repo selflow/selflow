@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/docker/docker/client"
-	"github.com/selflow/selflow/internal/sfenvironment"
+	"github.com/selflow/selflow/libs/selflow-daemon/sfenvironment"
 )
 
 var ContainerNotFound = errors.New("container not found")
