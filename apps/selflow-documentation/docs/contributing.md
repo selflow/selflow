@@ -47,13 +47,14 @@ For that we are using [NX](https://nx.dev/) which is an amazing tool !
 
 The main directories are :
 
-- Go executable : `/apps`
-- Go public libraries : `/pkg`
-- Go private libraries : `/internal`
-- Applications : `/apps`
-- E2E projects : `/apps`
-- Other libraries : `/libs`
-
-:::note
-In the future, the go executables will be moved to the `/apps` directory and the packages to the `/libs` directories
-:::
+```
+.
+├── apps              # Applications and e2e tests for those applications
+├── libs
+│   ├── core          # Selflow core-libraries
+│   ├── [app-name]    # Libraries specifics to [app-name]
+│   ├── protos        # Protobufs
+│   └── ui            # Libraries shared by all UI projects
+├── docs              # Markdown documentation
+└── assets            # Assets for the main README
+```
