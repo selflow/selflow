@@ -22,7 +22,9 @@
         "libs/libs/ui/storybook-host/src/server.ts"
       ],
       "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"],
-      "@selflow/selflow-node-client": ["libs/selflow-node-client/src/index.ts"],
+      "@selflow/selflow-node-client": [
+        "libs/selflow-daemon-clients/selflow-node-client/src/index.ts"
+      ],
       "@selflow/ui/components-kit": ["libs/ui/components-kit/src/index.ts"],
       "@selflow/ui/components-kit/server": [
         "libs/ui/components-kit/src/server.ts"

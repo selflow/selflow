@@ -1,0 +1,74 @@
+syntax = "proto3";
+option go_package = "apps/selflow-daemon/server/proto";
+
+
+// ---------- GLOBAL UTILITIES ----------
+
+enum DiagnosticType {
+  ERROR = 0;
+  WARNING = 1;
+  INFO = 2;
+  DEBUG = 3;
+}
+
+message Diagnostic {
+  DiagnosticType type = 1;
+  string message = 2;
+}
+
+// ---------- PLUGIN BASIS ----------
+
+message StartRun {
+  message Request {
+    bytes runConfig = 1;
+  }
+
+  message Response {
+    repeated Diagnostic diagnostics = 1;
+    string runId = 2;
+  }
+}
+
+message GetLogStream {
+  message Request {
+    string runId = 1;
+  }
+}
+
+message Log {
+  string level = 1;
+  string dateTime = 2;
+  string name = 3;
+  string message = 4;
+  bytes metadata = 5;
+}
+
+message GetRunStatus {
+  message Request {
+    string runId = 1;
+  }
+
+  message Status {
+    string name = 1;
+    int32 code = 2;
+    bool isFinished = 3;
+    bool isCancellable = 4;
+  }
+  message Dependence {
+    repeated string dependencies = 1;
+  }
+
+  message Response {
+    map<string, GetRunStatus.Status> state = 1;
+    map<string, Dependence> dependencies = 2;
+    map<string, bytes> stepDefinitions = 3;
+    string startTime = 4;
+    string stopTime = 5;
+  }
+}
+
+service Daemon {
+  rpc StartRun(StartRun.Request) returns (StartRun.Response);
+  rpc GetLogStream(GetLogStream.Request) returns (stream Log);
+  rpc GetRunStatus(GetRunStatus.Request) returns (GetRunStatus.Response);
+}
