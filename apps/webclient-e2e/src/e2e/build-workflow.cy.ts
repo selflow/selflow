@@ -21,8 +21,6 @@ describe('Build Workflow', function () {
 
     cy.contains(stepId).should('be.visible');
 
-    cy.wait(500);
-
     cy.get('#start-run-btn').click();
 
     cy.get('#full-screen-loader').should('be.visible');
