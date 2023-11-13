@@ -42,7 +42,7 @@ func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) 
 
 	self := selflow.NewSelflow(workflowBuilder, s.LogFactory, s.RunPersistence)
 
-	runId, err := self.StartRun(ctx, flow)
+	runId, _, err := self.StartRun(ctx, flow)
 	if err != nil {
 		return nil, err
 	}

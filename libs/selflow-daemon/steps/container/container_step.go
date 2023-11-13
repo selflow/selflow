@@ -68,8 +68,6 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		return nil, err
 	}
 
-	sflog.WriterFromLogger(sflog.GetLoggerFromContext(ctx), slog.LevelDebug, "containerId", containerId)
-
 	logWriter := &writerWithOutput{
 		Writer: sflog.WriterFromLogger(sflog.GetLoggerFromContext(ctx), slog.LevelDebug, "containerId", containerId),
 		output: map[string]string{},

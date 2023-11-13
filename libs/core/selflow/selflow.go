@@ -16,7 +16,7 @@ const TerminationLogText = "===EOF==="
 var TerminationLogBytes = []byte(fmt.Sprintf("%s\n", TerminationLogText))
 
 type Selflow interface {
-	StartRun(ctx context.Context, config *config.Flow) (runId string, err error)
+	StartRun(ctx context.Context, config *config.Flow) (runId string, workflowTerminated chan bool, err error)
 }
 
 type RunPersistence interface {
@@ -48,15 +48,16 @@ func NewSelflow(workflowBuilder WorkflowBuilder, logFactory LogFactory, runPersi
 	}
 }
 
-func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, error) {
+func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, chan bool, error) {
 	runId := uuid.New().String()
+	workflowTerminated := make(chan bool, 1)
 
 	slog.DebugContext(ctx, "Building workflow")
 
 	_, w, err := s.logFactory.GetRunLogger(runId)
 	if err != nil {
 		slog.ErrorContext(ctx, "Fail to get run logger", "error", err)
-		return "", err
+		return "", workflowTerminated, err
 	}
 
 	logger := sflog.NewLoggerWithWriter(w)
@@ -65,32 +66,32 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 	wf, err := s.workflowBuilder.BuildWorkflow(flow)
 	if err != nil {
 		slog.ErrorContext(ctx, "Fail to build workflow", "error", err)
-		return "", err
+		return "", workflowTerminated, err
 	}
 
 	simpleWf := wf.(*workflow.SimpleWorkflow)
 
 	err = s.runPersistence.SetRunStepDefinitions(runId, flow.Workflow.Steps)
 	if err != nil {
-		return "", err
+		return "", workflowTerminated, err
 	}
 
 	err = s.runPersistence.SetDependenciesState(runId, simpleWf.Dependencies)
 	if err != nil {
-		return "", err
+		return "", workflowTerminated, err
 	}
 
-	logger.InfoContext(ctx, "here")
 	slog.DebugContext(ctx, "Start workflow execution")
-	slog.InfoContext(ctx, "Start workflow execution")
 
 	go func(wf workflow.Workflow) {
 		slog.InfoContext(ctx, "Start workflow execution")
 		_, err := wf.Execute(ctx)
 		if err != nil {
 			slog.ErrorContext(ctx, "workflow execution failed", "error", err)
+			workflowTerminated <- true
 		} else {
 			slog.InfoContext(ctx, "workflow execution succeeded")
+			workflowTerminated <- false
 		}
 		if _, err = w.Write(TerminationLogBytes); err != nil {
 			slog.ErrorContext(ctx, "fail to write closing log", "error", err)
@@ -109,7 +110,7 @@ func (s *selflow) StartRun(ctx context.Context, flow *config.Flow) (string, erro
 		}
 	}(simpleWf)
 
-	return runId, nil
+	return runId, workflowTerminated, nil
 }
 
 var _ Selflow = &selflow{}

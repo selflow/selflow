@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/selflow/selflow/libs/core/workflow"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
+	"github.com/selflow/selflow/libs/selflow-daemon/steps/conditional"
 )
 
 var UnknownStepKindError = errors.New("unknown step kind")
@@ -18,6 +19,11 @@ func (b WorkflowBuilder) mapDefinitionToStep(stepId string, stepDefinition confi
 	for _, stepMapper := range b.StepMappers {
 		step, err := stepMapper.MapStep(stepId, stepDefinition)
 		if err == nil {
+
+			if stepDefinition.If != "" {
+				step = conditional.NewConditionalStep(step, stepDefinition.If)
+			}
+
 			return step, nil
 		}
 	}
