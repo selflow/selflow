@@ -30,7 +30,8 @@ export async function startCliRun(configFilePath: string): Promise<string> {
 
     return result.toString();
   } catch (e) {
-    console.log(e);
+    console.log(e.stdout.toString());
+    console.log(e.stderr.toString());
     throw e;
   }
 }
