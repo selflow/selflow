@@ -200,7 +200,7 @@ func execWorkflowLocally(configFile string) error {
 
 	model := newRunModel(ctx, workflowBuilder, flow)
 
-	bubbleteaOptions := []tea.ProgramOption{tea.WithOutput(os.Stdout)}
+	var bubbleteaOptions []tea.ProgramOption
 	if sfenvironment.UseJsonLogs {
 		bubbleteaOptions = append(bubbleteaOptions, tea.WithoutRenderer())
 	}
