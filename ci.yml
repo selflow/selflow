@@ -1,0 +1,24 @@
+name: CI / CD
+description: Steps a, b and c should log their names
+author: Anthony-Jhoiro
+
+workflow:
+  timeout: 5m
+  steps:
+    format:
+      kind: localexec
+      with:
+        command: nx format
+
+    lint:
+      kind: localexec
+      with:
+        command: nx affected -t lint
+
+    test:
+      kind: localexec
+      needs:
+        - format
+        - lint
+      with:
+        command: nx affected -t test

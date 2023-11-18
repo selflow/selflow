@@ -17,9 +17,6 @@ export interface Event {
   order: number;
 }
 
-const logRegex =
-  /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) \[([A-Z]+)]\s+(\S+): ([^\n]+)/;
-
 function parseLogLine(log: string, index: number): LogLine | null {
   try {
     const logDetails = JSON.parse(log);
@@ -28,7 +25,7 @@ function parseLogLine(log: string, index: number): LogLine | null {
       type: logDetails['level'],
       name: logDetails['stepId'],
       message: logDetails['msg'],
-      metadata: logDetails['metadata'] ?? {},
+      metadata: logDetails['metadata'] ?? { ...logDetails },
       order: index,
     };
   } catch (e) {
@@ -70,7 +67,7 @@ export function parseLogs(logs: string): WorkflowExecutionTrace {
     .filter((log) => !!log);
 
   const stepLogs = parsedLogs.reduce<Record<string, string[]>>((acc, log) => {
-    if (log.name.length === 0) return acc;
+    if (!log.name || log.name.length === 0) return acc;
     return {
       ...acc,
       [log.name]: [...(acc[log.name] ?? []), log.message],
