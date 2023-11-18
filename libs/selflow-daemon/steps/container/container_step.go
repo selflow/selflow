@@ -33,8 +33,6 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		runId = runIdFromCtx.(string)
 	}
 
-	ctx = sflog.AddArgsToContextLogger(ctx, slog.String("stepId", step.GetId()))
-
 	needs := ctx.Value(workflow.StepOutputContextKey).(map[string]map[string]string)
 
 	var err error
@@ -68,8 +66,10 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		return nil, err
 	}
 
+	sout := sflog.WriterFromLogger(sflog.GetLoggerFromContext(ctx), slog.LevelDebug, slog.String("containerId", containerId), slog.String("channel", "stdout"))
+
 	logWriter := &writerWithOutput{
-		Writer: sflog.WriterFromLogger(sflog.GetLoggerFromContext(ctx), slog.LevelDebug, "containerId", containerId),
+		Writer: sout,
 		output: map[string]string{},
 	}
 

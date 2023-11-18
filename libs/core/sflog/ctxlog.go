@@ -43,7 +43,18 @@ func loggerHandlerFromEnv(writer io.Writer) slog.Handler {
 
 type ContextLogHandler struct{}
 
-func NewLoggerWithWriter(writer io.Writer) *slog.Logger {
+type LoggerWithWriterSetter interface {
+	slog.Handler
+	SetWriter(writer io.Writer)
+}
+
+func NewLoggerWithWriter(ctx context.Context, writer io.Writer) *slog.Logger {
+	handler := getLogHandlerFromContext(ctx)
+
+	if _, ok := handler.(*slog.JSONHandler); ok {
+		return slog.New(slog.NewJSONHandler(writer, &slog.HandlerOptions{}))
+	}
+
 	return slog.New(loggerHandlerFromEnv(writer))
 }
 
