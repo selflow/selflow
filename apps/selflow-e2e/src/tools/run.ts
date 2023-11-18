@@ -16,16 +16,21 @@ export async function startRun(configFilePath: string): Promise<string> {
 }
 
 export async function startCliRun(configFilePath: string): Promise<string> {
-  const result = execSync(
-    `go run github.com/selflow/selflow/apps/selflow-cli exec \"${configFilePath}\"`,
-    {
-      env: {
-        ...process.env,
-        JSON_LOGS: 'TRUE',
-        LOG_LEVEL: 'DEBUG',
-      },
-    }
-  );
+  try {
+    const result = execSync(
+      `go run github.com/selflow/selflow/apps/selflow-cli exec \"${configFilePath}\"`,
+      {
+        env: {
+          ...process.env,
+          JSON_LOGS: 'TRUE',
+          LOG_LEVEL: 'DEBUG',
+        },
+      }
+    );
 
-  return result.toString();
+    return result.toString();
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
 }

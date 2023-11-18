@@ -3,8 +3,6 @@ import { startCliRun, startRun } from './run';
 import { parseLogs } from './logParser';
 import { WorkflowExecutionTrace } from './trace';
 
-export type SelflowRunner = (configFilePath: string) => Promise<string>;
-
 const selflowRunnerMap = {
   'selflow-cli': startCliRun,
   'selflow-daemon': startRun,
@@ -23,6 +21,7 @@ export function withSelflowRunners(
       test(runner, async (testContext) => {
         const logs = await selflowRunnerMap[runner](configfilePath);
         const trace = parseLogs(logs);
+        console.log(logs);
         asserts(trace, logs);
       });
     }
