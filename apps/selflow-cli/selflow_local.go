@@ -201,6 +201,11 @@ func execWorkflowLocally(configFile string) error {
 	model := newRunModel(ctx, workflowBuilder, flow)
 
 	var bubbleteaOptions []tea.ProgramOption
+	// Handle sessions without tty
+	if _, err = os.Stat("/dev/tty"); err != nil {
+		bubbleteaOptions = append(bubbleteaOptions, tea.WithOutput(nil))
+
+	}
 	if sfenvironment.UseJsonLogs {
 		bubbleteaOptions = append(bubbleteaOptions, tea.WithoutRenderer())
 	}
