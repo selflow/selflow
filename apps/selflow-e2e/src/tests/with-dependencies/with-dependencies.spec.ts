@@ -1,5 +1,5 @@
-import { startRun } from '../../tools/run';
-import { expect } from 'vitest';
+import {startCliRun, startRun} from '../../tools/run';
+import {describe, expect, test} from 'vitest';
 import { join } from 'path';
 import { parseLogs } from '../../tools/logParser';
 import { matchers } from '../../tools/trace';
@@ -7,23 +7,36 @@ import { matchers } from '../../tools/trace';
 expect.extend(matchers);
 
 describe('Workflow with dependencies', function () {
-  it('should execute steps A and C before step B', async function () {
-    const logs = await startRun(join(__dirname, 'with-dependencies.yaml'));
-    const trace = parseLogs(logs);
+  describe('should execute steps A and C before step B', function () {
+    const configFilePath = join(__dirname, 'with-dependencies.yaml');
 
-    expect(trace).toHaveStep('step-a');
-    expect(trace).toHaveStep('step-b');
-    expect(trace).toHaveStep('step-c');
+    const verifyLogs = (logs: string) => {
+      const trace = parseLogs(logs);
 
-    expect(trace).toHaveStepLogged(['step-a', '##step-a##']);
-    expect(trace).toHaveStepLogged(['step-b', '##step-b##']);
-    expect(trace).toHaveStepLogged(['step-c', '##step-c##']);
+      expect(trace).toHaveStep('step-a');
+      expect(trace).toHaveStep('step-b');
+      expect(trace).toHaveStep('step-c');
 
-    expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
-    expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
-    expect(trace).toHaveStepTerminatedWithStatus(['step-c', 'SUCCESS']);
+      expect(trace).toHaveStepLogged(['step-a', '##step-a##']);
+      expect(trace).toHaveStepLogged(['step-b', '##step-b##']);
+      expect(trace).toHaveStepLogged(['step-c', '##step-c##']);
 
-    expect(trace).toHaveStepStoppedBefore(['step-a', 'step-b']);
-    expect(trace).toHaveStepStoppedBefore(['step-c', 'step-b']);
+      expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
+      expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
+      expect(trace).toHaveStepTerminatedWithStatus(['step-c', 'SUCCESS']);
+
+      expect(trace).toHaveStepStoppedBefore(['step-a', 'step-b']);
+      expect(trace).toHaveStepStoppedBefore(['step-c', 'step-b']);
+    }
+
+    test("selflow-daemon", async () => {
+      const logs = await startRun(configFilePath);
+      verifyLogs(logs)
+    })
+
+    test("selflow-cli", async () => {
+      const logs = await startCliRun(configFilePath);
+      verifyLogs(logs)
+    })
   });
 });

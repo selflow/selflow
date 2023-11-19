@@ -1,0 +1,13 @@
+name: Local execution example
+description: step-error should fail (only works with Selflow CLI)
+author: Anthony-Jhoiro
+
+workflow:
+  timeout: 5m
+  steps:
+    step-error:
+      kind: localexec
+      with:
+        command: |
+          echo "##step-error##"
+          exit 1
