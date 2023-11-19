@@ -1,10 +1,10 @@
 package container
 
 import (
+	"errors"
 	"github.com/mitchellh/mapstructure"
 	"github.com/selflow/selflow/libs/core/workflow"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
-	"github.com/selflow/selflow/libs/selflow-daemon/steps/conditional"
 )
 
 type StepMapper struct {
@@ -35,13 +35,13 @@ func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (w
 }
 
 func (c *StepMapper) MapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
+	if definition.Kind != "docker" {
+		return nil, errors.New("invalid kind")
+	}
+
 	step, err := c.mapStep(stepId, definition)
 	if err != nil {
 		return nil, err
-	}
-
-	if definition.If != "" {
-		step = conditional.NewConditionalStep(step, definition.If)
 	}
 
 	return step, nil
