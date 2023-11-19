@@ -96,7 +96,7 @@ func (s *SimpleWorkflow) executeStep(ctx context.Context, step Step) {
 	stepContext := context.WithValue(ctx, StepOutputContextKey, requirementsOutputs)
 	_, err := step.Execute(stepContext)
 	if err != nil {
-		slog.WarnContext(ctx, "Step ended with an error", "stepId", step.GetId(), "error", err)
+		slog.WarnContext(ctx, "Step ended with an error", "error", err)
 	}
 }
 
