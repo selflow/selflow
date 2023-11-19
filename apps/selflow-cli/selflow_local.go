@@ -204,7 +204,8 @@ func execWorkflowLocally(configFile string) error {
 	var bubbleteaOptions []tea.ProgramOption
 	// Handle sessions without tty
 	if !term.IsTerminal(int(os.Stdout.Fd())) {
-		bubbleteaOptions = append(bubbleteaOptions, tea.WithOutput(nil))
+		slog.DebugContext(ctx, "Not tty detected")
+		bubbleteaOptions = append(bubbleteaOptions, tea.WithInput(nil))
 	}
 	if sfenvironment.UseJsonLogs {
 		bubbleteaOptions = append(bubbleteaOptions, tea.WithoutRenderer())
