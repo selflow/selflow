@@ -18,6 +18,7 @@ import (
 	"github.com/selflow/selflow/libs/selflow-daemon/sfenvironment"
 	"github.com/selflow/selflow/libs/selflow-daemon/steps/container"
 	"github.com/spf13/cobra"
+	"golang.org/x/term"
 	"io"
 	"log/slog"
 	"os"
@@ -202,9 +203,8 @@ func execWorkflowLocally(configFile string) error {
 
 	var bubbleteaOptions []tea.ProgramOption
 	// Handle sessions without tty
-	if _, err = os.Stat("/dev/tty"); err != nil {
+	if !term.IsTerminal(int(os.Stdout.Fd())) {
 		bubbleteaOptions = append(bubbleteaOptions, tea.WithOutput(nil))
-
 	}
 	if sfenvironment.UseJsonLogs {
 		bubbleteaOptions = append(bubbleteaOptions, tea.WithoutRenderer())
