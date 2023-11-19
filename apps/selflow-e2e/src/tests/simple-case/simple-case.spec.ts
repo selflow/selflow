@@ -1,5 +1,5 @@
-import {startCliRun, startRun} from '../../tools/run';
-import {expect, test} from 'vitest';
+import { startCliRun, startRun } from '../../tools/run';
+import { expect, test } from 'vitest';
 import { join } from 'path';
 import { parseLogs } from '../../tools/logParser';
 import { matchers } from '../../tools/trace';
@@ -24,16 +24,16 @@ describe('Workflow with dependencies', function () {
       expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
       expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
       expect(trace).toHaveStepTerminatedWithStatus(['step-c', 'SUCCESS']);
-    }
+    };
 
-    test("selflow-daemon", async () => {
+    test('selflow-daemon', async () => {
       const logs = await startRun(configFilePath);
-      verifyLogs(logs)
-    })
+      verifyLogs(logs);
+    });
 
-    test("selflow-cli", async () => {
+    test('selflow-cli', async () => {
       const logs = await startCliRun(configFilePath);
-      verifyLogs(logs)
-    })
+      verifyLogs(logs);
+    });
   });
 });
