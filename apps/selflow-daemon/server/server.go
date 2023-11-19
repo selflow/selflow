@@ -54,7 +54,7 @@ func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) 
 	workflowBuilder := selflow.WorkflowBuilder{
 		StepMappers: []selflow.StepMapper{
 			&container.StepMapper{
-				ContainerSpawner: docker.NewSpawner(dockerClient, path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
+				ContainerSpawner: docker.NewSpawner(dockerClient, path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp"), path.Join(sfenvironment.GetDaemonHostBaseDirectory(), "tmp")),
 			},
 		},
 	}

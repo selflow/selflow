@@ -26,13 +26,18 @@ const SelflowRunIdLabel = "selflow.runId"
 
 type spawner struct {
 	dockerClient client.APIClient
+	// tmpDirectory is the directory for entrypoints binding in the process file system
 	tmpDirectory string
+	// hostTmpDirectory is the directory for entrypoints binding in the host file system..
+	// unless the program is running in a docker container, this should be the same as tmpDirectory
+	hostTmpDirectory string
 }
 
-func NewSpawner(dockerClient client.APIClient, tmpDirectory string) container.ContainerSpawner {
+func NewSpawner(dockerClient client.APIClient, tmpDirectory string, hostTmpDirectory string) container.ContainerSpawner {
 	return &spawner{
-		dockerClient: dockerClient,
-		tmpDirectory: tmpDirectory,
+		dockerClient:     dockerClient,
+		tmpDirectory:     tmpDirectory,
+		hostTmpDirectory: hostTmpDirectory,
 	}
 }
 
@@ -77,7 +82,7 @@ func (d *spawner) createEntrypointFileBinding(config *container.ContainerConfig)
 	if err != nil {
 		return "", err
 	}
-	return path.Join(d.tmpDirectory, path.Base(file.Name())), nil
+	return path.Join(d.hostTmpDirectory, path.Base(file.Name())), nil
 }
 
 func (d *spawner) createContainer(ctx context.Context, config *container.ContainerConfig) (string, error) {

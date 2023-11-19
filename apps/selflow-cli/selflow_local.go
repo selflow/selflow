@@ -191,10 +191,12 @@ func execWorkflowLocally(configFile string) error {
 		return err
 	}
 
+	tmpDirectory := path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")
+
 	workflowBuilder := selflow.WorkflowBuilder{
 		StepMappers: []selflow.StepMapper{
 			&container.StepMapper{
-				ContainerSpawner: docker.NewSpawner(dockerClient, path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
+				ContainerSpawner: docker.NewSpawner(dockerClient, tmpDirectory, tmpDirectory),
 			},
 			&localexec.StepMapper{},
 		},
