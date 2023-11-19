@@ -7,8 +7,10 @@ import (
 	"github.com/selflow/selflow/libs/core/selflow"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
 	"github.com/selflow/selflow/libs/selflow-daemon/container-spawner/docker"
+	"github.com/selflow/selflow/libs/selflow-daemon/sfenvironment"
 	"github.com/selflow/selflow/libs/selflow-daemon/steps/container"
 	"log/slog"
+	"path"
 )
 
 type Server struct {
@@ -35,7 +37,7 @@ func (s *Server) StartRun(ctx context.Context, request *proto.StartRun_Request) 
 	workflowBuilder := selflow.WorkflowBuilder{
 		StepMappers: []selflow.StepMapper{
 			&container.StepMapper{
-				ContainerSpawner: docker.NewSpawner(dockerClient),
+				ContainerSpawner: docker.NewSpawner(dockerClient, path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp"), path.Join(sfenvironment.GetDaemonHostBaseDirectory(), "tmp")),
 			},
 		},
 	}
