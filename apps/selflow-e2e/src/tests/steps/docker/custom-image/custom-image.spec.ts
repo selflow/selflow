@@ -1,5 +1,5 @@
-import {startCliRun, startRun} from '../../../../tools/run';
-import {expect, test} from 'vitest';
+import { startCliRun, startRun } from '../../../../tools/run';
+import { expect, test } from 'vitest';
 import { join } from 'path';
 import { parseLogs } from '../../../../tools/logParser';
 import { matchers } from '../../../../tools/trace';
@@ -23,16 +23,16 @@ describe('Custom Images', function () {
 
       expect(trace).toHaveStepLogged(['step-python', 'Python 3']);
       expect(trace).toHaveStepLogged(['step-node', 'v18']);
-    }
+    };
 
-    test("selflow-daemon", async () => {
+    test('selflow-daemon', async () => {
       const logs = await startRun(configFilePath);
-      verifyLogs(logs)
-    })
+      verifyLogs(logs);
+    });
 
-    test("selflow-cli", async () => {
+    test('selflow-cli', async () => {
       const logs = await startCliRun(configFilePath);
-      verifyLogs(logs)
-    })
+      verifyLogs(logs);
+    });
   });
 });

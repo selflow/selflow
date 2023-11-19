@@ -1,5 +1,5 @@
-import {startCliRun, startRun} from '../../tools/run';
-import {describe, expect, test} from 'vitest';
+import { startCliRun, startRun } from '../../tools/run';
+import { describe, expect, test } from 'vitest';
 import { join } from 'path';
 import { parseLogs } from '../../tools/logParser';
 import { matchers } from '../../tools/trace';
@@ -17,16 +17,16 @@ describe('Workflow with step persistence', function () {
       expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
 
       expect(trace).toHaveStepLogged(['step-b', 'Hello!']);
-    }
+    };
 
-    test("selflow-daemon", async () => {
+    test('selflow-daemon', async () => {
       const logs = await startRun(configFilePath);
-      verifyLogs(logs)
-    })
+      verifyLogs(logs);
+    });
 
-    test("selflow-cli", async () => {
+    test('selflow-cli', async () => {
       const logs = await startCliRun(configFilePath);
-      verifyLogs(logs)
-    })
+      verifyLogs(logs);
+    });
   });
 });
