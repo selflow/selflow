@@ -25,7 +25,9 @@ func (m mockedDockerClient) ImagePull(_ context.Context, _ string, _ types.Image
 
 func TestNewSpawner(t *testing.T) {
 	type args struct {
-		dockerClient client.APIClient
+		dockerClient     client.APIClient
+		tmpDirectory     string
+		hostTmpDirectory string
 	}
 	tests := []struct {
 		name string
@@ -34,13 +36,21 @@ func TestNewSpawner(t *testing.T) {
 	}{
 		{
 			name: "default",
-			args: args{&mockedDockerClient{}},
-			want: &spawner{&mockedDockerClient{}},
+			args: args{
+				dockerClient:     &mockedDockerClient{},
+				tmpDirectory:     "/some-path",
+				hostTmpDirectory: "/some-other-path",
+			},
+			want: &spawner{
+				dockerClient:     &mockedDockerClient{},
+				tmpDirectory:     "/some-path",
+				hostTmpDirectory: "/some-other-path",
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSpawner(tt.args.dockerClient); !reflect.DeepEqual(got, tt.want) {
+			if got := NewSpawner(tt.args.dockerClient, tt.args.tmpDirectory, tt.args.hostTmpDirectory); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewSpawner() = %v, want %v", got, tt.want)
 			}
 		})
