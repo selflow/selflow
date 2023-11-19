@@ -45,6 +45,7 @@ func init() {
 		NewRecreateDaemonCommand(sc),
 		NewStatusCommand(sc),
 		NewGenDocsCommand(),
+		NewExecCommand(),
 	)
 }
 

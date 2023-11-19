@@ -14,3 +14,25 @@ export async function startRun(configFilePath: string): Promise<string> {
 
   return result.toString();
 }
+
+export async function startCliRun(configFilePath: string): Promise<string> {
+  try {
+    const result = execSync(
+      `go run github.com/selflow/selflow/apps/selflow-cli exec \"${configFilePath}\"`,
+      {
+        env: {
+          ...process.env,
+          JSON_LOGS: 'TRUE',
+          LOG_LEVEL: 'DEBUG',
+          SELFLOW_DAEMON_BASE_DIRECTORY: `${process.env.PWD}/tmp`,
+        },
+      }
+    );
+
+    return result.toString();
+  } catch (e) {
+    console.log(e.stdout.toString());
+    console.log(e.stderr.toString());
+    throw e;
+  }
+}
