@@ -75,6 +75,18 @@ export function parseLogs(logs: string): WorkflowExecutionTrace {
     };
   }, {});
 
+  console.log(
+    JSON.stringify(
+      {
+        stepLogs,
+        logs: parsedLogs,
+        events,
+      },
+      null,
+      4
+    )
+  );
+
   return {
     stepLogs,
     logs: parsedLogs,
