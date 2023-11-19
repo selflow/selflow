@@ -50,8 +50,8 @@ func (s *selflow) StartRunWithId(ctx context.Context, flow *config.Flow, runId s
 	simpleWf := wf.(*workflow.SimpleWorkflow)
 
 	err = s.runPersistence.SetRunStepDefinitions(runId, flow.Workflow.Steps)
-	slog.ErrorContext(ctx, "Fail to set workflow steps", "error", err)
 	if err != nil {
+		slog.ErrorContext(ctx, "Fail to set workflow steps", "error", err)
 		return err
 	}
 
