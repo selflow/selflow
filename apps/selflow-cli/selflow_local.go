@@ -22,6 +22,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"path"
 )
 
 func NewExecCommand() *cobra.Command {
@@ -193,7 +194,7 @@ func execWorkflowLocally(configFile string) error {
 	workflowBuilder := selflow.WorkflowBuilder{
 		StepMappers: []selflow.StepMapper{
 			&container.StepMapper{
-				ContainerSpawner: docker.NewSpawner(dockerClient),
+				ContainerSpawner: docker.NewSpawner(dockerClient, path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp")),
 			},
 			&localexec.StepMapper{},
 		},

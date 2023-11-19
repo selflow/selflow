@@ -24,7 +24,7 @@ export async function startCliRun(configFilePath: string): Promise<string> {
           ...process.env,
           JSON_LOGS: 'TRUE',
           LOG_LEVEL: 'DEBUG',
-          SELFLOW_DAEMON_BASE_DIRECTORY: '.',
+          SELFLOW_DAEMON_BASE_DIRECTORY: `${process.env.PWD}/tmp`,
         },
       }
     );

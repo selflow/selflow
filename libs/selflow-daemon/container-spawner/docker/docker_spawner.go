@@ -13,7 +13,6 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
 	"github.com/selflow/selflow/libs/core/workflow"
-	"github.com/selflow/selflow/libs/selflow-daemon/sfenvironment"
 	"github.com/selflow/selflow/libs/selflow-daemon/steps/container"
 	"io"
 	"log"
@@ -27,10 +26,14 @@ const SelflowRunIdLabel = "selflow.runId"
 
 type spawner struct {
 	dockerClient client.APIClient
+	tmpDirectory string
 }
 
-func NewSpawner(dockerClient client.APIClient) container.ContainerSpawner {
-	return &spawner{dockerClient: dockerClient}
+func NewSpawner(dockerClient client.APIClient, tmpDirectory string) container.ContainerSpawner {
+	return &spawner{
+		dockerClient: dockerClient,
+		tmpDirectory: tmpDirectory,
+	}
 }
 
 func buildEnvString(key string, value string) string {
@@ -59,12 +62,12 @@ func (d *spawner) pullDockerImage(ctx context.Context, imageName string) error {
 	return nil
 }
 
-func createSpawner(config *container.ContainerConfig) (string, error) {
-	err := os.MkdirAll(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp"), 0777)
+func (d *spawner) createEntrypointFileBinding(config *container.ContainerConfig) (string, error) {
+	err := os.MkdirAll(d.tmpDirectory, 0777)
 	if err != nil {
 		return "", err
 	}
-	file, err := os.CreateTemp(path.Join(sfenvironment.GetDaemonBaseDirectory(), "tmp"), "selflow-start")
+	file, err := os.CreateTemp(d.tmpDirectory, "selflow-start")
 
 	if err != nil {
 		return "", err
@@ -74,12 +77,12 @@ func createSpawner(config *container.ContainerConfig) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return path.Join(sfenvironment.GetDaemonHostBaseDirectory(), "tmp", path.Base(file.Name())), nil
+	return path.Join(d.tmpDirectory, path.Base(file.Name())), nil
 }
 
 func (d *spawner) createContainer(ctx context.Context, config *container.ContainerConfig) (string, error) {
 
-	fileName, err := createSpawner(config)
+	fileName, err := d.createEntrypointFileBinding(config)
 
 	containerConfig := &dockerContainer.Config{}
 	containerConfig.Env = buildEnvMap(config.Environment)
