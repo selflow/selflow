@@ -34,6 +34,7 @@ function parseLogLine(log: string, index: number): LogLine | null {
 }
 
 export function parseLogs(logs: string): WorkflowExecutionTrace {
+  console.log(logs);
   const parsedLogs = logs
     .split('\n')
     .map(parseLogLine)
