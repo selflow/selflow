@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/selflow/selflow/libs/core/sflog"
 	"log/slog"
 	"reflect"
 	"sync"
@@ -212,7 +213,8 @@ func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.W
 		activeSteps.Add(1)
 
 		go func(step Step) {
-			slog.InfoContext(ctx, "Step started", "stepId", step.GetId())
+			ctx := sflog.AddArgsToContextLogger(ctx, slog.String("stepId", step.GetId()))
+			slog.InfoContext(ctx, "Step started")
 			s.executeStep(ctx, step)
 			closingSteps <- step
 			activeSteps.Done()
