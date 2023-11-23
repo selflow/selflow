@@ -2,7 +2,7 @@
 title: Getting Started
 ---
 
-The easiest way to get started with Selflow is to use the [Selflow CLI](./ecosystem/cli) and run the [Selflow Daemon](./ecosystem/selflow-daemon). You can follow [this documentation](./ecosystem/cli#installation).
+The easiest way to get started with Selflow is to use the [Selflow CLI](./ecosystem/cli/index.mdx) and run the [Selflow Daemon](./ecosystem/selflow-daemon). You can follow [this documentation](./ecosystem/cli#installation).
 
 Then, you can start creating your first workflow ! Open a yaml file and write this :
 
