@@ -3583,6 +3583,13 @@
   dependencies:
     nx-cloud "16.0.5"
 
+"@nrwl/nx-cloud@16.5.2":
+  version "16.5.2"
+  resolved "https://registry.yarnpkg.com/@nrwl/nx-cloud/-/nx-cloud-16.5.2.tgz#4874cb01edd48c54de2a4ca69e909c1168c98b2c"
+  integrity sha512-oHO5T1HRJsR9mbRd8eUqMBPCgqVZLSbAh3zJoPFmhEmjbM4YB9ePRpgYFT8dRNeZUOUd/8Yt7Pb6EVWOHvpD/w==
+  dependencies:
+    nx-cloud "16.5.2"
+
 "@nrwl/nx-plugin@16.1.4":
   version "16.1.4"
   resolved "https://registry.yarnpkg.com/@nrwl/nx-plugin/-/nx-plugin-16.1.4.tgz#97ce355362b23c6f2bdf1e6c1b16217bcea096fa"
@@ -14897,6 +14904,22 @@ nx-cloud@16.0.5:
   integrity sha512-13P7r0aKikjBtmdZrNorwXzVPeVIV4MLEwqGY+DEG6doLBtI5KqEQk/d5B5l2dCF2BEi/LXEmLYCmf9gwbOJ+Q==
   dependencies:
     "@nrwl/nx-cloud" "16.0.5"
+    axios "1.1.3"
+    chalk "^4.1.0"
+    dotenv "~10.0.0"
+    fs-extra "^11.1.0"
+    node-machine-id "^1.1.12"
+    open "~8.4.0"
+    strip-json-comments "^3.1.1"
+    tar "6.1.11"
+    yargs-parser ">=21.1.1"
+
+nx-cloud@16.5.2, nx-cloud@^16.5.2:
+  version "16.5.2"
+  resolved "https://registry.yarnpkg.com/nx-cloud/-/nx-cloud-16.5.2.tgz#edb7bfc65d0e0cae52947607aa0b44ea163bd4f3"
+  integrity sha512-1t1Ii9gojl8r/8hFGaZ/ZyYR0Cb0hzvXLCsaFuvg+EJEFdvua3P4cfNya/0bdRrm+7Eb/ITUOskbvYq4TSlyGg==
+  dependencies:
+    "@nrwl/nx-cloud" "16.5.2"
     axios "1.1.3"
     chalk "^4.1.0"
     dotenv "~10.0.0"
