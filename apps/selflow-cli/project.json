@@ -22,6 +22,16 @@
     },
     "lint": {
       "executor": "@nx-go/nx-go:lint"
+    },
+    "gen-docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "go run ./apps/selflow-cli gen-docs",
+          "npx nx format --uncommitted"
+        ],
+        "parallel": false
+      }
     }
   },
   "tags": ["type:cmd"]
