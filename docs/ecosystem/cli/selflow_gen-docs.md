@@ -9,6 +9,17 @@ title: '⌨ gen-docs'
 
 Generate the documentation [Development purpose]
 
+### Synopsis
+
+Generate the documentation [Development purpose]
+
+The generated documentations files are placed in the `docs/ecosystem/cli` directory.
+To execute the command and get the right format, you can use the NX target `gen-docs` with this command:
+
+```bash
+nx run selflow-cli:gen-docs
+```
+
 ```
 selflow gen-docs [flags]
 ```
