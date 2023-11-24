@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 	"os"
+	"path"
 	"strings"
 )
 
@@ -23,10 +24,12 @@ func NewGenDocsCommand() *cobra.Command {
 	}
 }
 
-const fileHeadingFormat = "---\nslug: %s\ntitle: \"⌨ %s\"\n---\n\n# ⌨️ `%s`\n\n"
+const fileHeadingFormat = "---\nslug: %s\ntitle: '⌨ %s'\n---\n\n# ⌨️ `%s`\n\n"
 
 func generateDocs() error {
-	return doc.GenMarkdownTreeCustom(rootCmd, "./docs/ecosystem/cli", func(filepath string) string {
+	docsSourcePath := path.Join(".", "docs", "ecosystem", "cli")
+
+	return doc.GenMarkdownTreeCustom(rootCmd, docsSourcePath, func(filepath string) string {
 		splitFilename := strings.Split(filepath, "/")
 		filename := splitFilename[len(splitFilename)-1]
 		filename = strings.TrimPrefix(filename, "selflow_")
