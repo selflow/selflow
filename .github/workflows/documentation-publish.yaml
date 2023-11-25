@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: yarn
 
-      - run: npx nx build selflow-documentation
+      - run: npx nx build selflow-documentation --skip-nx-cache
 
       - name: Publish to GitHub pages
         uses: JamesIves/github-pages-deploy-action@v4
