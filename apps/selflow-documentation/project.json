@@ -17,5 +17,8 @@
       }
     }
   },
-  "tags": []
+  "tags": [],
+  "implicitDependencies": [
+    "selflow-documentation-content"
+  ]
 }
