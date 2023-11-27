@@ -7,6 +7,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/selflow/selflow/apps/selflow-cli/models"
 	"github.com/selflow/selflow/libs/core/selflow"
+	"github.com/selflow/selflow/libs/core/sflog"
 	"github.com/selflow/selflow/libs/selflow-cli/steps/localexec"
 	"github.com/selflow/selflow/libs/selflow-daemon/config"
 	"github.com/selflow/selflow/libs/selflow-daemon/container-spawner/docker"
@@ -14,6 +15,7 @@ import (
 	"github.com/selflow/selflow/libs/selflow-daemon/steps/container"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
+	"io"
 	"log/slog"
 	"os"
 	"path"
@@ -81,11 +83,35 @@ func execWorkflowLocally(configFile string) error {
 		},
 	}
 
+	//----------------------//
+	//--- Start Workflow ---//
+	//----------------------//
+
+	workflowLogsReader, workflowLogsWriter := io.Pipe()
+	workflowTerminated := make(chan bool, 1)
+	stepStatusCh := make(chan models.StepStatus)
+
+	go func(ctx context.Context) {
+		ctx = sflog.ResetContextLogHandler(ctx, slog.NewJSONHandler(workflowLogsWriter, &slog.HandlerOptions{Level: slog.LevelDebug}))
+
+		sf := selflow.NewSelflow(workflowBuilder, models.LivePersistence{StepStatusCh: stepStatusCh})
+
+		_, err = sf.StartRun(ctx, flow)
+		if sfenvironment.UseJsonLogs {
+			if err == nil {
+				slog.InfoContext(ctx, "Workflow executed successfully")
+			} else {
+				slog.ErrorContext(ctx, "Workflow terminated with an error", "error", err)
+			}
+		}
+		workflowTerminated <- err == nil
+	}(ctx)
+
 	//----------------------------//
 	//--- Initialize Bubbletea ---//
 	//----------------------------//
 
-	model := models.NewRunModel(ctx, workflowBuilder, flow)
+	model := models.NewRunModel(ctx, workflowTerminated, workflowLogsReader, stepStatusCh)
 
 	var bubbleteaOptions []tea.ProgramOption
 	// Handle sessions without tty
