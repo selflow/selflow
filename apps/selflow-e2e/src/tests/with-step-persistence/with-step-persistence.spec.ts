@@ -1,5 +1,5 @@
-import { startRun } from '../../tools/run';
-import { expect } from 'vitest';
+import { startCliRun, startRun } from '../../tools/run';
+import { describe, expect, test } from 'vitest';
 import { join } from 'path';
 import { parseLogs } from '../../tools/logParser';
 import { matchers } from '../../tools/trace';
@@ -7,13 +7,26 @@ import { matchers } from '../../tools/trace';
 expect.extend(matchers);
 
 describe('Workflow with step persistence', function () {
-  it('Step B should access the file created by Step a', async function () {
-    const logs = await startRun(join(__dirname, 'with-step-persistence.yaml'));
-    const trace = parseLogs(logs);
+  describe('Step B should access the file created by Step a', function () {
+    const configFilePath = join(__dirname, 'with-step-persistence.yaml');
 
-    expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
-    expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
+    const verifyLogs = (logs: string) => {
+      const trace = parseLogs(logs);
 
-    expect(trace).toHaveStepLogged(['step-b', 'Hello!']);
+      expect(trace).toHaveStepTerminatedWithStatus(['step-a', 'SUCCESS']);
+      expect(trace).toHaveStepTerminatedWithStatus(['step-b', 'SUCCESS']);
+
+      expect(trace).toHaveStepLogged(['step-b', 'Hello!']);
+    };
+
+    test('selflow-daemon', async () => {
+      const logs = await startRun(configFilePath);
+      verifyLogs(logs);
+    });
+
+    test('selflow-cli', async () => {
+      const logs = await startCliRun(configFilePath);
+      verifyLogs(logs);
+    });
   });
 });

@@ -16,6 +16,7 @@ import (
 	"github.com/selflow/selflow/libs/selflow-daemon/steps/container"
 	"io"
 	"log"
+	"log/slog"
 	"os"
 	"path"
 	"strings"
@@ -88,6 +89,10 @@ func (d *spawner) createEntrypointFileBinding(config *container.ContainerConfig)
 func (d *spawner) createContainer(ctx context.Context, config *container.ContainerConfig) (string, error) {
 
 	fileName, err := d.createEntrypointFileBinding(config)
+	if err != nil {
+		slog.ErrorContext(ctx, "Fail to create entrypoint file", "error", err)
+		return "", err
+	}
 
 	containerConfig := &dockerContainer.Config{}
 	containerConfig.Env = buildEnvMap(config.Environment)
