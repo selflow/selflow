@@ -10,7 +10,7 @@ import (
 func NewRecreateDaemonCommand(selflowClient *selflowClient) *cobra.Command {
 	return &cobra.Command{
 		Use:   "recreate-daemon",
-		Short: "Recreate the Selflow Daemon",
+		Short: "Recreate the Selflow Daemon using docker",
 		Run: func(cmd *cobra.Command, _ []string) {
 			if err := startRecreateDaemon(selflowClient); err != nil {
 				if _, err = fmt.Fprintf(os.Stderr, "%v\n", err); err != nil {

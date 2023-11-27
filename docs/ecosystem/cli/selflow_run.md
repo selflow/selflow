@@ -7,10 +7,20 @@ title: '⌨ run'
 
 ## selflow run
 
-Start a workflow
+Start a workflow on the Selflow-Daemon and wait for the end of its execution.
+
+### Synopsis
+
+Start a workflow on the Selflow-Daemon and wait for the end of its execution.
+
+If the command is stopped, the workflow will not be stopped. The commands also gives logs about what is happening.
+
+The workflow file must follow the selflow workflow syntax (https://selflow.github.io/selflow/docs/workflow-syntax).
+
+It can be written using **YAML** or **JSON**.
 
 ```
-selflow run [flags]
+selflow run ./filename [flags]
 ```
 
 ### Options

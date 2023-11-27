@@ -18,9 +18,14 @@ import (
 
 func NewRunCommand(selflowClient *selflowClient) *cobra.Command {
 	return &cobra.Command{
-		Use:   "run",
-		Short: "Start a workflow",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "run ./filename",
+		Short: "Start a workflow on the Selflow-Daemon and wait for the end of its execution.",
+		Long: "Start a workflow on the Selflow-Daemon and wait for the end of its execution.\n\n" +
+			"If the command is stopped, the workflow will not be stopped. " +
+			"The commands also gives logs about what is happening.\n\n" +
+			"The workflow file must follow the selflow workflow syntax (https://selflow.github.io/selflow/docs/workflow-syntax).\n\n" +
+			"It can be written using __YAML__ or __JSON__.",
+		Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if err := startRun(selflowClient, args[0]); err != nil {
 				if _, err = fmt.Fprintf(os.Stderr, "%v\n", err); err != nil {

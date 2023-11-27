@@ -7,7 +7,7 @@ title: '⌨ recreate-daemon'
 
 ## selflow recreate-daemon
 
-Recreate the Selflow Daemon
+Recreate the Selflow Daemon using docker
 
 ```
 selflow recreate-daemon [flags]
