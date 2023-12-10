@@ -110,7 +110,7 @@ func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) 
 			err = errors.Join(step.Cancel())
 			closingSteps <- step
 
-			err = errors.Join(s.cancelNextSteps(step, closingSteps))
+			err = errors.Join(err, s.cancelNextSteps(step, closingSteps))
 		}
 	}
 	return err
@@ -165,7 +165,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	defer close(s.StateCh)
 
 	for s.hasUnfinishedSteps() {
-		s.startNextSteps(ctx, activeSteps, closingSteps)
+    s.startNextSteps(ctx, activeSteps, closingSteps)
 
 		select {
 		case <-ctx.Done():
@@ -189,6 +189,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 					slog.ErrorContext(ctx, "Cancel error", "error", err)
 				}
 			}
+			activeSteps.Done()
 		}
 	}
 
@@ -217,7 +218,6 @@ func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.W
 			slog.InfoContext(ctx, "Step started")
 			s.executeStep(ctx, step)
 			closingSteps <- step
-			activeSteps.Done()
 		}(step)
 	}
 }
