@@ -13,20 +13,15 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/libs/selflow-node-client"],
+      "outputs": ["{workspaceRoot}/coverage/libs/selflow-node-client"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/libs/selflow-daemon-clients/selflow-node-client"
       }
     },
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": [
-          "libs/selflow-daemon-clients/selflow-node-client/**/*.ts"
-        ]
-      }
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     },
     "proto-gen": {
       "executor": "nx:run-commands",
