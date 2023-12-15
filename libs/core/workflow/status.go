@@ -5,6 +5,7 @@ type Status interface {
 	GetName() string
 	IsFinished() bool
 	IsCancellable() bool
+	IsExecutable() bool
 }
 
 type SimpleStatus struct {
@@ -12,6 +13,7 @@ type SimpleStatus struct {
 	Name        string
 	Finished    bool
 	Cancellable bool
+	Executable  bool
 }
 
 func (s SimpleStatus) GetCode() uint {
@@ -29,6 +31,9 @@ func (s SimpleStatus) IsFinished() bool {
 func (s SimpleStatus) IsCancellable() bool {
 	return s.Cancellable
 }
+func (s SimpleStatus) IsExecutable() bool {
+	return s.Executable
+}
 
 const (
 	SuccessCode uint = iota
@@ -38,14 +43,35 @@ const (
 	PendingCode
 	InitializingCode
 	CreatedCode
+	ReadyCode
 )
 
+func StatusEquals(a, b Status) bool {
+	return a.GetCode() == b.GetCode()
+}
+
 var (
-	SUCCESS      = SimpleStatus{SuccessCode, "SUCCESS", true, false}
-	ERROR        = SimpleStatus{ErrorCode, "ERROR", true, false}
-	CANCELLED    = SimpleStatus{CancelledCode, "CANCELLED", true, false}
-	RUNNING      = SimpleStatus{RunningCode, "RUNNING", false, true}
-	PENDING      = SimpleStatus{PendingCode, "PENDING", false, true}
-	INITIALIZING = SimpleStatus{InitializingCode, "INITIALIZING", false, true}
-	CREATED      = SimpleStatus{CreatedCode, "CREATED", false, true}
+	// SUCCESS Step terminated with no errors
+	SUCCESS = SimpleStatus{SuccessCode, "SUCCESS", true, false, false}
+
+	// ERROR Step terminated with a blocking error
+	ERROR = SimpleStatus{ErrorCode, "ERROR", true, false, false}
+
+	// CANCELLED Step execution has been interrupted or a requirement exited with a blocking error
+	CANCELLED = SimpleStatus{CancelledCode, "CANCELLED", true, false, false}
+
+	// RUNNING Step execution is in progress
+	RUNNING = SimpleStatus{RunningCode, "RUNNING", false, true, false}
+
+	//PENDING Step is ready to be launch
+	PENDING = SimpleStatus{PendingCode, "PENDING", false, true, true}
+
+	//INITIALIZING Step is warming up
+	INITIALIZING = SimpleStatus{InitializingCode, "INITIALIZING", false, true, false}
+
+	//CREATED Step is created and can be executed
+	CREATED = SimpleStatus{CreatedCode, "CREATED", false, true, true}
+
+	//READY Step is going to be launched
+	READY = SimpleStatus{ReadyCode, "CREATED", false, true, false}
 )

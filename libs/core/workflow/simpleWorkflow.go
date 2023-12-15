@@ -14,6 +14,8 @@ type SimpleWorkflow struct {
 	steps        []Step
 	Dependencies map[Step][]Step
 	StateCh      chan map[string]Status
+
+	stepStatusLock sync.Mutex
 }
 
 type Workflow interface {
@@ -82,9 +84,13 @@ func NewWorkflow(stepCount uint) *SimpleWorkflow {
 }
 
 func (s *SimpleWorkflow) getNextSteps() []Step {
+	s.stepStatusLock.Lock()
+	defer s.stepStatusLock.Unlock()
+
 	nextSteps := make([]Step, 0, len(s.steps))
 	for _, step := range s.steps {
-		if !step.GetStatus().IsFinished() && step.GetStatus() != RUNNING && areRequirementsFullFilled(step, s.Dependencies) {
+		if step.GetStatus().IsExecutable() && areRequirementsFullFilled(step, s.Dependencies) {
+			step.SetStatus(READY)
 			nextSteps = append(nextSteps, step)
 		}
 	}
@@ -216,7 +222,7 @@ func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.W
 		go func(step Step) {
 			defer activeSteps.Done()
 			ctx := sflog.AddArgsToContextLogger(ctx, slog.String("stepId", step.GetId()))
-			slog.InfoContext(ctx, "Step started")
+			slog.InfoContext(ctx, "Step started", slog.String("stepId", step.GetId()))
 			s.executeStep(ctx, step)
 			closingSteps <- step
 		}(step)
