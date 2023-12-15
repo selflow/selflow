@@ -47,6 +47,8 @@ export const statusList = [
 
 type StatusName = typeof statusList[number]['name'];
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export const statusMap = statusList.reduce<{
   [key in StatusName]: WorkflowStepStatus;
 }>((acc, status) => ({ ...acc, [status.name]: status }), {} as any);

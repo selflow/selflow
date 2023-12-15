@@ -1,5 +1,5 @@
 describe('Build Workflow', function () {
-  Cypress.on('uncaught:exception', (err, runnable) => {
+  Cypress.on('uncaught:exception', (err) => {
     // returning false here prevents Cypress from
     // failing the test
     console.log('[WARN] Uncaught exception', err);

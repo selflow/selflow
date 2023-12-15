@@ -23,7 +23,7 @@ export const EditStepForm = ({
 }: EditStepFormProps) => {
   const { steps, setStep, addStep } = useWorkflow();
 
-  const { register, handleSubmit, control, reset, formState } =
+  const { register, handleSubmit, control, reset } =
     useForm<EditStepFormFields>({
       defaultValues: initialStep,
     });

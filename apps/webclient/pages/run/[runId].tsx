@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
-import { FaPlay } from 'react-icons/fa';
-import { WorkflowEditor, WorkflowStep } from '@selflow/ui/workflow-editor';
+import { WorkflowEditor } from '@selflow/ui/workflow-editor';
 import { useEffect, useMemo, useState } from 'react';
 import { Navbar, Spinner } from '@selflow/ui/components-kit';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const mapDataToSteps = (data: any) =>
   Object.keys(data.state).map((stepId) => ({
@@ -16,6 +17,8 @@ const mapDataToSteps = (data: any) =>
     },
     needs: data.dependencies[stepId] ?? [],
   }));
+
+/* eslint-enable */
 
 export default function FollowRun() {
   const router = useRouter();
