@@ -22,7 +22,7 @@ func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (w
 	}
 
 	return &Step{
-		SimpleStep: workflow.SimpleStep{Id: stepId, Status: workflow.CREATED},
+		SimpleStep: workflow.SimpleStep{Id: stepId, Status: workflow.PENDING},
 		config:     dockerStepConfig,
 	}, nil
 }

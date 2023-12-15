@@ -14,6 +14,8 @@ type SimpleWorkflow struct {
 	steps        []Step
 	Dependencies map[Step][]Step
 	StateCh      chan map[string]Status
+
+	stepStatusLock sync.Mutex
 }
 
 type Workflow interface {
@@ -82,9 +84,13 @@ func NewWorkflow(stepCount uint) *SimpleWorkflow {
 }
 
 func (s *SimpleWorkflow) getNextSteps() []Step {
+	s.stepStatusLock.Lock()
+	defer s.stepStatusLock.Unlock()
+
 	nextSteps := make([]Step, 0, len(s.steps))
 	for _, step := range s.steps {
-		if !step.GetStatus().IsFinished() && step.GetStatus() != RUNNING && areRequirementsFullFilled(step, s.Dependencies) {
+		if step.GetStatus().IsExecutable() && areRequirementsFullFilled(step, s.Dependencies) {
+			step.SetStatus(READY)
 			nextSteps = append(nextSteps, step)
 		}
 	}
@@ -110,7 +116,7 @@ func (s *SimpleWorkflow) cancelNextSteps(lastStep Step, closingSteps chan Step) 
 			err = errors.Join(step.Cancel())
 			closingSteps <- step
 
-			err = errors.Join(s.cancelNextSteps(step, closingSteps))
+			err = errors.Join(err, s.cancelNextSteps(step, closingSteps))
 		}
 	}
 	return err
@@ -172,7 +178,7 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 			// The context has been closed
 			slog.Debug("Context has expired")
 
-			err := s.cancelRemainingSteps()
+			err := s.cancelRemainingSteps(closingSteps)
 			if err != nil {
 				slog.ErrorContext(ctx, "Cancel error", "error", err)
 			}
@@ -197,11 +203,12 @@ func (s *SimpleWorkflow) Execute(ctx context.Context) (map[string]map[string]str
 	return s.getOutput(), nil
 }
 
-func (s *SimpleWorkflow) cancelRemainingSteps() error {
+func (s *SimpleWorkflow) cancelRemainingSteps(closingSteps chan Step) error {
 	var err error
 	for _, step := range s.steps {
 		if !step.GetStatus().IsFinished() && step.GetStatus().IsCancellable() {
-			err = errors.Join(step.Cancel())
+			err = errors.Join(err, step.Cancel())
+			closingSteps <- step
 		}
 	}
 	return err
@@ -213,11 +220,11 @@ func (s *SimpleWorkflow) startNextSteps(ctx context.Context, activeSteps *sync.W
 		activeSteps.Add(1)
 
 		go func(step Step) {
+			defer activeSteps.Done()
 			ctx := sflog.AddArgsToContextLogger(ctx, slog.String("stepId", step.GetId()))
-			slog.InfoContext(ctx, "Step started")
+			slog.InfoContext(ctx, "Step started", slog.String("stepId", step.GetId()))
 			s.executeStep(ctx, step)
 			closingSteps <- step
-			activeSteps.Done()
 		}(step)
 	}
 }

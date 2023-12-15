@@ -65,17 +65,14 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		status       Status
 		dependencies map[Step][]Step
 	}
-	stepA := &stepWrapper{makeSimpleStep("step-a")}
-	stepB := &stepWrapper{makeSimpleStep("step-b")}
-	stepC := &stepWrapper{makeSimpleStep("step-c")}
 
-	stepD := &stepWrapper{makeSimpleStep("step-d")}
-	stepE := &stepWrapper{makeSimpleStep("step-e")}
-	stepF := &stepWrapper{makeSimpleStep("step-f")}
+	stepAA := &stepWrapper{makeSimpleStep("step-a-a")}
+	stepAB := &stepWrapper{makeSimpleStep("step-a-b")}
+	stepAC := &stepWrapper{makeSimpleStep("step-a-c")}
 
-	errorA := &stepWrapper{makeSimpleStep("error-a")}
-	errorB := &stepWrapper{makeSimpleStep("error-b")}
-	errorD := &stepWrapper{makeErrorStep("error-d")}
+	stepBA := &stepWrapper{makeSimpleStep("step-b-a")}
+	stepBB := &stepWrapper{makeSimpleStep("step-b-b")}
+	errorBC := &stepWrapper{makeErrorStep("error-b-d")}
 
 	type args struct {
 		ctx context.Context
@@ -91,52 +88,48 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		{
 			name: "3 steps execution",
 			fields: fields{
-				steps:  []Step{stepD, stepE, stepF},
-				status: CREATED,
-				dependencies: map[Step][]Step{
-					stepA: {stepF, stepE},
-					stepB: {},
-					stepC: {},
-				},
+				steps:        []Step{stepAA, stepAB, stepAC},
+				status:       PENDING,
+				dependencies: map[Step][]Step{},
 			},
 			args: args{
 				ctx: context.TODO(),
 			},
 			want: map[string]map[string]string{
-				"step-d": {},
-				"step-e": {},
-				"step-f": {},
+				stepAA.GetId(): {},
+				stepAB.GetId(): {},
+				stepAC.GetId(): {},
 			},
 			wantErr: false,
 			wantStatus: map[Step]Status{
-				stepE: SUCCESS,
-				stepF: SUCCESS,
-				stepD: SUCCESS,
+				stepAB: SUCCESS,
+				stepAC: SUCCESS,
+				stepAA: SUCCESS,
 			},
 		},
 		{
 			name: "with cancel",
 			fields: fields{
-				steps: []Step{errorA, errorB, errorD},
+				steps: []Step{stepBA, stepBB, errorBC},
 				dependencies: map[Step][]Step{
-					errorD: {},
-					errorA: {errorD},
-					errorB: {errorD},
+					errorBC: {},
+					stepBA:  {errorBC},
+					stepBB:  {errorBC},
 				},
 			},
 			args: args{
 				ctx: context.TODO(),
 			},
 			want: map[string]map[string]string{
-				"error-a": {},
-				"error-b": {},
-				"error-d": {},
+				stepBA.GetId():  {},
+				stepBB.GetId():  {},
+				errorBC.GetId(): {},
 			},
 			wantErr: false,
 			wantStatus: map[Step]Status{
-				errorA: CANCELLED,
-				errorB: CANCELLED,
-				errorD: ERROR,
+				stepBA:  CANCELLED,
+				stepBB:  CANCELLED,
+				errorBC: ERROR,
 			},
 		},
 	}

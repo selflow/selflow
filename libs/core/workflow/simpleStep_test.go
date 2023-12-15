@@ -34,7 +34,7 @@ func TestSimpleStep_Execute(t *testing.T) {
 	}{
 		{
 			name:    "execution",
-			fields:  fields{status: CREATED},
+			fields:  fields{status: PENDING},
 			args:    args{},
 			want:    map[string]string{},
 			wantErr: false,
@@ -70,7 +70,7 @@ func TestSimpleStep_GetId(t *testing.T) {
 	}{
 		{
 			name:   "Step with id",
-			fields: fields{"my-step", CREATED},
+			fields: fields{"my-step", PENDING},
 			want:   "my-step",
 		},
 	}
@@ -97,11 +97,6 @@ func TestSimpleStep_GetStatus(t *testing.T) {
 		fields fields
 		want   Status
 	}{
-		{
-			name:   "with CREATED Status",
-			fields: fields{"my-step", CREATED},
-			want:   CREATED,
-		},
 		{
 			name:   "with PENDING Status",
 			fields: fields{"my-step", PENDING},
@@ -135,7 +130,7 @@ func Test_makeSimpleStep(t *testing.T) {
 			args{"my-step"},
 			&SimpleStep{
 				Id:     "my-step",
-				Status: CREATED,
+				Status: PENDING,
 			},
 		},
 		{

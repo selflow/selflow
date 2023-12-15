@@ -1,51 +1,71 @@
 package workflow
 
-type Status interface {
-	GetCode() uint
-	GetName() string
-	IsFinished() bool
-	IsCancellable() bool
+type Status struct {
+	code        uint
+	name        string
+	finished    bool
+	cancellable bool
+	executable  bool
 }
 
-type SimpleStatus struct {
-	Code        uint
-	Name        string
-	Finished    bool
-	Cancellable bool
+func BuildStatus(code uint, name string, finished bool, cancellable bool, executable bool) Status {
+	return Status{
+		code:        code,
+		name:        name,
+		finished:    finished,
+		cancellable: cancellable,
+		executable:  executable,
+	}
 }
 
-func (s SimpleStatus) GetCode() uint {
-	return s.Code
+func (s Status) GetCode() uint {
+	return s.code
 }
 
-func (s SimpleStatus) GetName() string {
-	return s.Name
+func (s Status) GetName() string {
+	return s.name
 }
 
-func (s SimpleStatus) IsFinished() bool {
-	return s.Finished
+func (s Status) IsFinished() bool {
+	return s.finished
 }
 
-func (s SimpleStatus) IsCancellable() bool {
-	return s.Cancellable
+func (s Status) IsCancellable() bool {
+	return s.cancellable
+}
+func (s Status) IsExecutable() bool {
+	return s.executable
 }
 
 const (
-	SuccessCode uint = iota
-	ErrorCode
-	CancelledCode
-	RunningCode
-	PendingCode
-	InitializingCode
-	CreatedCode
+	successCode uint = iota
+	errorCode
+	cancelledCode
+	runningCode
+	pendingCode
+	readyCode
 )
 
+func StatusEquals(a, b Status) bool {
+	return a.GetCode() == b.GetCode()
+}
+
 var (
-	SUCCESS      = SimpleStatus{SuccessCode, "SUCCESS", true, false}
-	ERROR        = SimpleStatus{ErrorCode, "ERROR", true, false}
-	CANCELLED    = SimpleStatus{CancelledCode, "CANCELLED", true, false}
-	RUNNING      = SimpleStatus{RunningCode, "RUNNING", false, true}
-	PENDING      = SimpleStatus{PendingCode, "PENDING", false, true}
-	INITIALIZING = SimpleStatus{InitializingCode, "INITIALIZING", false, true}
-	CREATED      = SimpleStatus{CreatedCode, "CREATED", false, true}
+	//PENDING Step is waiting for its launch
+	PENDING = Status{pendingCode, "PENDING", false, true, true}
+
+	//READY Step is going to be launched
+	READY = Status{readyCode, "PENDING", false, true, false}
+
+	// RUNNING Step is executing
+	RUNNING = Status{runningCode, "RUNNING", false, true, false}
+
+	// SUCCESS Step terminated with no errors
+	SUCCESS = Status{successCode, "SUCCESS", true, false, false}
+
+	// ERROR Step terminated with a blocking error
+	ERROR = Status{errorCode, "ERROR", true, false, false}
+
+	// CANCELLED Step execution has been interrupted or a requirement exited with a blocking error
+	CANCELLED = Status{cancelledCode, "CANCELLED", true, false, false}
 )

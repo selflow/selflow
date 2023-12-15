@@ -210,12 +210,7 @@ func (rp *RunPersistence) GetRunState(runId string) (map[string]workflow.Status,
 			return nil, err
 		}
 
-		state[id] = workflow.SimpleStatus{
-			Code:        statusCode,
-			Name:        statusName,
-			Finished:    statusIsFinished != 0,
-			Cancellable: statusIsCancellable != 0,
-		}
+		state[id] = workflow.BuildStatus(statusCode, statusName, statusIsFinished != 0, statusIsCancellable != 0, false)
 	}
 
 	return state, nil
