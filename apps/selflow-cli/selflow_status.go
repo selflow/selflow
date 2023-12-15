@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+	"log/slog"
+	"os"
+
 	"github.com/selflow/selflow/apps/selflow-daemon/server/proto"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"log"
-	"os"
 )
 
 func NewStatusCommand(selflowClient *selflowClient) *cobra.Command {
@@ -55,6 +57,11 @@ func startStatus(selflowClient *selflowClient, runId string) error {
 	c := proto.NewDaemonClient(conn)
 
 	response, err := c.GetRunStatus(ctx, &proto.GetRunStatus_Request{RunId: runId})
+
+	if err != nil {
+		slog.ErrorContext(ctx, "An error occured", "error", err)
+		return err
+	}
 
 	log.Println(response)
 

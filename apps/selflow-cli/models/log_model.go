@@ -88,7 +88,11 @@ func (m logModel) View() string {
 		if l == nil {
 			logViewBuffer += "........................\n"
 		} else {
-			logViewBuffer += fmt.Sprintf("%s |\t %s\n", l.StepId, l.Message)
+			stepId := l.StepId
+			if stepId == "" {
+				stepId = "Selflow"
+			}
+			logViewBuffer += fmt.Sprintf("%s \t| %s\n", stepId, l.Message)
 		}
 	}
 
