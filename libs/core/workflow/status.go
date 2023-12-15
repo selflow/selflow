@@ -8,6 +8,16 @@ type Status struct {
 	executable  bool
 }
 
+func BuildStatus(code uint, name string, finished bool, cancellable bool, executable bool) Status {
+	return Status{
+		code:        code,
+		name:        name,
+		finished:    finished,
+		cancellable: cancellable,
+		executable:  executable,
+	}
+}
+
 func (s Status) GetCode() uint {
 	return s.code
 }
