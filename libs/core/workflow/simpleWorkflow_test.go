@@ -65,9 +65,9 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		status       Status
 		dependencies map[Step][]Step
 	}
-	stepA := &stepWrapper{makeSimpleStep("step-a")}
-	stepB := &stepWrapper{makeSimpleStep("step-b")}
-	stepC := &stepWrapper{makeSimpleStep("step-c")}
+	//stepA := &stepWrapper{makeSimpleStep("step-a")}
+	//stepB := &stepWrapper{makeSimpleStep("step-b")}
+	//stepC := &stepWrapper{makeSimpleStep("step-c")}
 
 	stepD := &stepWrapper{makeSimpleStep("step-d")}
 	stepE := &stepWrapper{makeSimpleStep("step-e")}
@@ -91,13 +91,9 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 		{
 			name: "3 steps execution",
 			fields: fields{
-				steps:  []Step{stepD, stepE, stepF},
-				status: CREATED,
-				dependencies: map[Step][]Step{
-					stepA: {stepF, stepE},
-					stepB: {},
-					stepC: {},
-				},
+				steps:        []Step{stepD, stepE, stepF},
+				status:       CREATED,
+				dependencies: map[Step][]Step{},
 			},
 			args: args{
 				ctx: context.TODO(),
