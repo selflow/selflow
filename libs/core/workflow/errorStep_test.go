@@ -19,7 +19,7 @@ func Test_makeErrorStep(t *testing.T) {
 			args: args{"step-a"},
 			want: &errorStep{&SimpleStep{
 				Id:     "step-a",
-				Status: CREATED,
+				Status: PENDING,
 			}},
 		},
 	}

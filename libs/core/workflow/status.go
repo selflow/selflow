@@ -1,49 +1,39 @@
 package workflow
 
-type Status interface {
-	GetCode() uint
-	GetName() string
-	IsFinished() bool
-	IsCancellable() bool
-	IsExecutable() bool
+type Status struct {
+	code        uint
+	name        string
+	finished    bool
+	cancellable bool
+	executable  bool
 }
 
-type SimpleStatus struct {
-	Code        uint
-	Name        string
-	Finished    bool
-	Cancellable bool
-	Executable  bool
+func (s Status) GetCode() uint {
+	return s.code
 }
 
-func (s SimpleStatus) GetCode() uint {
-	return s.Code
+func (s Status) GetName() string {
+	return s.name
 }
 
-func (s SimpleStatus) GetName() string {
-	return s.Name
+func (s Status) IsFinished() bool {
+	return s.finished
 }
 
-func (s SimpleStatus) IsFinished() bool {
-	return s.Finished
+func (s Status) IsCancellable() bool {
+	return s.cancellable
 }
-
-func (s SimpleStatus) IsCancellable() bool {
-	return s.Cancellable
-}
-func (s SimpleStatus) IsExecutable() bool {
-	return s.Executable
+func (s Status) IsExecutable() bool {
+	return s.executable
 }
 
 const (
-	SuccessCode uint = iota
-	ErrorCode
-	CancelledCode
-	RunningCode
-	PendingCode
-	InitializingCode
-	CreatedCode
-	ReadyCode
+	successCode uint = iota
+	errorCode
+	cancelledCode
+	runningCode
+	pendingCode
+	readyCode
 )
 
 func StatusEquals(a, b Status) bool {
@@ -51,27 +41,21 @@ func StatusEquals(a, b Status) bool {
 }
 
 var (
-	// SUCCESS Step terminated with no errors
-	SUCCESS = SimpleStatus{SuccessCode, "SUCCESS", true, false, false}
-
-	// ERROR Step terminated with a blocking error
-	ERROR = SimpleStatus{ErrorCode, "ERROR", true, false, false}
-
-	// CANCELLED Step execution has been interrupted or a requirement exited with a blocking error
-	CANCELLED = SimpleStatus{CancelledCode, "CANCELLED", true, false, false}
-
-	// RUNNING Step execution is in progress
-	RUNNING = SimpleStatus{RunningCode, "RUNNING", false, true, false}
-
-	//PENDING Step is ready to be launch
-	PENDING = SimpleStatus{PendingCode, "PENDING", false, true, true}
-
-	//INITIALIZING Step is warming up
-	INITIALIZING = SimpleStatus{InitializingCode, "INITIALIZING", false, true, false}
-
-	//CREATED Step is created and can be executed
-	CREATED = SimpleStatus{CreatedCode, "CREATED", false, true, true}
+	//PENDING Step is waiting for its launch
+	PENDING = Status{pendingCode, "PENDING", false, true, true}
 
 	//READY Step is going to be launched
-	READY = SimpleStatus{ReadyCode, "CREATED", false, true, false}
+	READY = Status{readyCode, "PENDING", false, true, false}
+
+	// RUNNING Step is executing
+	RUNNING = Status{runningCode, "RUNNING", false, true, false}
+
+	// SUCCESS Step terminated with no errors
+	SUCCESS = Status{successCode, "SUCCESS", true, false, false}
+
+	// ERROR Step terminated with a blocking error
+	ERROR = Status{errorCode, "ERROR", true, false, false}
+
+	// CANCELLED Step execution has been interrupted or a requirement exited with a blocking error
+	CANCELLED = Status{cancelledCode, "CANCELLED", true, false, false}
 )

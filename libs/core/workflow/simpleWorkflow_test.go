@@ -89,7 +89,7 @@ func TestSimpleWorkflow_Execute(t *testing.T) {
 			name: "3 steps execution",
 			fields: fields{
 				steps:        []Step{stepAA, stepAB, stepAC},
-				status:       CREATED,
+				status:       PENDING,
 				dependencies: map[Step][]Step{},
 			},
 			args: args{

@@ -18,5 +18,5 @@ func (s *errorStep) Execute(_ context.Context) (map[string]string, error) {
 }
 
 func makeErrorStep(id string) Step {
-	return &errorStep{newSimpleStep(id, CREATED)}
+	return &errorStep{newSimpleStep(id, PENDING)}
 }

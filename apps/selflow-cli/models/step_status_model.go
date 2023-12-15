@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/selflow/selflow/libs/core/workflow"
 	"strings"
 )
 
@@ -73,13 +74,13 @@ func (m StepStatusModel) View() string {
 		prefix := "?"
 
 		switch strings.ToLower(s.Status) {
-		case "success":
+		case strings.ToLower(workflow.SUCCESS.GetName()):
 			prefix = "✅"
 			break
-		case "error":
+		case strings.ToLower(workflow.ERROR.GetName()):
 			prefix = "❌"
 			break
-		case "cancelled":
+		case strings.ToLower(workflow.CANCELLED.GetName()):
 			prefix = "🚫"
 			break
 		default:

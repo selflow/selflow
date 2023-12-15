@@ -44,7 +44,7 @@ func makeSimpleStep(id string) *SimpleStep {
 	if len(id) == 0 {
 		return nil
 	}
-	return newSimpleStep(id, CREATED)
+	return newSimpleStep(id, PENDING)
 }
 
 func newSimpleStep(id string, status Status) *SimpleStep {
