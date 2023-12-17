@@ -60,6 +60,8 @@ async function main() {
   console.log("[DEBUG] Generating changelog...")
   const releaseChangelog = await buildChangelog(commitsSinceLastTag, nextRelease)
 
+  console.log(releaseChangelog)
+
   console.log("[DEBUG] Update CHANGELOG.md...")
   const changelog = readFileSync('./CHANGELOG.md').toString()
   writeFileSync('./CHANGELOG.md', releaseChangelog + '\n\n' + changelog)
@@ -71,7 +73,7 @@ async function main() {
   }))
 
   console.log("[DEBUG] Create release commit...")
-  await createReleaseCommit(nextRelease, changelog, 'package.json', 'CHANGELOG.md')
+  await createReleaseCommit(nextRelease, releaseChangelog, 'package.json', 'CHANGELOG.md')
 
   console.log("[DEBUG] Create release tag...")
   await createReleaseTag(nextRelease)
@@ -80,7 +82,7 @@ async function main() {
   await pushChanges()
 
   console.log("[DEBUG] Publish GitHub release...")
-  await createRelease(nextRelease, changelog)
+  await createRelease(nextRelease, releaseChangelog)
 
   console.log("[DEBUG] Done.")
 
