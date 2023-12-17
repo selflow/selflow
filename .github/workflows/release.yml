@@ -29,4 +29,4 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: nx run releaser:serve:production --watch false --inspect false
+        run: yarn -s nx run releaser:serve:production --watch false --inspect false
