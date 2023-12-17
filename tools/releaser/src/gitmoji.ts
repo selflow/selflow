@@ -27,7 +27,7 @@ export function parseCommit(commit: Omit<Commit, "category" | "messageToDisplay"
     return {...commit}
   }
 
-  const [_, emoji, message] = commit.message.split(':', 3)[1]
+  const [_, emoji, message] = commit.message.split(':', 3)
 
   return {
     ...commit,
