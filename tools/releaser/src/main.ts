@@ -10,9 +10,6 @@ import {createRelease} from "./github";
 
 
 async function main() {
-
-  console.log(process.argv)
-
   console.log("[DEBUG] Get last Git tag...")
   const lastTag = await getLastTag()
 
