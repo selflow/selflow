@@ -38,6 +38,7 @@ export async function checkCoreRelease(commits: Awaited<ReturnType<typeof getCom
   // It just was efficient enough to do it in bash but of you don't like it, feel free to recode it using NX sdk ;)
   const {
     stdout,
+    stderr
   } = spawnSync('yarn -s nx show projects --affected | xargs -I % bash -c "yarn -s nx show project % --json" | jq -n \'[ inputs.tags ]\'', {
     shell: "/bin/bash",
     env: {
@@ -46,6 +47,12 @@ export async function checkCoreRelease(commits: Awaited<ReturnType<typeof getCom
       NX_BASE: commits[commits.length - 1].hash,
     }
   })
+
+  const stderrAsString = stderr.toString()
+
+  if (stderrAsString.length) {
+    console.error(stderrAsString)
+  }
 
   const tags = JSON.parse(stdout.toString()).flat()
 
