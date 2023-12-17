@@ -64,10 +64,9 @@ async function main() {
   writeFileSync('./CHANGELOG.md', releaseChangelog + '\n\n' + changelog)
 
   console.log("[DEBUG] Update package.json...")
-  updateJsonFile('./package.json', pack => ({
-    ...pack,
-    version: nextRelease,
-  }))
+  updateJsonFile('./package.json', pack => {
+    pack.version = nextRelease
+  })
 
   console.log("[DEBUG] Create release commit...")
   await createReleaseCommit(nextRelease, releaseChangelog, 'package.json', 'CHANGELOG.md')

@@ -36,7 +36,7 @@ export const releasePower = {
 export const gitConfig = {
   username: "Selflow",
   email: "selflow@users.noreply.github.com",
-  remoteName: 'sand',
+  remoteName: 'origin',
   releaseBranch: 'main'
 }
 
