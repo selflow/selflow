@@ -1,5 +1,3 @@
-import { MainReleaseType } from './types';
-
 export const config = {
   major: [], // Major release are disabled until the project exists Beta
   minor: [':boom:', ':sparkles:'],

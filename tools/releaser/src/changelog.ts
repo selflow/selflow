@@ -2,7 +2,6 @@ import { Commit } from './types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import handlebars from 'handlebars';
-import * as process from 'process';
 
 export async function buildChangelog(commits: Commit[], nextRelease: string) {
   const templateAsString = readFileSync(
