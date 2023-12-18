@@ -1,38 +1,28 @@
 import {getCommitsSinceTag} from './git';
-import {spawnSync} from 'child_process';
-import * as process from 'process';
 import {createProjectGraphAsync, readProjectsConfigurationFromProjectGraph} from "nx/src/project-graph/project-graph";
+import {getAffectedGraphNodes} from "nx/src/command-line/affected/affected";
 
-export function getAffectedProjects(commitHash: string): string[] {
+export async function getAffectedProjects(commitHash: string): Promise<string[]> {
   return getAffectedProjectsBetweenCommitHashes(commitHash, `${commitHash}^1`);
 }
 
-export function getAffectedProjectsBetweenCommitHashes(
+export async function getAffectedProjectsBetweenCommitHashes(
   headCommitHash: string,
   baseCommitHash: string
-): string[] {
-  try {
-    const {stdout} = spawnSync(
-      'yarn -s nx show projects --type app --affected',
-      {
-        shell: '/bin/bash',
-        env: {
-          ...process.env,
-          NX_HEAD: headCommitHash,
-          NX_BASE: baseCommitHash,
-        },
-      }
-    );
+): Promise<string[]> {
+  const projectGraph = await createProjectGraphAsync()
 
-    return stdout
-      .toString()
-      .split('\n')
-      .map((s) => s.trim())
-      .filter((s) => !!s);
-  } catch (e: any) {
-    console.error('[ERROR] ', e);
-    return [];
-  }
+  const affectedGraph = await getAffectedGraphNodes(
+    {
+      base: baseCommitHash,
+      head: headCommitHash,
+    },
+    projectGraph
+  );
+
+  return affectedGraph
+    .filter(project => project.type === 'app')
+    .map(project => project.name)
 }
 
 export async function getProjectDetails(project: string): Promise<string[]> {
@@ -51,19 +41,12 @@ export async function getProjectDetails(project: string): Promise<string[]> {
 export async function checkCoreRelease(
   commits: Awaited<ReturnType<typeof getCommitsSinceTag>>
 ): Promise<boolean> {
-  // The following command list affected projects between the first and the last commit of the list,
-  // then, for each project, details it to extract the tags
-  // then, for each json documents representing projects, the tags are extracted and output to the console
-  // It just was efficient enough to do it in bash but of you don't like it, feel free to recode it using NX sdk ;)
 
-  const projectDetails = await Promise.all(
-    getAffectedProjectsBetweenCommitHashes(
-      commits[commits.length - 1].hash,
-      commits[0].hash
-    ).map(
-      (project) => getProjectDetails(project)
-    )
-  );
+  const releaseAffectedProjects = await getAffectedProjectsBetweenCommitHashes(
+    commits[commits.length - 1].hash,
+    commits[0].hash
+  )
+  const projectDetails = await Promise.all(releaseAffectedProjects.map(p => getProjectDetails(p)));
 
   return projectDetails.some((projectTags) => projectTags.includes('scope:core'));
 }

@@ -26,7 +26,7 @@ export async function getCommitsSinceTag(tag: string): Promise<Commit[]> {
     to: 'HEAD'
   })
 
-  return Promise.all(commits.map(c => new Promise<Commit>(resolve => {
+  return Promise.all(commits.map(async c => {
     console.log("[DEBUG] Analyzing commit", c.message)
     let commit: Commit = {
       ...c,
@@ -34,10 +34,10 @@ export async function getCommitsSinceTag(tag: string): Promise<Commit[]> {
     }
 
     commit = parseCommit(commit)
-    commit.affectedProjects = getAffectedProjects(c.hash)
+    commit.affectedProjects = await getAffectedProjects(c.hash)
 
-    resolve(commit)
-  })));
+    return commit
+  }));
 }
 
 export async function createReleaseCommit(releaseName: string, changelog: string, ...files: string[]) {
