@@ -58,7 +58,7 @@ async function main() {
   const releaseChangelog = await buildChangelog(commitsSinceLastTag, nextRelease)
 
   console.log(releaseChangelog)
-
+  
   console.log("[DEBUG] Update CHANGELOG.md...")
   const changelog = readFileSync('./CHANGELOG.md').toString()
   writeFileSync('./CHANGELOG.md', releaseChangelog + '\n\n' + changelog)

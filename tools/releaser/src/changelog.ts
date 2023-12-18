@@ -22,6 +22,6 @@ export async function buildChangelog(commits: Commit[], nextRelease: string) {
 
   const changelog = template(templateContext)
 
-  return changelog.replace(/([^\n])\n\n\n+([^\n])/, '$1\n\n$2').trimEnd()
+  return changelog.replace(/([^\n])\n\s*\n([^\n])/, '$1\n\n$2').trimEnd()
 
 }
