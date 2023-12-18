@@ -1,6 +1,7 @@
-import { getCommitsSinceTag } from './git';
-import { spawnSync } from 'child_process';
+import {getCommitsSinceTag} from './git';
+import {spawnSync} from 'child_process';
 import * as process from 'process';
+import {createProjectGraphAsync, readProjectsConfigurationFromProjectGraph} from "nx/src/project-graph/project-graph";
 
 export function getAffectedProjects(commitHash: string): string[] {
   return getAffectedProjectsBetweenCommitHashes(commitHash, `${commitHash}^1`);
@@ -11,7 +12,7 @@ export function getAffectedProjectsBetweenCommitHashes(
   baseCommitHash: string
 ): string[] {
   try {
-    const { stdout } = spawnSync(
+    const {stdout} = spawnSync(
       'yarn -s nx show projects --type app --affected',
       {
         shell: '/bin/bash',
@@ -34,29 +35,11 @@ export function getAffectedProjectsBetweenCommitHashes(
   }
 }
 
-export function getProjectDetails(project: string): null | { tags: string[] } {
-  let stdout: Buffer, stderr: Buffer;
-  try {
-    const proc = spawnSync(`yarn -s nx show project ${project} --json`, {
-      shell: '/bin/bash',
-      env: {
-        ...process.env,
-      },
-    });
-    stdout = proc.stdout;
-    stderr = proc.stderr;
+export async function getProjectDetails(project: string): Promise<string[]> {
+  const projectGraph = await createProjectGraphAsync()
+  const projects = readProjectsConfigurationFromProjectGraph(projectGraph)
 
-    return JSON.parse(stdout.toString());
-  } catch (e: any) {
-    console.error('[ERROR] ', e);
-    if (stdout) {
-      console.log('[ERROR] - Stdout:\n', stdout.toString());
-    }
-    if (stderr) {
-      console.log('[ERROR] - Stderr:\n', stderr.toString());
-    }
-    return null;
-  }
+  return projects.projects[project].tags ?? []
 }
 
 /**
@@ -78,12 +61,9 @@ export async function checkCoreRelease(
       commits[commits.length - 1].hash,
       commits[0].hash
     ).map(
-      (project) =>
-        new Promise<ReturnType<typeof getProjectDetails>>((resolve) =>
-          resolve(getProjectDetails(project))
-        )
+      (project) => getProjectDetails(project)
     )
   );
 
-  return projectDetails.some((p) => p?.tags.includes('scope:core'));
+  return projectDetails.some((projectTags) => projectTags.includes('scope:core'));
 }
