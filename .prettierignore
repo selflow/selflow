@@ -1,3 +1,7 @@
 .prettierignore
 .docusaurus/
 /.nx/cache
+
+*.hbs
+
+CHANGELOG.md

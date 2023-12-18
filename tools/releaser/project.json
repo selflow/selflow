@@ -1,0 +1,66 @@
+{
+  "name": "releaser",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/releaser/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/tools/releaser",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "tools/releaser/src/main.ts",
+        "tsConfig": "tools/releaser/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "*",
+            "input": "tools/releaser/src/assets",
+            "output": "assets"
+          }
+        ],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "releaser:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "releaser:build:development"
+        },
+        "production": {
+          "buildTarget": "releaser:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": []
+}

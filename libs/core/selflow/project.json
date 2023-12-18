@@ -11,5 +11,5 @@
       "executor": "@nx-go/nx-go:lint"
     }
   },
-  "tags": [""]
+  "tags": ["scope:core"]
 }

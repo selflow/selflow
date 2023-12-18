@@ -4,24 +4,29 @@ on:
   push:
     branches:
       - main
+
+permissions:
+  contents: 'write'
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+          fetch-tags: true
+
+      - name: Setup Node
+        uses: volta-cli/action@v4
         with:
-          node-version: "lts/*"
+          package-json-path: '${{ github.workspace }}/package.json'
+
       - name: Install dependencies
         run: yarn
       - name: Release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
+        run: yarn -s nx run releaser:serve:production --watch false --inspect false
