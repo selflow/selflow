@@ -39,7 +39,7 @@ export async function getProjectDetails(project: string): Promise<string[]> {
   const projectGraph = await createProjectGraphAsync()
   const projects = readProjectsConfigurationFromProjectGraph(projectGraph)
 
-  return projects.projects[project].tags ?? []
+  return projects.projects[project]?.tags ?? []
 }
 
 /**
