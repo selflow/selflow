@@ -1,3 +1,9 @@
+# v0.1.1-beta.4 (2023-12-18)
+
+## ✨ New Features
+
+- [f731ba9c](https://github.com/selflow/selflow/commit/f731ba9c9ed2135ebe7bdd3cffe549590095df48)  trigger ci > *&gt;  NX   Using &#x60;implicitDependencies&#x60; for global implicit dependencies configuration is no longer supported.* *Use &quot;namedInputs&quot; instead. You can run &quot;nx repair&quot; to automatically migrate your configuration.* *For more information about the usage of &quot;namedInputs&quot; see https://nx.dev/deprecated/global-implicit-dependencies#global-implicit-dependencies* *&gt;  NX   @nx-go/nx-go is a v1 plugin.* *Nx has recently released a v2 model for project graph plugins. The &#x60;processProjectGraph&#x60; method is deprecated. Plugins should use some combination of &#x60;createNodes&#x60; and &#x60;createDependencies&#x60; instead.*
+
 # v1.0.0-beta.0 (2023-12-18)
 
 ## ✨ New Features
