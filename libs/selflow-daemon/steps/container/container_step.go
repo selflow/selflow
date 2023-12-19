@@ -47,6 +47,16 @@ func (step *Step) Execute(ctx context.Context) (map[string]string, error) {
 		return nil, err
 	}
 
+	if step.config.Env != nil {
+		containerConfig.Environment = make(map[string]string, len(step.config.Env))
+
+		for envKey, envValue := range step.config.Env {
+			if containerConfig.Environment[envKey], err = withTemplate(envValue, needs); err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	if step.config.Persistence != nil {
 		mounts := make([]Mountable, 0, len(step.config.Persistence))
 

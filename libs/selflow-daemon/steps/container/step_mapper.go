@@ -15,6 +15,7 @@ type DockerStepConfig struct {
 	Image       string
 	Commands    string
 	Persistence map[string]string
+	Env         map[string]string
 }
 
 func (c *StepMapper) mapStep(stepId string, definition config.StepDefinition) (workflow.Step, error) {
