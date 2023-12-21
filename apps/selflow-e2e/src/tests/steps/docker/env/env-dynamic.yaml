@@ -1,0 +1,39 @@
+name: With Docker environment variables
+description: |
+  Step C depends on steps B.
+  Step A displays the value od MY_ENV
+  Step B outputs foo=bar and Step C displays the output of step b passed by the STEP_B_OUTPUT environment variable
+
+author: Jhon Doe
+
+workflow:
+  timeout: 5m
+  steps:
+    step-a:
+      kind: docker
+      with:
+        image: node:lts
+        env:
+          MY_ENV: my-env-value
+        commands: |
+          echo "##step-a##"
+          echo "$MY_ENV"
+
+    step-b:
+      kind: docker
+      with:
+        image: node:lts
+        commands: |
+          echo "::output::foo::bar"
+
+    step-c:
+      kind: docker
+      needs:
+        - step-b
+      with:
+        image: node:lts
+        env:
+          STEP_B_OUTPUT: '{{ index .Needs "step-b" "foo" }}'
+        commands: |
+          echo "##step-c##"
+          echo "$STEP_B_OUTPUT"
