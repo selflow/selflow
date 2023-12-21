@@ -37,7 +37,7 @@ export const gitConfig = {
 
 export const githubConfig = {
   repoOwner: 'selflow',
-  repoName: 'selflow-sand',
+  repoName: 'selflow',
 
   token: process.env.GITHUB_TOKEN,
 };
