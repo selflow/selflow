@@ -1,3 +1,9 @@
+# v0.0.1-beta.1 (2023-12-21)
+
+## ✨ New Features
+
+- [ff0824ec](https://github.com/selflow/selflow/commit/ff0824eca59f67661933f7ca02cf86d60e0cd262)  add environment variables for docker containers (#80) > *selflow-daemon* *webclient* *selflow-cli*
+
 # v0.0.1-beta.0 (2023-12-20)
 
 ## ✨ New Features

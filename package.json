@@ -1,6 +1,6 @@
 {
   "name": "selflow",
-  "version": "v0.0.1-beta.0",
+  "version": "v0.0.1-beta.1",
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
