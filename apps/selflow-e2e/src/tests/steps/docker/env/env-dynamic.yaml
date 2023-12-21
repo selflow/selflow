@@ -33,7 +33,7 @@ workflow:
       with:
         image: node:lts
         env:
-          STEP_B_OUTPUT: "{{ index .Needs "step-b" "foo" }}"
+          STEP_B_OUTPUT: '{{ index .Needs "step-b" "foo" }}'
         commands: |
           echo "##step-c##"
           echo "$STEP_B_OUTPUT"
