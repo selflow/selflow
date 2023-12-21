@@ -36,7 +36,7 @@ describe('Environment variables', function () {
     });
   });
 
-  describe('Dynamic docker environment variables', function () {
+  describe('dynamic docker environment variables', function () {
     const configFilePath = join(__dirname, 'env-dynamic.yaml');
 
     const verifyLogs = (logs: string) => {
