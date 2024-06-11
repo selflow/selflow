@@ -15,7 +15,7 @@
     "@codemirror/legacy-modes": "^6.3.2",
     "@docusaurus/core": "2.1.0",
     "@docusaurus/preset-classic": "2.1.0",
-    "@grpc/grpc-js": "^1.8.14",
+    "@grpc/grpc-js": "^1.8.22",
     "@headlessui/react": "^1.7.14",
     "@mdx-js/react": "^1.6.22",
     "@nx-go/nx-go": "^2.7.0",
