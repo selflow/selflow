@@ -1,13 +1,17 @@
 const config = {
-  stories: ['../../**/*.@(mdx|stories.@(js|jsx|ts|tsx))', {
-    directory: '../../components-kit',
-    titlePrefix: 'ui-kit',
-    files: '**/*.@(mdx|stories.@(js|jsx|ts|tsx))'
-  }, {
-    directory: '../../workflow-editor',
-    titlePrefix: 'workflow-editor',
-    files: '**/*.@(mdx|stories.@(js|jsx|ts|tsx))'
-  }],
+  stories: [
+    '../../**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    {
+      directory: '../../components-kit',
+      titlePrefix: 'ui-kit',
+      files: '**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    },
+    {
+      directory: '../../workflow-editor',
+      titlePrefix: 'workflow-editor',
+      files: '**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    },
+  ],
 
   addons: ['@storybook/addon-essentials', '@chromatic-com/storybook'],
 
@@ -19,8 +23,8 @@ const config = {
   docs: {},
 
   typescript: {
-    reactDocgen: 'react-docgen-typescript'
-  }
+    reactDocgen: 'react-docgen-typescript',
+  },
 };
 
 export default config;
