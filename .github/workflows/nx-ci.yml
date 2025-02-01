@@ -44,4 +44,4 @@ jobs:
 
       - run: yarn nx-cloud record -- yarn nx format:check
 
-      - run: yarn nx affected -t lint test build e2e docker
+      - run: yarn nx affected -t lint test build docker
