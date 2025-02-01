@@ -48,7 +48,6 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^3",
     "@docusaurus/module-type-aliases": "2.1.0",
-    "@nx-plus/docusaurus": "^15.0.0-rc.0",
     "@nx/cypress": "20.4.0",
     "@nx/devkit": "20.4.0",
     "@nx/esbuild": "20.4.0",

@@ -7250,21 +7250,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nrwl/devkit@npm:^15.0.0":
-  version: 15.6.3
-  resolution: "@nrwl/devkit@npm:15.6.3"
-  dependencies:
-    "@phenomnomnominal/tsquery": "npm:4.1.1"
-    ejs: "npm:^3.1.7"
-    ignore: "npm:^5.0.4"
-    semver: "npm:7.3.4"
-    tslib: "npm:^2.3.0"
-  peerDependencies:
-    nx: ">= 14 <= 16"
-  checksum: 10c0/7f9cd4a9c2193a0ebbc79ef3d61776afd2274928e040aac999de9983588cc6f3a1c921a229f48a8a76af76182dcff59fdf870d8fc49d44e3a05f4ce3ed5f281a
-  languageName: node
-  linkType: hard
-
 "@nx-go/nx-go@npm:^3.3.1":
   version: 3.3.1
   resolution: "@nx-go/nx-go@npm:3.3.1"
@@ -7272,17 +7257,6 @@ __metadata:
     "@nx/devkit": "npm:>= 17 < 21"
     tslib: "npm:^2.3.0"
   checksum: 10c0/7660162dff0ea8b636692d27c6fda9371f6b5f6f45084227ee518fe63941f570fb8ad42e84b403cd0261116af32a987c1195272b9dd684ec4c73044718a646f8
-  languageName: node
-  linkType: hard
-
-"@nx-plus/docusaurus@npm:^15.0.0-rc.0":
-  version: 15.0.0-rc.0
-  resolution: "@nx-plus/docusaurus@npm:15.0.0-rc.0"
-  dependencies:
-    "@nrwl/devkit": "npm:^15.0.0"
-  peerDependencies:
-    "@nrwl/workspace": ^15.0.0
-  checksum: 10c0/468f77ff46e8402d7668a24d7a9185eb32c1f7a9df36e10c772acb5e4aaf5488e4e416bb24c4139f006937c4f187dea8a924f1299a21158a8989ed18aa9304c7
   languageName: node
   linkType: hard
 
@@ -8275,17 +8249,6 @@ __metadata:
     "@parcel/watcher-win32-x64":
       optional: true
   checksum: 10c0/8f35073d0c0b34a63d4c8d2213482f0ebc6a25de7b2cdd415d19cb929964a793cb285b68d1d50bfb732b070b3c82a2fdb4eb9c250eab709a1cd9d63345455a82
-  languageName: node
-  linkType: hard
-
-"@phenomnomnominal/tsquery@npm:4.1.1":
-  version: 4.1.1
-  resolution: "@phenomnomnominal/tsquery@npm:4.1.1"
-  dependencies:
-    esquery: "npm:^1.0.1"
-  peerDependencies:
-    typescript: ^3 || ^4
-  checksum: 10c0/cd600f67232dca9c58457257d607c10d271721758de515a3d9642eff53da0e3e13985403192644b5d359b05add29804e899832ef622a79d68661dba5fdf8f6d4
   languageName: node
   linkType: hard
 
@@ -19292,7 +19255,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esquery@npm:^1.0.1, esquery@npm:^1.4.0":
+"esquery@npm:^1.4.0":
   version: 1.4.0
   resolution: "esquery@npm:1.4.0"
   dependencies:
@@ -31445,7 +31408,6 @@ __metadata:
     "@headlessui/react": "npm:^1.7.14"
     "@mdx-js/react": "npm:^1.6.22"
     "@nx-go/nx-go": "npm:^3.3.1"
-    "@nx-plus/docusaurus": "npm:^15.0.0-rc.0"
     "@nx/cypress": "npm:20.4.0"
     "@nx/devkit": "npm:20.4.0"
     "@nx/esbuild": "npm:20.4.0"
@@ -31664,17 +31626,6 @@ __metadata:
   bin:
     semver: bin/semver
   checksum: 10c0/e4cf10f86f168db772ae95d86ba65b3fd6c5967c94d97c708ccb463b778c2ee53b914cd7167620950fc07faf5a564e6efe903836639e512a1aa15fbc9667fa25
-  languageName: node
-  linkType: hard
-
-"semver@npm:7.3.4":
-  version: 7.3.4
-  resolution: "semver@npm:7.3.4"
-  dependencies:
-    lru-cache: "npm:^6.0.0"
-  bin:
-    semver: bin/semver.js
-  checksum: 10c0/16b77752071597135b934bb33258badbac6c1cebbabe507ce31f68db3229acae7afa9602265c375c34df092339caa738b105e0c62240536ea1efd4767c36e674
   languageName: node
   linkType: hard
 
