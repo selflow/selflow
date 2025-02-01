@@ -1,22 +1,26 @@
 const config = {
-  stories: [
-    '../../**/*.stories.@(js|jsx|ts|tsx|mdx)',
-    {
-      directory: '../../components-kit',
-      titlePrefix: 'ui-kit',
-      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)',
-    },
-    {
-      directory: '../../workflow-editor',
-      titlePrefix: 'workflow-editor',
-      files: '**/*.stories.@(js|jsx|ts|tsx|mdx)',
-    },
-  ],
-  addons: ['@storybook/addon-essentials'],
+  stories: ['../../**/*.@(mdx|stories.@(js|jsx|ts|tsx))', {
+    directory: '../../components-kit',
+    titlePrefix: 'ui-kit',
+    files: '**/*.@(mdx|stories.@(js|jsx|ts|tsx))'
+  }, {
+    directory: '../../workflow-editor',
+    titlePrefix: 'workflow-editor',
+    files: '**/*.@(mdx|stories.@(js|jsx|ts|tsx))'
+  }],
+
+  addons: ['@storybook/addon-essentials', '@chromatic-com/storybook'],
+
   framework: {
     name: '@storybook/nextjs',
     options: {},
   },
+
+  docs: {},
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript'
+  }
 };
 
 export default config;
