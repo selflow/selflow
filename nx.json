@@ -1,8 +1,5 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "affected": {
-    "defaultBase": "main"
-  },
   "implicitDependencies": {
     "go.sum": ["*"]
   },
@@ -41,6 +38,10 @@
     "@nx/vite:test": {
       "inputs": ["default", "^default", "{workspaceRoot}/jest.preset.js"],
       "cache": true
+    },
+    "@nx/eslint:lint": {
+      "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
+      "cache": true
     }
   },
   "plugins": ["@nx-go/nx-go"],
@@ -60,5 +61,7 @@
       }
     }
   },
-  "nxCloudAccessToken": "ZDMzMmMwZTQtOTJhYi00NjA4LTlkYmEtNWQzZWYxZWNlZGFhfHJlYWQ="
+  "nxCloudAccessToken": "ZDMzMmMwZTQtOTJhYi00NjA4LTlkYmEtNWQzZWYxZWNlZGFhfHJlYWQ=",
+  "useInferencePlugins": false,
+  "defaultBase": "main"
 }

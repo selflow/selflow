@@ -3,6 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/nx-plugins/nx-selflow/src",
   "projectType": "library",
+  "tags": ["scope:shared"],
   "targets": {
     "build": {
       "executor": "@nrwl/js:tsc",
@@ -39,13 +40,12 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": [
-          "libs/nx-plugins/nx-selflow/**/*.ts",
-          "libs/nx-plugins/nx-selflow/generators.json",
-          "libs/nx-plugins/nx-selflow/executors.json",
-          "libs/nx-plugins/nx-selflow/package.json"
+          "{projectRoot}/**/*.ts",
+          "{projectRoot}/generators.json",
+          "{projectRoot}/executors.json",
+          "{projectRoot}/package.json"
         ]
       }
     },
@@ -63,6 +63,5 @@
         }
       }
     }
-  },
-  "tags": ["scope:shared"]
+  }
 }
