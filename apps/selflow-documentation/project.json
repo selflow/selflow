@@ -4,8 +4,5 @@
   "projectType": "application",
   "sourceRoot": "./apps/selflow-documentation/src",
   "targets": {},
-  "tags": [],
-  "implicitDependencies": [
-    "selflow-documentation-content"
-  ]
+  "tags": []
 }
