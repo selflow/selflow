@@ -1,147 +1,47 @@
 name: NX CI
+
 on:
   push:
     branches:
       - main
   pull_request:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
+permissions:
+  actions: read
+  contents: read
 
 env:
-  NX_CLOUD_DISTRIBUTED_EXECUTION: true # this enables DTE
-  NX_CLOUD_DISTRIBUTED_EXECUTION_AGENT_COUNT: 3 # expected number of agents
-  NX_BRANCH: ${{ github.event.number || github.ref_name }}
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }} # this is needed if our pipeline publishes to npm
+  NODE_VERSION: 22.x
+  GO_VERSION: 1.23.x
 
 jobs:
   main:
-    name: Nx Cloud - Main Job
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout [Pull Request]
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          # By default, PRs will be checked-out based on the Merge Commit, but we want the actual branch HEAD.
-          ref: ${{ github.event.pull_request.head.sha }}
-          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
-          fetch-depth: 0
-
-      - uses: actions/checkout@v3
-        name: Checkout [Default Branch]
-        if: ${{ github.event_name != 'pull_request' }}
-        with:
-          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
-          fetch-depth: 0
-
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
-
-      # Set node/npm/yarn versions using volta
-      - name: Setup Node
-        uses: volta-cli/action@v4
-        with:
-          package-json-path: '${{ github.workspace }}/package.json'
-
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '>=1.21.0'
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: Use the package manager cache if available
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Initialize the Nx Cloud distributed CI run
-        run: npx nx-cloud start-ci-run
-
-      - name: Run commands in parallel
-        run: |
-          pids=()
-          # list of commands to be run on main has env flag NX_CLOUD_DISTRIBUTED_EXECUTION set to false
-          NX_CLOUD_DISTRIBUTED_EXECUTION=false npx nx-cloud record -- npx nx format:check & pids+=($!)
-          NX_CLOUD_DISTRIBUTED_EXECUTION=false npx nx-cloud record -- npx nx affected -t e2e --parallel=3 & pids+=($!)
-
-          # list of commands to be run on agents
-          npx nx affected -t test --parallel=3 &
-          pids+=($!)
-
-          npx nx affected -t lint --parallel=3 &
-          pids+=($!)
-
-          npx nx affected -t build --parallel=3 &
-          pids+=($!)
-
-          # run all commands in parallel and bail if one of them fails
-          for pid in ${pids[*]}; do
-            if ! wait $pid; then
-              exit 1
-            fi
-          done
-
-          exit 0
-
-      - name: Stop all running agents for this CI run
-        # It's important that we always run this step, otherwise in the case of any failures in preceding non-Nx steps, the agents will keep running and waste billable minutes
-        if: ${{ always() }}
-        run: npx nx-cloud stop-all-agents
-
-  agents:
-    name: Agent ${{ matrix.agent }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        agent: [1, 2, 3]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
+      - run: yarn install --frozen-lockfile
 
-      # Set node/npm/yarn versions using volta
-      - name: Setup Node
-        uses: volta-cli/action@v4
+      # This enables task distribution via Nx Cloud
+      # Run this command as early as possible, before dependencies are installed
+      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
+      - run: yarn nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="build"
+
+      # Cache node_modules
+      - uses: actions/setup-node@v4
         with:
-          package-json-path: '${{ github.workspace }}/package.json'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
 
-      - name: Setup Go
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
-          go-version: '>=1.21.0'
+          go-version: ${{ env.GO_VERSION }}
 
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+      - run: yarn install --frozen-lockfile
+      - uses: nrwl/nx-set-shas@v4
 
-      - name: Use the package manager cache if available
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-
+      - run: yarn nx-cloud record -- yarn nx format:check
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Start Nx Agent ${{ matrix.agent }}
-        run: npx nx-cloud start-agent
-        env:
-          NX_AGENT_NAME: ${{ matrix.agent }}
+      - run: yarn nx affected -t lint test build

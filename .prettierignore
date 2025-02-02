@@ -5,3 +5,7 @@
 *.hbs
 
 CHANGELOG.md
+
+/.nx/workspace-data
+
+.yarn

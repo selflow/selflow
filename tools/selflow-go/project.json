@@ -1,0 +1,51 @@
+{
+  "name": "selflow-go",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/selflow-go/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/tools/selflow-go",
+        "main": "tools/selflow-go/src/index.ts",
+        "tsConfig": "tools/selflow-go/tsconfig.lib.json",
+        "assets": [
+          "tools/selflow-go/*.md",
+          {
+            "input": "./tools/selflow-go/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./tools/selflow-go/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./tools/selflow-go",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./tools/selflow-go",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/tools/selflow-go"
+      }
+    }
+  }
+}

@@ -21,7 +21,7 @@
       "@selflow/libs/ui/storybook-host/server": [
         "libs/libs/ui/storybook-host/src/server.ts"
       ],
-      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"],
+      "@selflow/selflow-go": ["tools/selflow-go/src/index.ts"],
       "@selflow/selflow-node-client": [
         "libs/selflow-daemon-clients/selflow-node-client/src/index.ts"
       ],
