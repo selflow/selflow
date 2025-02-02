@@ -6,7 +6,6 @@ import { CreateNodesResultV2 } from 'nx/src/project-graph/plugins/public-api';
 const SELFLOW_MAIN_PACKAGE_NAME = 'github.com/selflow/selflow';
 const GO_MAIN_PACKAGE = 'main';
 
-
 function groupGoFileDirectories(files: string[]) {
   return files.reduce((acc, file) => {
     const dir = file.split('/').slice(0, -1).join('/');
@@ -21,102 +20,108 @@ function groupGoFileDirectories(files: string[]) {
 export const createNodesV2: CreateNodesV2 = [
   '**/!(*_test).go',
   async (goFiles) => {
-
     console.log(goFiles);
 
     const dirs = groupGoFileDirectories([...goFiles]);
 
     const goProjects = await Promise.all(
-      [...dirs.entries()]
-        .map(async ([dir, files]) => {
-
-          files.sort();
-          const firstFile = files[0];
-          const fileContent = await readFile(firstFile);
-          const packageName = RegExp(/package\s+(\w+)/).exec(fileContent.toString())?.[1];
-          return {
-            packageName,
-            dir,
-            sourceFile: firstFile
-          };
-        })
+      [...dirs.entries()].map(async ([dir, files]) => {
+        files.sort();
+        const firstFile = files[0];
+        const fileContent = await readFile(firstFile);
+        const packageName = RegExp(/package\s+(\w+)/).exec(
+          fileContent.toString()
+        )?.[1];
+        return {
+          packageName,
+          dir,
+          sourceFile: firstFile,
+        };
+      })
     );
 
+    const goExecutableProjects = goProjects.filter(
+      (project) => project.packageName === GO_MAIN_PACKAGE
+    );
 
-    const goExecutableProjects = goProjects.filter(project => project.packageName === GO_MAIN_PACKAGE);
+    const appProjects: CreateNodesResultV2 = goExecutableProjects.map(
+      (project) => {
+        const appSourceRoot = path.dirname(project.sourceFile);
+        const projectName = project.packageName.replace(/\//g, '-');
 
-    const appProjects: CreateNodesResultV2 = goExecutableProjects.map(project => {
-      const appSourceRoot = path.dirname(project.sourceFile);
-      const projectName = project.packageName.replace(/\//g, '-');
+        const main = SELFLOW_MAIN_PACKAGE_NAME + '/' + appSourceRoot;
 
-      const main = SELFLOW_MAIN_PACKAGE_NAME + '/' + appSourceRoot;
-
-      return ([
-        project.sourceFile,
-        {
-          projects: {
-            [appSourceRoot]: {
-              name: projectName,
-              sourceRoot: appSourceRoot,
-              projectType: 'application',
-              targets: {
-                build: {
-                  executor: '@nx-go/nx-go:build',
-                  options: {
-                    outputPath: path.join('dist', appSourceRoot),
-                    main
+        return [
+          project.sourceFile,
+          {
+            projects: {
+              [appSourceRoot]: {
+                name: projectName,
+                sourceRoot: appSourceRoot,
+                projectType: 'application',
+                targets: {
+                  build: {
+                    executor: '@nx-go/nx-go:build',
+                    options: {
+                      outputPath: path.join('dist', appSourceRoot),
+                      main,
+                    },
+                    outputs: ['{options.outputPath}'],
                   },
-                  outputs: ['{options.outputPath}']
+                  serve: {
+                    executor: '@nx-go/nx-go:serve',
+                    options: {
+                      main,
+                    },
+                  },
+                  test: {
+                    executor: '@nx-go/nx-go:test',
+                  },
+                  lint: {
+                    executor: '@nx-go/nx-go:lint',
+                  },
                 },
-                serve: {
-                  executor: '@nx-go/nx-go:serve',
-                  options: {
-                    main
-                  }
-                },
-                test: {
-                  executor: '@nx-go/nx-go:test'
-                },
-                lint: {
-                  executor: '@nx-go/nx-go:lint'
-                }
+                tags: ['lang:go'],
               },
-              tags: ['lang:go']
-            }
-          }
-        }
-      ]);
-    });
+            },
+          },
+        ];
+      }
+    );
 
-    const goProjectsWithoutMain = goProjects.filter(project => project.packageName !== GO_MAIN_PACKAGE);
+    const goProjectsWithoutMain = goProjects.filter(
+      (project) => project.packageName !== GO_MAIN_PACKAGE
+    );
 
-    const libProjects: CreateNodesResultV2 = goProjectsWithoutMain.map(project => {
-      const librarySourceRoot = path.dirname(project.sourceFile);
-      const projectName = project.packageName.replace(/\//g, '-');
+    const libProjects: CreateNodesResultV2 = goProjectsWithoutMain.map(
+      (project) => {
+        const librarySourceRoot = path.dirname(project.sourceFile);
+        const projectName = project.packageName.replace(/\//g, '-');
 
-      return ([
-        project.sourceFile,
-        {
-          projects: {
-            [librarySourceRoot]: {
-              name: projectName,
-              sourceRoot: librarySourceRoot,
-              projectType: 'library',
-              targets: {
-                test: {
-                  executor: '@nx-go/nx-go:test'
+        return [
+          project.sourceFile,
+          {
+            projects: {
+              [librarySourceRoot]: {
+                name: projectName,
+                sourceRoot: librarySourceRoot,
+                projectType: 'library',
+                targets: {
+                  test: {
+                    executor: '@nx-go/nx-go:test',
+                  },
+                  lint: {
+                    executor: '@nx-go/nx-go:lint',
+                  },
                 },
-                lint: {
-                  executor: '@nx-go/nx-go:lint'
-                }
+                tags: ['lang:go'],
               },
-              tags: ['lang:go']
-            }
-          }
-        }
-      ]);
-    });
+            },
+          },
+        ];
+      }
+    );
 
     return [...libProjects, ...appProjects];
-  }
+  },
 ];

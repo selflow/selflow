@@ -11,7 +11,5 @@
       }
     }
   },
-  "tags": [
-    "type:cmd"
-  ]
+  "tags": ["type:cmd"]
 }

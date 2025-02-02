@@ -10,9 +10,7 @@
         ],
         "parallel": false
       },
-      "dependsOn": [
-        "docker"
-      ]
+      "dependsOn": ["docker"]
     },
     "docker": {
       "executor": "nx:run-commands",
@@ -21,7 +19,5 @@
       }
     }
   },
-  "tags": [
-    "type:cmd"
-  ]
+  "tags": ["type:cmd"]
 }
