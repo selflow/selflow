@@ -1,8 +1,5 @@
 {
-  "name": "selflow-daemon",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "application",
-  "sourceRoot": "apps/selflow-daemon",
   "targets": {
     "recreate-daemon": {
       "executor": "nx:run-commands",
@@ -13,26 +10,9 @@
         ],
         "parallel": false
       },
-      "dependsOn": ["docker"]
-    },
-    "build": {
-      "executor": "@nx-go/nx-go:build",
-      "options": {
-        "outputPath": "dist/selflow-daemon",
-        "main": "./apps/selflow-daemon"
-      }
-    },
-    "serve": {
-      "executor": "@nx-go/nx-go:serve",
-      "options": {
-        "main": "apps/selflow-daemon/main.go"
-      }
-    },
-    "test": {
-      "executor": "@nx-go/nx-go:test"
-    },
-    "lint": {
-      "executor": "@nx-go/nx-go:lint"
+      "dependsOn": [
+        "docker"
+      ]
     },
     "docker": {
       "executor": "nx:run-commands",
@@ -41,5 +21,7 @@
       }
     }
   },
-  "tags": ["type:cmd"]
+  "tags": [
+    "type:cmd"
+  ]
 }

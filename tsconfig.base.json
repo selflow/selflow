@@ -21,7 +21,6 @@
       "@selflow/libs/ui/storybook-host/server": [
         "libs/libs/ui/storybook-host/src/server.ts"
       ],
-      "@selflow/nx-selflow": ["libs/nx-plugins/nx-selflow/src/index.ts"],
       "@selflow/selflow-node-client": [
         "libs/selflow-daemon-clients/selflow-node-client/src/index.ts"
       ],
@@ -36,7 +35,8 @@
       "@selflow/ui/workflow-editor": ["libs/ui/workflow-editor/src/index.ts"],
       "@selflow/ui/workflow-editor/server": [
         "libs/ui/workflow-editor/src/server.ts"
-      ]
+      ],
+      "@selflow/selflow-go": ["tools/selflow-go/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

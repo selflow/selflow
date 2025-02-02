@@ -58,3 +58,6 @@ Thumbs.db
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
