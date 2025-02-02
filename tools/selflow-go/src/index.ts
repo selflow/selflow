@@ -1,1 +1,1 @@
-export { createNodesV2 } from './plugins/go-library';
+export { createNodesV2 } from './plugins/createGoNodes';
